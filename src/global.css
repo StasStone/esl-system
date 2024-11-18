@@ -11,3 +11,7 @@
   --color-grey-800: #1f2937;
   --color-grey-900: #111827;
 }
+
+body {
+  font-family: 'Poppins', sans-serif;
+}
