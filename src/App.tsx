@@ -10,7 +10,7 @@ function App() {
         <Table.Header headers={mockedHeaders}></Table.Header>
         <Table.Body
           data={mockedData}
-          render={product => <Table.Row product={product} />}
+          render={product => <Table.Row key={product.id} product={product} />}
         ></Table.Body>
       </Table>
     </div>

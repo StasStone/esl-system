@@ -1,7 +1,7 @@
 .row {
   display: grid;
-  grid-template-columns: 4fr 4fr 4fr;
-  padding: 1.6rem 0.6rem;
+  grid-template-columns: 3.6fr 3fr 3.2fr 0.8fr;
+  padding: 1.6rem 2.4rem;
   column-gap: 2.4rem;
   align-items: center;
   transition: none;
