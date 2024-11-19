@@ -1,0 +1,9 @@
+.menu-container {
+  border: 1px solid var(--color-grey-0);
+  border-radius: 7px;
+  padding: 0.6rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.2rem;
+}
