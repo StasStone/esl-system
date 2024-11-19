@@ -1,8 +1,8 @@
 import { ReactNode } from 'react'
 import './Table.css'
-import TableBody from './TableBody'
-import TableHeader from './TableHeader'
-import TableRow from './TableRow'
+import TableBody from '../TableBody/TableBody'
+import TableHeader from '../TableHeader/TableHeader'
+import TableRow from '../TableRow/TableRow'
 
 type TableProps = {
   children: ReactNode

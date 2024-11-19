@@ -1,5 +1,5 @@
 import { ReactElement } from 'react'
-import { Product } from '../models/product'
+import { Product } from '../../models/product'
 
 type TableBodyProps = {
   data: Product[]

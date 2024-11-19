@@ -1,5 +1,6 @@
-import { Product } from '../models/product'
-import ActionsMenu from './ActionsMenu'
+import { Product } from '../../models/product'
+import ActionsMenu from '../ActionsMenu/ActionsMenu'
+
 import './TableRow.css'
 import { HiPencil, HiTrash } from 'react-icons/hi2'
 

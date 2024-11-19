@@ -1,4 +1,4 @@
-import Table from './components/Table'
+import Table from './components/Table/Table'
 import { mockedData } from './mocks/mock-data'
 import { mockedHeaders } from './mocks/mock-headers'
 import './global.css'
