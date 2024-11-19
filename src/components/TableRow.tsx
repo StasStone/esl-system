@@ -17,7 +17,7 @@ export default function TableRow({ product }: { product: Product }) {
         </div>
         <ActionsMenu.Body id={product.id}>
           <button>
-            <HiTrash />
+            <HiTrash color="#eb2727" />
           </button>
           <button>
             <HiPencil />
