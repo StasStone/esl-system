@@ -1,36 +1,65 @@
 import { createContext, ReactNode, useContext, useState } from 'react'
+import { HiEllipsisVertical } from 'react-icons/hi2'
+import './ActionsMenu.css'
+import { Position } from '../models/position'
+import usePosition from '../hooks/usePosition'
 
 type MenuContextType = {
   openId: number
   open: (id: number) => void
   close: () => void
+  handleSetPosition: (position: Position) => void
+  position: Position | null
 }
 
 const MenuContext = createContext<MenuContextType | undefined>(undefined)
 
 export default function ActionsMenu({ children }: { children: ReactNode }) {
-  const [openId, setOpenId] = useState(-1)
+  const [openId, setOpenId] = useState<number>(-1)
+  const [position, setPosition] = useState<Position | null>(null)
 
   const open = (id: number) => setOpenId(id)
 
   const close = () => setOpenId(-1)
 
+  const handleSetPosition = (position: Position): void => {
+    setPosition(position)
+  }
+
   return (
-    <MenuContext.Provider value={{ openId, open, close }}>
+    <MenuContext.Provider
+      value={{ openId, open, close, handleSetPosition, position }}
+    >
       <div>{children}</div>
     </MenuContext.Provider>
   )
 }
 
 function ActionsMenuToggle({ id }: { id: number }) {
-  const { open } = useContext(MenuContext)!
+  const { open, close, openId, handleSetPosition } = useContext(MenuContext)!
 
   function handleClick(e: any) {
-    open(id)
-    console.log(e.target.closest)
+    e.stopPropagation()
+    const rect = e.target.closest('button').getBoundingClientRect()
+    const { bottom, right } = rect
+    const position: Position = {
+      x: right + 10,
+      y: bottom - 30
+    }
+
+    if (openId !== id) {
+      handleSetPosition(position)
+      open(id)
+    } else {
+      close()
+    }
   }
 
-  return <div onClick={handleClick}>toggle</div>
+  return (
+    <button className="menu-toggle" onClick={handleClick}>
+      <HiEllipsisVertical />
+    </button>
+  )
 }
 
 function ActionsMenuBody({
@@ -40,10 +69,15 @@ function ActionsMenuBody({
   children: ReactNode
   id: number
 }) {
-  const { openId } = useContext(MenuContext)!
+  const { openId, position } = useContext(MenuContext)!
+  const ref = usePosition(openId, id, position)
 
   if (!id || id !== openId) return null
-  return <div className="menu-container">{children}</div>
+  return (
+    <div ref={ref} className="menu-container">
+      {children}
+    </div>
+  )
 }
 
 ActionsMenu.Body = ActionsMenuBody

@@ -1,6 +1,7 @@
 import { Product } from '../models/product'
 import ActionsMenu from './ActionsMenu'
 import './TableRow.css'
+import { HiPencil, HiTrash } from 'react-icons/hi2'
 
 export default function TableRow({ product }: { product: Product }) {
   const { name, price, producer } = product
@@ -15,8 +16,12 @@ export default function TableRow({ product }: { product: Product }) {
           <ActionsMenu.Toggle id={product.id} />
         </div>
         <ActionsMenu.Body id={product.id}>
-          <button>Delete</button>
-          <button>Edit</button>
+          <button>
+            <HiTrash />
+          </button>
+          <button>
+            <HiPencil />
+          </button>
         </ActionsMenu.Body>
       </ActionsMenu>
     </div>
