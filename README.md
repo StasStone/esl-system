@@ -1,11 +1,11 @@
 # Frontend for ESL Management System
 
-This repository contains the frontend of the **Electronic Shelf Label (ESL)
-Management System**, a web application designed to help retail managers
-efficiently manage ESLs across their stores. Built with React and React Query,
-the frontend provides an intuitive interface for viewing, editing, and updating
-product information while seamlessly integrating with the backend server and
-message broker architecture.
+This repository contains the frontend and backend of the **Electronic Shelf
+Label (ESL) Management System**, designed to help retail managers efficiently
+manage ESLs across their stores. Built with React and React Query, the frontend
+provides an intuitive interface for viewing, editing, and updating product
+information while seamlessly integrating with the backend server and message
+broker architecture.
 
 ---
 
