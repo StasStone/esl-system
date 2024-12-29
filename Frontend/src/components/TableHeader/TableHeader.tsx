@@ -1,4 +1,4 @@
-import './TableHeader.css'
+import './TableHeader.scss'
 
 type TableHeaderProps = {
   headers: string[]

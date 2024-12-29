@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import './Table.css'
+import './Table.scss'
 import TableBody from '../TableBody/TableBody'
 import TableHeader from '../TableHeader/TableHeader'
 import TableRow from '../TableRow/TableRow'
