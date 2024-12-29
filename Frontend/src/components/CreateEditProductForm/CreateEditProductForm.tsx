@@ -1,5 +1,7 @@
 import { Product } from '../../models/product'
 import { useForm } from 'react-hook-form'
+import FormRow from '../FormRow/FormRow'
+import './CreateEditProductForm.css'
 
 export default function CreateEditProductForm({
   product = null
@@ -22,32 +24,55 @@ export default function CreateEditProductForm({
 
   return (
     <form onSubmit={handleSubmit(onSubmit, onError)}>
-      <div>
-        <label></label>
-        <input name="name" required type="text">
+      <FormRow label="name">
+        <input
+          className="form-input"
+          type="text"
+          id="name"
+          {...register('name', { required: 'Title is required' })}
+        >
           {name}
         </input>
-      </div>
-      <div>
-        <label></label>
-        <input required name="producer" type="text">
+      </FormRow>
+      <FormRow label="producer">
+        <input
+          className="form-input"
+          type="text"
+          id="producer"
+          {...register('producer', { required: 'Producer is required' })}
+        >
           {producer}
         </input>
-      </div>
-      <div>
-        <label></label>
-        <input required name="price" type="text">
+      </FormRow>
+      <FormRow label="price">
+        <input
+          className="form-input"
+          type="text"
+          id="price"
+          {...register('price', {
+            required: 'Price is required',
+            min: { value: 1, message: 'Price should be at least 1' }
+          })}
+        >
           {price}
         </input>
-      </div>
-
-      <div>
-        <label></label>
-        <input name="discount" type="text">
+      </FormRow>
+      <FormRow label="discount">
+        <input
+          className="form-input"
+          defaultValue={0}
+          id="discount"
+          type="number"
+          {...register('discount', {
+            required: 'The discount is required',
+            validate: value =>
+              value! <= getValues().price ||
+              'Discount should be less than regular price'
+          })}
+        >
           {discount}
         </input>
-      </div>
-
+      </FormRow>
       <button type="submit">Submit</button>
     </form>
   )

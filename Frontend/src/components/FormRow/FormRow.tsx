@@ -2,11 +2,11 @@ import './FormRow.css'
 
 type FormRowProps = {
   label: string
-  error: string
+  error?: string
   children: any
 }
 
-export default function FormRow({ label, error, children }: FormRowProps) {
+export default function FormRow({ label, children, error }: FormRowProps) {
   return (
     <div className="form-row">
       {label && (
