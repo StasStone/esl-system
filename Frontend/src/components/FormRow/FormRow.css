@@ -24,3 +24,12 @@
     gap: 1.2rem;
   }
 }
+
+.row-label {
+  font-weight: 500;
+}
+
+.row-error {
+  font-size: 1.4rem;
+  color: var(--color-red-700);
+}

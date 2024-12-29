@@ -9,9 +9,13 @@ type FormRowProps = {
 export default function FormRow({ label, error, children }: FormRowProps) {
   return (
     <div className="form-row">
-      {label && <Label htmlFor={children.props.id}>{label}</Label>}
+      {label && (
+        <label className="row-label" htmlFor={children.props.id}>
+          {label}
+        </label>
+      )}
       {children}
-      {error && <Error>{error}</Error>}
+      {error && <span className="row-error">{error}</span>}
     </div>
   )
 }
