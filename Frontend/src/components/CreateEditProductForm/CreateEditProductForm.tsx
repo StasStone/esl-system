@@ -8,8 +8,6 @@ export default function CreateEditProductForm({
 }: {
   product: Product | null
 }) {
-  const { name, producer, price, discount } = product ? product : {}
-
   const { register, handleSubmit, reset, getValues, formState } = useForm({
     defaultValues: product ? product : {}
   })
@@ -30,9 +28,7 @@ export default function CreateEditProductForm({
           type="text"
           id="name"
           {...register('name', { required: 'Title is required' })}
-        >
-          {name}
-        </input>
+        />
       </FormRow>
       <FormRow label="producer">
         <input
@@ -40,9 +36,7 @@ export default function CreateEditProductForm({
           type="text"
           id="producer"
           {...register('producer', { required: 'Producer is required' })}
-        >
-          {producer}
-        </input>
+        />
       </FormRow>
       <FormRow label="price">
         <input
@@ -53,9 +47,7 @@ export default function CreateEditProductForm({
             required: 'Price is required',
             min: { value: 1, message: 'Price should be at least 1' }
           })}
-        >
-          {price}
-        </input>
+        />
       </FormRow>
       <FormRow label="discount">
         <input
@@ -69,9 +61,7 @@ export default function CreateEditProductForm({
               value! <= getValues().price ||
               'Discount should be less than regular price'
           })}
-        >
-          {discount}
-        </input>
+        />
       </FormRow>
       <button type="submit">Submit</button>
     </form>

@@ -1,5 +1,7 @@
 import { Product } from '../../models/product'
 import ActionsMenu from '../ActionsMenu/ActionsMenu'
+import CreateEditProductForm from '../CreateEditProductForm/CreateEditProductForm'
+import Modal from '../Modal/Modal'
 
 import './TableRow.css'
 import { HiPencil, HiTrash } from 'react-icons/hi2'
@@ -12,19 +14,26 @@ export default function TableRow({ product }: { product: Product }) {
       <div>{name}</div>
       <div>{price}</div>
       <div>{producer}</div>
-      <ActionsMenu>
-        <div className="product-actions">
-          <ActionsMenu.Toggle id={product.id} />
-        </div>
-        <ActionsMenu.Body id={product.id}>
-          <button>
-            <HiTrash color="#eb2727" />
-          </button>
-          <button>
-            <HiPencil />
-          </button>
-        </ActionsMenu.Body>
-      </ActionsMenu>
+      <Modal>
+        <ActionsMenu>
+          <div className="product-actions">
+            <ActionsMenu.Toggle id={product.id} />
+          </div>
+          <ActionsMenu.Body id={product.id}>
+            <button>
+              <HiTrash color="#eb2727" />
+            </button>
+            <Modal.Open opens="product-form">
+              <button>
+                <HiPencil />
+              </button>
+            </Modal.Open>
+          </ActionsMenu.Body>
+        </ActionsMenu>
+        <Modal.Window name="product-form">
+          <CreateEditProductForm product={product} />
+        </Modal.Window>
+      </Modal>
     </div>
   )
 }
