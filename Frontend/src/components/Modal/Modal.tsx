@@ -36,7 +36,7 @@ function Window({ name, children }: { name: string; children: any }) {
   return (
     <div className="overlay">
       <div className="modal-container">
-        <button onClick={close}>
+        <button className="close-btn" onClick={close}>
           <HiXMark />
         </button>
         {children}
