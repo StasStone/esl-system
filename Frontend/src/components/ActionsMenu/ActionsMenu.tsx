@@ -2,7 +2,7 @@ import { createContext, ReactNode, useContext, useState } from 'react'
 import { HiEllipsisVertical } from 'react-icons/hi2'
 import { Position } from '../../models/position'
 import usePosition from '../../hooks/usePosition'
-import './ActionsMenu.css'
+import './ActionsMenu.scss'
 
 type MenuContextType = {
   openId: number

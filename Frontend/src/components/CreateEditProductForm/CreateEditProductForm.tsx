@@ -1,7 +1,7 @@
 import { Product } from '../../models/product'
 import { useForm } from 'react-hook-form'
 import FormRow from '../FormRow/FormRow'
-import './CreateEditProductForm.css'
+import './CreateEditProductForm.scss'
 
 export default function CreateEditProductForm({
   product = null
@@ -21,7 +21,7 @@ export default function CreateEditProductForm({
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit, onError)}>
+    <form className="form" onSubmit={handleSubmit(onSubmit, onError)}>
       <FormRow label="name">
         <input
           className="form-input"
@@ -63,7 +63,11 @@ export default function CreateEditProductForm({
           })}
         />
       </FormRow>
-      <button type="submit">Submit</button>
+      <FormRow>
+        <button className="submit-btn" type="submit">
+          Create cabin
+        </button>
+      </FormRow>
     </form>
   )
 }

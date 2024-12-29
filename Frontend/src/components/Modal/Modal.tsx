@@ -1,5 +1,5 @@
 import { cloneElement, createContext, useContext, useState } from 'react'
-import './Modal.css'
+import './Modal.scss'
 import { HiXMark } from 'react-icons/hi2'
 
 type ModalContext = {

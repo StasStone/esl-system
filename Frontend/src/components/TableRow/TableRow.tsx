@@ -3,7 +3,7 @@ import ActionsMenu from '../ActionsMenu/ActionsMenu'
 import CreateEditProductForm from '../CreateEditProductForm/CreateEditProductForm'
 import Modal from '../Modal/Modal'
 
-import './TableRow.css'
+import './TableRow.scss'
 import { HiPencil, HiTrash } from 'react-icons/hi2'
 
 export default function TableRow({ product }: { product: Product }) {

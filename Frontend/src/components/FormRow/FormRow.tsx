@@ -1,7 +1,7 @@
-import './FormRow.css'
+import './FormRow.scss'
 
 type FormRowProps = {
-  label: string
+  label?: string
   error?: string
   children: any
 }
