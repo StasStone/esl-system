@@ -1,0 +1,40 @@
+.layout {
+  display: grid;
+  grid-template: 'sidebar header' auto 'sidebar main' 1fr / 1fr 7fr;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.header {
+  grid-area: header;
+  background-color: #1f2937;
+  color: white;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.sidebar {
+  grid-area: sidebar;
+  background-color: #111827;
+  color: white;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.main {
+  grid-area: main;
+  background-color: var(--color-grey-50);
+  padding: 24px;
+}
+
+.container {
+  background: white;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
