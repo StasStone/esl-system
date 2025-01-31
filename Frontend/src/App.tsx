@@ -1,19 +1,17 @@
-import Table from './components/Table/Table'
-import { mockedData } from './mocks/mock-data'
-import { mockedHeaders } from './mocks/mock-headers'
 import './global.css'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import TablePage from './pages/TablePage'
+import TemplatePage from './pages/TemplatePage'
 
 function App() {
   return (
-    <div>
-      <Table>
-        <Table.Header headers={mockedHeaders}></Table.Header>
-        <Table.Body
-          data={mockedData}
-          render={product => <Table.Row key={product.id} product={product} />}
-        ></Table.Body>
-      </Table>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route index element={<Navigate replace to="table" />} />
+        <Route path="table" element={<TablePage />} />
+        <Route path="template" element={<TemplatePage />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 
