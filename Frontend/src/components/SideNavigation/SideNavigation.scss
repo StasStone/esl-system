@@ -1,0 +1,19 @@
+.nav__container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: all 0.2s;
+  padding: 0.5rem;
+}
+
+.nav__link {
+  padding: 0.4rem;
+  border-radius: var(--border-radius-sm);
+  padding: 0.4rem;
+  text-transform: capitalize;
+
+  &:hover {
+    cursor: pointer;
+    background-color: var(--color-grey-700);
+  }
+}

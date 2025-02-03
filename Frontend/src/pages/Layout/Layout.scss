@@ -18,12 +18,8 @@
 
 .sidebar {
   grid-area: sidebar;
-  background-color: #111827;
   color: white;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+  background-color: var(--color-grey-900);
 }
 
 .main {
