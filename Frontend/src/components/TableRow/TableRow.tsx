@@ -10,7 +10,7 @@ export default function TableRow({ product }: { product: Product }) {
   const { name, price, producer } = product
 
   return (
-    <div className="row">
+    <div className="table__row">
       <div>{name}</div>
       <div>{price}</div>
       <div>{producer}</div>

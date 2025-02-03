@@ -10,9 +10,7 @@ const AppLayout = () => {
         <div>template</div>
       </aside>
       <div className="main">
-        <div className="container">
-          <Outlet />
-        </div>
+        <Outlet />
       </div>
     </div>
   )
