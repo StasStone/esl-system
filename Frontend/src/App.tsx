@@ -1,6 +1,6 @@
 import './global.css'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-import TablePage from './pages/TablePage'
+import TablePage from './pages/TablePage/TablePage'
 import TemplatePage from './pages/TemplatePage'
 import AppLayout from './pages/Layout/Layout'
 
