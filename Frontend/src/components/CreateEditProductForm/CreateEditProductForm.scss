@@ -13,20 +13,3 @@
   padding: 0.8rem 1.2rem;
   box-shadow: var(--shadow-sm);
 }
-
-.submit-btn {
-  border: none;
-  border-radius: var(--border-radius-sm);
-  box-shadow: var(--shadow-sm);
-
-  color: var(--color-brand-50);
-  background-color: var(--color-brand-600);
-
-  &:hover {
-    background-color: var(--color-brand-700);
-  }
-
-  font-size: 1rem;
-  padding: 0.8rem 1rem;
-  font-weight: 500;
-}

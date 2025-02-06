@@ -1,52 +1,121 @@
-import { useState } from 'react'
-import LabelFilter from '../../components/Filter/LabelFilter'
+import { useEffect, useState } from 'react'
 import Table from '../../components/Table/Table'
+import Search from '../../components/Search/Search'
 import { mockedData } from '../../mocks/mock-data'
 import { mockedHeaders } from '../../mocks/mock-headers'
-import { LabelAttributes } from '../../models/label'
+import {
+  DefaultFilterParams,
+  FilterParams,
+  Label,
+  LabelAttributes
+} from '../../models/label'
 
 import './TablePage.scss'
 
 function TablePage() {
-  const [activeFilterParams, setActiveFilterParams] = useState<string[]>([])
+  const [activeFilterParams, setActiveFilterParams] =
+    useState<FilterParams>(DefaultFilterParams)
 
-  function handleApplyFilterParam(filterParam: string) {
-    if (!filterParam) return
+  const [filteredData, setFilteredData] = useState<Label[]>(mockedData)
 
-    let newFilterParams: string[]
+  function handleApplyFilters(): void {
+    const newFilteredData = mockedData.filter(data =>
+      Object.entries(activeFilterParams).every(([key, filter]) => {
+        if (!filter.active || !filter.value) return true
 
-    if (activeFilterParams.includes(filterParam)) {
-      newFilterParams = activeFilterParams.filter(
-        filter => filter !== filterParam
-      )
-    } else {
-      newFilterParams = [...activeFilterParams, filterParam]
-    }
-    setActiveFilterParams(newFilterParams)
+        const dataValue = data[key as keyof Label]
+        return (
+          dataValue?.toString().toLowerCase() === filter.value.toLowerCase()
+        )
+      })
+    )
+    setFilteredData(newFilteredData)
   }
+
+  function isFilterEmpty(): boolean {
+    return Object.values(activeFilterParams).some(
+      filter => filter.active && !filter.value
+    )
+  }
+
+  function isFilterActive(): boolean {
+    return Object.values(activeFilterParams).some(filter => filter.active)
+  }
+
+  function isFilterParamActive(filterParam: keyof FilterParams): boolean {
+    return activeFilterParams[filterParam].active
+  }
+
+  function handleApplyFilterParam(filterParam: keyof FilterParams) {
+    setActiveFilterParams(prev => ({
+      ...prev,
+      [filterParam]: {
+        ...prev[filterParam],
+        active: !prev[filterParam].active,
+        value: ''
+      }
+    }))
+  }
+
+  function handleFilterValueChange(filterParam: string, value: string) {
+    setActiveFilterParams(prev => ({
+      ...prev,
+      [filterParam]: {
+        ...prev[filterParam as keyof FilterParams],
+        value
+      }
+    }))
+  }
+
+  useEffect(() => {
+    if (!isFilterActive()) {
+      setFilteredData(mockedData)
+    }
+  }, [activeFilterParams])
 
   return (
     <>
       <div className="filters">
         <div className="filters__container">
+          Filter by
           {LabelAttributes.map(labelAttribute => (
-            <label key={labelAttribute} className="filter__param">
-              <input
-                key={labelAttribute}
-                onChange={() => handleApplyFilterParam(labelAttribute)}
-                type="checkbox"
-              />
-              <span className="filter__param-checkmark"></span>
-              {labelAttribute}
-            </label>
+            <div key={labelAttribute} className="filter-row">
+              <label className="filter__param">
+                <input
+                  onChange={() => handleApplyFilterParam(labelAttribute)}
+                  type="checkbox"
+                />
+                <span className="filter__param-checkmark"></span>
+                {labelAttribute}
+              </label>
+              {isFilterParamActive(labelAttribute) && (
+                <Search
+                  value={
+                    activeFilterParams[labelAttribute as keyof FilterParams]
+                      .value
+                  }
+                  onChange={(e: any) =>
+                    handleFilterValueChange(labelAttribute, e.target.value)
+                  }
+                />
+              )}
+            </div>
           ))}
+          {isFilterActive() && (
+            <button
+              className="standard-btn"
+              disabled={isFilterEmpty()}
+              onClick={handleApplyFilters}
+            >
+              Apply Filters
+            </button>
+          )}
         </div>
-        <LabelFilter attributes={activeFilterParams} />
       </div>
       <Table>
         <Table.Header headers={mockedHeaders}></Table.Header>
         <Table.Body
-          data={mockedData}
+          data={filteredData}
           render={label => <Table.Row key={label.id} label={label} />}
         ></Table.Body>
       </Table>

@@ -32,6 +32,8 @@
   position: absolute;
   top: 1rem;
   right: 1.6rem;
+  display: flex;
+  align-items: center;
 
   &:hover {
     background-color: var(--color-grey-100);

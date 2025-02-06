@@ -2,14 +2,21 @@
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  max-width: 40rem;
+  margin-bottom: 1rem;
 }
 
 .filters__container {
   display: flex;
-  flex-direction: row;
-  justify-content: space-around;
+  flex-direction: column;
   gap: 1.2rem;
+}
+
+.filter-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 2rem;
+  width: 100%;
 }
 
 .filter__param {
