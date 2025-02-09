@@ -13,8 +13,18 @@
 
 .label-editor__item-delete {
   position: absolute;
+  background-color: transparent;
+  border: none;
+  padding: 0;
   top: 0;
   right: 0;
+
+  & svg {
+    width: 1.2rem;
+    height: 1.2rem;
+    color: var(--color-grey-700);
+    stroke-width: 2px;
+  }
 }
 
 .label-editor__toolbox {
@@ -24,10 +34,18 @@
 }
 
 .label-editor__draggable-item {
-  border: 1px solid gray;
+  position: absolute;
+  border: 2px dashed gray;
   padding: 10px;
   background: white;
   text-align: center;
   cursor: move;
   user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.label-editor__item-text {
+  cursor: pointer;
 }

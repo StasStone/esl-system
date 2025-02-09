@@ -5,6 +5,7 @@ export type DraggableItem = {
   width: number
   height: number
   type: ItemType
+  text: string
 }
 
 export enum ItemType {

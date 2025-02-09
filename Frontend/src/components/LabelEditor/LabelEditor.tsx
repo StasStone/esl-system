@@ -10,9 +10,12 @@ import {
 } from '../../models/draggable-item'
 
 import './LabelEditor.scss'
+import { HiXMark } from 'react-icons/hi2'
 
 const LabelEditor = () => {
   const [elements, setElements] = useState<any>([])
+  const [editingItemId, setEditingItemId] = useState<string | null>(null)
+  const [editedText, setEditedText] = useState<string>('')
 
   const addElement = (type: string) => {
     const { width, height } = MapTypeToSize[getItemTypeKey(type)]
@@ -20,6 +23,7 @@ const LabelEditor = () => {
     const newElement = {
       id: uuidv4(),
       type: getItemType(type),
+      text: type,
       x: 10,
       y: 10,
       width,
@@ -38,6 +42,22 @@ const LabelEditor = () => {
 
   const removeElement = (id: string) => {
     setElements(elements.filter((el: DraggableItem) => el.id !== id))
+  }
+
+  const handleEditClick = (id: string, text: string) => {
+    setEditingItemId(id)
+    setEditedText(text)
+  }
+
+  const handleTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setEditedText(event.target.value)
+  }
+
+  const handleSaveText = (element: DraggableItem) => {
+    if (editingItemId) {
+      updateElement(editingItemId, { ...element, text: editedText })
+      setEditingItemId(null)
+    }
   }
 
   return (
@@ -64,7 +84,29 @@ const LabelEditor = () => {
               className="label-editor__draggable-item"
               style={{ width: `${el.width}px`, height: `${el.height}px` }}
             >
-              {el.type}
+              {editingItemId === el.id ? (
+                <div>
+                  <input
+                    type="text"
+                    value={editedText}
+                    onChange={handleTextChange}
+                    onBlur={() => handleSaveText(el)}
+                    onKeyDown={e => {
+                      if (e.key === 'Enter') {
+                        handleSaveText(el)
+                      }
+                    }}
+                    autoFocus
+                  />
+                </div>
+              ) : (
+                <div
+                  className="label-editor__item-text"
+                  onClick={() => handleEditClick(el.id, el.text)}
+                >
+                  {el.text}
+                </div>
+              )}
               <button
                 className="label-editor__item-delete"
                 onClick={e => {
@@ -72,7 +114,7 @@ const LabelEditor = () => {
                   removeElement(el.id)
                 }}
               >
-                x
+                <HiXMark />
               </button>
             </div>
           </Draggable>
