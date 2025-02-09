@@ -1,0 +1,33 @@
+.label-editor__container {
+  display: flex;
+  gap: 3rem;
+}
+
+.label-editor__template {
+  position: relative;
+  width: 400px;
+  height: 300px;
+  border: 2px solid black;
+  overflow: hidden;
+}
+
+.label-editor__item-delete {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.label-editor__toolbox {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.label-editor__draggable-item {
+  border: 1px solid gray;
+  padding: 10px;
+  background: white;
+  text-align: center;
+  cursor: move;
+  user-select: none;
+}
