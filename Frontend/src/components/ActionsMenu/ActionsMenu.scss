@@ -26,6 +26,8 @@
   border-radius: var(--border-radius-sm);
   transform: translateX(0.8rem);
   transition: all 0.2s;
+  display: flex;
+  align-items: center;
 
   &:hover {
     background-color: var(--color-grey-100);

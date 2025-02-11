@@ -6,7 +6,7 @@ type TableHeaderProps = {
 
 export default function TableHeader({ headers }: TableHeaderProps) {
   return (
-    <div className="header">
+    <div className="table__header">
       {headers.map(header => (
         <div key={header}>{header}</div>
       ))}

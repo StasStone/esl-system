@@ -1,9 +1,9 @@
 import { ReactElement } from 'react'
-import { Product } from '../../models/product'
+import { Label } from '../../models/label'
 
 type TableBodyProps = {
-  data: Product[]
-  render: (product: Product) => ReactElement
+  data: Label[]
+  render: (label: Label) => ReactElement
 }
 
 export default function TableBody({ data, render }: TableBodyProps) {

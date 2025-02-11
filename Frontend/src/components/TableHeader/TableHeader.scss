@@ -1,8 +1,8 @@
-.header {
+.table__header {
   display: grid;
-  grid-template-columns: 3.6fr 3fr 3.2fr 0.8fr;
+  grid-template-columns: 3.6fr 2fr 3.6fr 0.8fr;
   column-gap: 2.4rem;
-  justify-content: space-around;
+  align-items: center;
   text-transform: uppercase;
   padding: 1.2rem 1.4rem;
   font-weight: 600;

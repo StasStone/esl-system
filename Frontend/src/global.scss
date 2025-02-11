@@ -39,7 +39,14 @@
   --image-opacity: 100%;
 }
 
+html,
 body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
   font-family: 'Poppins', sans-serif;
 }
 
@@ -61,4 +68,25 @@ textarea:focus,
 select:focus {
   outline: 2px solid var(--color-brand-600);
   outline-offset: -1px;
+}
+
+.standard-btn {
+  border: none;
+  border-radius: var(--border-radius-sm);
+  box-shadow: var(--shadow-sm);
+
+  color: var(--color-brand-50);
+  background-color: var(--color-brand-600);
+
+  &:hover {
+    background-color: var(--color-brand-700);
+  }
+
+  &:disabled {
+    background-color: var(--color-grey-300);
+  }
+
+  font-size: 1rem;
+  padding: 0.8rem 1rem;
+  font-weight: 500;
 }
