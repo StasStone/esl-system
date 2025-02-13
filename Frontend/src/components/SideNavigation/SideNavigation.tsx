@@ -6,7 +6,11 @@ function SideNavigation({ links }: { links: string[] }) {
   return (
     <div className="nav__container">
       {links.map(link => (
-        <div className="nav__link" onClick={() => handleNavigate(link)}>
+        <div
+          key={link}
+          className="nav__link"
+          onClick={() => handleNavigate(link)}
+        >
           {link}
         </div>
       ))}
