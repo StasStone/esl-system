@@ -16,7 +16,7 @@ function TablePage() {
   const [activeFilterParams, setActiveFilterParams] =
     useState<FilterParams>(DefaultFilterParams)
 
-  const [filteredData, setFilteredData] = useState<Label[]>(mockedData)
+  const [filteredData, setFilteredData] = useState<Label[]>([])
 
   function handleApplyFilters(): void {
     const newFilteredData = mockedData.filter(data =>
@@ -68,9 +68,16 @@ function TablePage() {
   }
 
   useEffect(() => {
-    if (!isFilterActive()) {
-      setFilteredData(mockedData)
+    const getData = async function () {
+      const res = await fetch('http://localhost:3000/esl-system/v1/labels')
+      const { results, data } = await res.json()
+
+      if (!isFilterActive() && results > 0) {
+        setFilteredData(data.labels)
+      }
     }
+
+    getData()
   }, [activeFilterParams])
 
   return (
