@@ -4,18 +4,44 @@ import './LabelEditor.scss'
 import { HiXMark } from 'react-icons/hi2'
 import { useTemplate } from '../../hooks/useTemplate'
 import { DraggableItem } from '../../models/draggable-item'
-import { useEditTemplate } from '../../hooks/useEditTemplate'
+import { useEffect } from 'react'
+import { useParams } from 'react-router-dom'
 
 const LabelEditor = () => {
-  const { elements, addElement, updateElement, removeElement } = useTemplate([])
-
   const {
-    editingItemId,
+    elements,
     editedText,
-    handleEditClick,
+    addElement,
+    updateElement,
+    removeElement,
+    patchElements,
+    editingItemId,
+    editItem,
     handleTextChange,
     handleSaveText
-  } = useEditTemplate()
+  } = useTemplate([])
+  const { templateTitle } = useParams()
+
+  useEffect(
+    function () {
+      const getTemplate = async function () {
+        const res = await fetch(
+          `http://localhost:3000/esl-system/v1/templates/${templateTitle}`
+        )
+        const { data } = await res.json()
+        const { template } = data
+
+        if (template.elements.length > 0) {
+          patchElements(template.elements)
+        }
+      }
+
+      getTemplate()
+    },
+    [templateTitle]
+  )
+
+  const handleSaveTemplate = () => {}
 
   return (
     <div className="label-editor__container">
@@ -59,7 +85,7 @@ const LabelEditor = () => {
               ) : (
                 <div
                   className="label-editor__item-text"
-                  onClick={() => handleEditClick(el.id, el.text)}
+                  onClick={() => editItem(el.id, el.text)}
                 >
                   {el.text}
                 </div>
@@ -77,6 +103,7 @@ const LabelEditor = () => {
           </Draggable>
         ))}
       </div>
+      <button onClick={handleSaveTemplate}>Save template</button>
     </div>
   )
 }

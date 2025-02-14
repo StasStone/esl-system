@@ -7,7 +7,7 @@ const AppLayout = () => {
     <div className="layout">
       <header>Header</header>
       <aside className="sidebar">
-        <SideNavigation links={['table', 'template']} />
+        <SideNavigation links={['table', 'templates']} />
       </aside>
       <div className="main">
         <Outlet />
