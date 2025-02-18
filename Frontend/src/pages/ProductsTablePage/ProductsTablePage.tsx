@@ -3,30 +3,29 @@ import Table from '../../components/Table/Table'
 import Search from '../../components/Search/Search'
 import { mockedData } from '../../mocks/mock-data'
 import { mockedHeaders } from '../../mocks/mock-headers'
+
+import './ProductsTablePage.scss'
 import {
   DefaultFilterParams,
-  FilterParams,
-  Label,
-  LabelAttributes
-} from '../../models/label'
+  Product,
+  productAttributes,
+  ProductFilterParams
+} from '../../models/product'
+import CreateEditProductForm from '../../components/CreateEditProductForm/CreateEditProductForm'
 
-import './TablePage.scss'
-
-function TablePage() {
+function ProductsTablePage() {
   const [activeFilterParams, setActiveFilterParams] =
-    useState<FilterParams>(DefaultFilterParams)
+    useState<ProductFilterParams>(DefaultFilterParams)
 
-  const [filteredData, setFilteredData] = useState<Label[]>([])
+  const [filteredData, setFilteredData] = useState<Product[]>([])
 
   function handleApplyFilters(): void {
     const newFilteredData = mockedData.filter(data =>
       Object.entries(activeFilterParams).every(([key, filter]) => {
         if (!filter.active || !filter.value) return true
 
-        const dataValue = data[key as keyof Label]
-        return (
-          dataValue?.toString().toLowerCase() === filter.value.toLowerCase()
-        )
+        const dataValue = data[key as keyof Product]
+        return dataValue?.toString().toLowerCase() === filter.value
       })
     )
     setFilteredData(newFilteredData)
@@ -42,11 +41,13 @@ function TablePage() {
     return Object.values(activeFilterParams).some(filter => filter.active)
   }
 
-  function isFilterParamActive(filterParam: keyof FilterParams): boolean {
+  function isFilterParamActive(
+    filterParam: keyof ProductFilterParams
+  ): boolean {
     return activeFilterParams[filterParam].active
   }
 
-  function handleApplyFilterParam(filterParam: keyof FilterParams) {
+  function handleApplyFilterParam(filterParam: keyof ProductFilterParams) {
     setActiveFilterParams(prev => ({
       ...prev,
       [filterParam]: {
@@ -61,7 +62,7 @@ function TablePage() {
     setActiveFilterParams(prev => ({
       ...prev,
       [filterParam]: {
-        ...prev[filterParam as keyof FilterParams],
+        ...prev[filterParam as keyof ProductFilterParams],
         value
       }
     }))
@@ -85,24 +86,23 @@ function TablePage() {
       <div className="filters">
         <div className="filters__container">
           Filter by
-          {LabelAttributes.map(labelAttribute => (
-            <div key={labelAttribute} className="filter-row">
+          {productAttributes.map(productAttribute => (
+            <div key={productAttribute} className="filter-row">
               <label className="filter__param">
                 <input
-                  onChange={() => handleApplyFilterParam(labelAttribute)}
+                  onChange={() => handleApplyFilterParam(productAttribute)}
                   type="checkbox"
                 />
                 <span className="filter__param-checkmark"></span>
-                {labelAttribute}
+                {productAttribute}
               </label>
-              {isFilterParamActive(labelAttribute) && (
+              {isFilterParamActive(productAttribute) && (
                 <Search
-                  value={
-                    activeFilterParams[labelAttribute as keyof FilterParams]
-                      .value
-                  }
+                  value={activeFilterParams[
+                    productAttribute as keyof ProductFilterParams
+                  ].value.toString()}
                   onChange={(e: any) =>
-                    handleFilterValueChange(labelAttribute, e.target.value)
+                    handleFilterValueChange(productAttribute, e.target.value)
                   }
                 />
               )}
@@ -123,11 +123,15 @@ function TablePage() {
         <Table.Header headers={mockedHeaders}></Table.Header>
         <Table.Body
           data={filteredData}
-          render={label => <Table.Row key={label.id} label={label} />}
+          render={product => (
+            <Table.Row key={product.id} item={product}>
+              <CreateEditProductForm product={product} />
+            </Table.Row>
+          )}
         ></Table.Body>
       </Table>
     </>
   )
 }
 
-export default TablePage
+export default ProductsTablePage

@@ -1,25 +1,29 @@
-import { Label } from '../../models/label'
+import { ReactNode } from 'react'
 import ActionsMenu from '../ActionsMenu/ActionsMenu'
-import CreateEditProductForm from '../CreateEditProductForm/CreateEditProductForm'
 import Modal from '../Modal/Modal'
 
 import './TableRow.scss'
 import { HiPencil, HiTrash } from 'react-icons/hi2'
 
-export default function TableRow({ label }: { label: Label }) {
-  const { name, price, producer } = label
+type TableRowProps<T> = {
+  item: T
+  children: ReactNode
+}
+
+export default function TableRow({ item, children }: TableRowProps<any>) {
+  const { id } = item
 
   return (
     <div className="table__row">
-      <div>{name}</div>
-      <div>{price}</div>
-      <div>{producer}</div>
+      {Object.keys(item).map(prop => (
+        <div>{item[prop]}</div>
+      ))}
       <Modal>
         <ActionsMenu>
           <div className="product-actions">
-            <ActionsMenu.Toggle id={label.id} />
+            <ActionsMenu.Toggle id={id} />
           </div>
-          <ActionsMenu.Body id={label.id}>
+          <ActionsMenu.Body id={id}>
             <button>
               <HiTrash color="#eb2727" />
             </button>
@@ -30,9 +34,7 @@ export default function TableRow({ label }: { label: Label }) {
             </Modal.Open>
           </ActionsMenu.Body>
         </ActionsMenu>
-        <Modal.Window name="product-form">
-          <CreateEditProductForm label={label} />
-        </Modal.Window>
+        <Modal.Window name="product-form">{children}</Modal.Window>
       </Modal>
     </div>
   )

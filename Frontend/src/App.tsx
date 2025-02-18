@@ -1,9 +1,9 @@
 import './global.scss'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-import TablePage from './pages/TablePage/TablePage'
 import TemplatePage from './pages/TemplatePage'
 import AppLayout from './pages/Layout/Layout'
 import LabelEditor from './components/LabelEditor/LabelEditor'
+import ProductsTablePage from './pages/ProductsTablePage/ProductsTablePage'
 
 function App() {
   return (
@@ -11,7 +11,7 @@ function App() {
       <Routes>
         <Route element={<AppLayout />}>
           <Route index element={<Navigate replace to="table" />} />
-          <Route path="table" element={<TablePage />} />
+          <Route path="table" element={<ProductsTablePage />} />
           <Route path="templates" element={<TemplatePage />}>
             <Route path="/templates/:templateTitle" element={<LabelEditor />} />
           </Route>
