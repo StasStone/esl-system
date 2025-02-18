@@ -69,12 +69,12 @@ function TablePage() {
 
   useEffect(() => {
     const getData = async function () {
-      const res = await fetch('http://localhost:3000/esl-system/v1/labels')
-      const { results, data } = await res.json()
-
-      if (!isFilterActive() && results > 0) {
-        setFilteredData(data.labels)
-      }
+      const res = await fetch('http://localhost:7071/api/labels')
+      const data = await res.json()
+      console.log(data)
+      // if (!isFilterActive() && results > 0) {
+      //   setFilteredData(data.labels)
+      // }
     }
 
     getData()

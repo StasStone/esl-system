@@ -1,7 +1,7 @@
-import LabelEditor from '../components/LabelEditor/LabelEditor'
+import { Outlet } from 'react-router-dom'
 
 function TemplatePage() {
-  return <LabelEditor />
+  return <Outlet></Outlet>
 }
 
 export default TemplatePage

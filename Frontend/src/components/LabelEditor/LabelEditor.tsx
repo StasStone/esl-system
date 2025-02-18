@@ -1,64 +1,47 @@
-import { useState } from 'react'
 import Draggable from 'react-draggable'
-import { v4 as uuidv4 } from 'uuid'
 import 'react-resizable/css/styles.css'
-import {
-  DraggableItem,
-  getItemType,
-  getItemTypeKey,
-  MapTypeToSize
-} from '../../models/draggable-item'
-
 import './LabelEditor.scss'
 import { HiXMark } from 'react-icons/hi2'
+import { useTemplate } from '../../hooks/useTemplate'
+import { DraggableItem } from '../../models/draggable-item'
+import { useEffect } from 'react'
+import { useParams } from 'react-router-dom'
 
 const LabelEditor = () => {
-  const [elements, setElements] = useState<any>([])
-  const [editingItemId, setEditingItemId] = useState<string | null>(null)
-  const [editedText, setEditedText] = useState<string>('')
+  const {
+    elements,
+    editedText,
+    addElement,
+    updateElement,
+    removeElement,
+    patchElements,
+    editingItemId,
+    editItem,
+    handleTextChange,
+    handleSaveText
+  } = useTemplate([])
+  const { templateTitle } = useParams()
 
-  const addElement = (type: string) => {
-    const { width, height } = MapTypeToSize[getItemTypeKey(type)]
+  useEffect(
+    function () {
+      const getTemplate = async function () {
+        const res = await fetch(
+          `http://localhost:3000/esl-system/v1/templates/${templateTitle}`
+        )
+        const { data } = await res.json()
+        const { template } = data
 
-    const newElement = {
-      id: uuidv4(),
-      type: getItemType(type),
-      text: type,
-      x: 10,
-      y: 10,
-      width,
-      height
-    }
-    setElements([...elements, newElement])
-  }
+        if (template.elements.length > 0) {
+          patchElements(template.elements)
+        }
+      }
 
-  const updateElement = (id: string, updates: DraggableItem) => {
-    setElements(
-      elements.map((el: DraggableItem) =>
-        el.id === id ? { ...el, ...updates } : el
-      )
-    )
-  }
+      getTemplate()
+    },
+    [templateTitle]
+  )
 
-  const removeElement = (id: string) => {
-    setElements(elements.filter((el: DraggableItem) => el.id !== id))
-  }
-
-  const handleEditClick = (id: string, text: string) => {
-    setEditingItemId(id)
-    setEditedText(text)
-  }
-
-  const handleTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEditedText(event.target.value)
-  }
-
-  const handleSaveText = (element: DraggableItem) => {
-    if (editingItemId) {
-      updateElement(editingItemId, { ...element, text: editedText })
-      setEditingItemId(null)
-    }
-  }
+  const handleSaveTemplate = () => {}
 
   return (
     <div className="label-editor__container">
@@ -102,7 +85,7 @@ const LabelEditor = () => {
               ) : (
                 <div
                   className="label-editor__item-text"
-                  onClick={() => handleEditClick(el.id, el.text)}
+                  onClick={() => editItem(el.id, el.text)}
                 >
                   {el.text}
                 </div>
@@ -120,6 +103,7 @@ const LabelEditor = () => {
           </Draggable>
         ))}
       </div>
+      <button onClick={handleSaveTemplate}>Save template</button>
     </div>
   )
 }

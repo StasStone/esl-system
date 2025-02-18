@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import TablePage from './pages/TablePage/TablePage'
 import TemplatePage from './pages/TemplatePage'
 import AppLayout from './pages/Layout/Layout'
+import LabelEditor from './components/LabelEditor/LabelEditor'
 
 function App() {
   return (
@@ -11,7 +12,9 @@ function App() {
         <Route element={<AppLayout />}>
           <Route index element={<Navigate replace to="table" />} />
           <Route path="table" element={<TablePage />} />
-          <Route path="template" element={<TemplatePage />} />
+          <Route path="templates" element={<TemplatePage />}>
+            <Route path="/templates/:templateTitle" element={<LabelEditor />} />
+          </Route>
         </Route>
         <Route index element={<Navigate replace to="table" />} />
         {/* <Route path="login" element={<LoginPage />} />
