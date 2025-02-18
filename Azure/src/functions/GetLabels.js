@@ -1,13 +1,9 @@
 const { app } = require('@azure/functions')
-const { CosmosClient } = require('@azure/cosmos')
+const cosmosClient = require('../CosmosClient')
 
-// Retrieve CosmosDB configuration from environment variables
-const endpoint = process.env.COSMOS_DB_ENDPOINT
-const key = process.env.COSMOS_DB_KEY
 const databaseId = process.env.COSMOS_DB_DATABASE_ID
 const containerId = process.env.COSMOS_DB_CONTAINER_LABELS
 
-const cosmosClient = new CosmosClient({ endpoint, key })
 
 app.http('labels', {
     methods: ['GET'],
@@ -25,7 +21,6 @@ app.http('labels', {
                 query: 'SELECT * FROM c'
             }
 
-            // Execute the query
             const { resources: labels } = await container.items
                 .query(querySpec)
                 .fetchAll()
