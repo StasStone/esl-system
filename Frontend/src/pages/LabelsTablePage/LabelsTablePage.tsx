@@ -8,6 +8,7 @@ import {
   LabelFilterParams
 } from '../../models/label'
 import Filter from '../../components/Filter/Filter'
+import useFilter from '../../hooks/useFilter'
 
 function LabelsTablePage() {
   const labelTableHeaders = ['id', 'product_id', 'last_updated']
@@ -17,6 +18,7 @@ function LabelsTablePage() {
     useState<LabelFilterParams>(defaultLabelFilterParams)
   const [appliedFilterParams, setAppliedFilterParams] =
     useState<LabelFilterParams>(defaultLabelFilterParams)
+  const { isFilterActive, isFilterEmpty } = useFilter(activeFilterParams)
 
   useEffect(() => {
     const getData = async function (filters: LabelFilterParams) {
@@ -28,13 +30,13 @@ function LabelsTablePage() {
       setFilteredData(data.labels)
     }
 
-    console.log(appliedFilterParams, activeFilterParams)
-    if (appliedFilterParams) {
+    if (isFilterActive() && !isFilterEmpty()) {
       getData(activeFilterParams)
-    } else {
+    }
+    if (isFilterEmpty() || !isFilterActive()) {
       getData(defaultLabelFilterParams)
     }
-  }, [appliedFilterParams])
+  }, [appliedFilterParams, isFilterActive(), isFilterEmpty()])
 
   function handleApplyFilters(labelFilter: LabelFilterParams): void {
     setAppliedFilterParams(labelFilter)

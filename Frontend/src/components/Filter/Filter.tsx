@@ -1,6 +1,7 @@
 import Search from '../Search/Search'
 import './Filter.scss'
 import { FilterParam } from '../../models/filter-param'
+import useFilter from '../../hooks/useFilter'
 
 type FilterProps<T extends { [key: string]: FilterParam }> = {
   attributes: Array<keyof T>
@@ -17,18 +18,7 @@ function Filter<T extends { [key: string]: FilterParam }>({
   setActiveFilterParams,
   handleApplyFilters
 }: FilterProps<T>) {
-  function isFilterEmpty(): boolean {
-    return Object.values(activeFilterParams).some(
-      (filter: FilterParam) => filter.active && !filter.value
-    )
-  }
-
-  function isFilterActive(): boolean {
-    const isActive = Object.values(activeFilterParams).some(
-      filter => filter.active
-    )
-    return isActive
-  }
+  const { isFilterActive, isFilterParamEmpty } = useFilter(activeFilterParams)
 
   function isFilterParamActive(
     filterParam: keyof typeof defaultFilterParams
@@ -39,14 +29,18 @@ function Filter<T extends { [key: string]: FilterParam }>({
   function handleApplyFilterParam(
     filterParam: keyof typeof defaultFilterParams
   ) {
-    setActiveFilterParams(prev => ({
-      ...prev,
-      [filterParam]: {
-        ...prev[filterParam],
-        active: !prev[filterParam].active,
-        value: ''
+    setActiveFilterParams(prev => {
+      const newFilterParams = {
+        ...prev,
+        [filterParam]: {
+          ...prev[filterParam],
+          active: !prev[filterParam].active,
+          value: ''
+        }
       }
-    }))
+      handleApplyFilters(newFilterParams)
+      return newFilterParams
+    })
   }
 
   function handleFilterValueChange<K extends keyof typeof defaultFilterParams>(
@@ -89,7 +83,7 @@ function Filter<T extends { [key: string]: FilterParam }>({
         {isFilterActive() && (
           <button
             className="standard-btn"
-            disabled={isFilterEmpty()}
+            disabled={isFilterParamEmpty()}
             onClick={() => handleApplyFilters(activeFilterParams)}
           >
             Apply Filters
