@@ -9,6 +9,7 @@ import {
 } from '../../models/label'
 import Filter from '../../components/Filter/Filter'
 import useFilter from '../../hooks/useFilter'
+import useDeleteLabel from '../../hooks/useDeleteLabel'
 
 function LabelsTablePage() {
   const labelTableHeaders = ['id', 'product_id', 'last_updated']
@@ -20,6 +21,8 @@ function LabelsTablePage() {
     useState<LabelFilterParams>(defaultLabelFilterParams)
   const { isFilterActive, isFilterEmpty } = useFilter(activeFilterParams)
 
+  const { deleteLabel } = useDeleteLabel()
+
   useEffect(() => {
     const getData = async function (filters: LabelFilterParams) {
       const res = await fetch('http://localhost:7071/api/labels', {
@@ -27,7 +30,8 @@ function LabelsTablePage() {
         body: JSON.stringify(filters)
       })
       const data = await res.json()
-      setFilteredData(data.labels)
+      console.log(data)
+      if (data && data.labels) setFilteredData(data.labels)
     }
 
     if (isFilterActive() && !isFilterEmpty()) {
@@ -36,14 +40,10 @@ function LabelsTablePage() {
     if (isFilterEmpty() || !isFilterActive()) {
       getData(defaultLabelFilterParams)
     }
-  }, [appliedFilterParams, isFilterActive(), isFilterEmpty()])
+  }, [appliedFilterParams])
 
   function handleApplyFilters(labelFilter: LabelFilterParams): void {
     setAppliedFilterParams(labelFilter)
-  }
-
-  function handleDeleteItem() {
-    console.log('item deleted')
   }
 
   return (
@@ -63,7 +63,7 @@ function LabelsTablePage() {
             <Table.Row
               key={label.id}
               item={label}
-              handleDeleteItem={handleDeleteItem}
+              handleDeleteItem={() => deleteLabel(label.id, label.product_id)}
             >
               <div>Hello</div>
             </Table.Row>

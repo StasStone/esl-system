@@ -21,7 +21,7 @@ export default function TableRow({
   return (
     <div className="table__row">
       {Object.keys(item).map(prop => (
-        <div>{item[prop]}</div>
+        <div key={prop}>{item[prop]}</div>
       ))}
       <Modal>
         <ActionsMenu>
