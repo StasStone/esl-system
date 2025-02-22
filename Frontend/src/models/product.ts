@@ -1,3 +1,5 @@
+import { Filter } from './filter-param'
+
 export type Product = {
   id: string
   name: string
@@ -5,7 +7,7 @@ export type Product = {
   discount?: string
   producer: string
   description?: string
-  inventoryCount: number
+  inventory_count: number
   sku: string
   labels: string[]
 }
@@ -16,23 +18,21 @@ export const productAttributes: Array<keyof ProductFilterParams> = [
   'price',
   'discount',
   'producer',
-  'inventoryCount'
+  'inventory_count'
 ]
 
-export type ProductFilterParams = {
-  id: { value: string; active: boolean }
-  inventoryCount: { value: number; active: boolean }
-  discount: { value: string; active: boolean }
-  name: { value: string; active: boolean }
-  price: { value: string; active: boolean }
-  producer: { value: string; active: boolean }
-}
+export type ProductFilterParams = Filter<
+  Pick<
+    Product,
+    'id' | 'name' | 'price' | 'discount' | 'producer' | 'inventory_count'
+  >
+>
 
-export const DefaultFilterParams: ProductFilterParams = {
+export const defaultProductFilterParams: ProductFilterParams = {
   id: { value: '', active: false },
   name: { value: '', active: false },
   discount: { value: '', active: false },
   price: { value: '', active: false },
   producer: { value: '', active: false },
-  inventoryCount: { value: 0, active: false }
+  inventory_count: { value: 0, active: false }
 }

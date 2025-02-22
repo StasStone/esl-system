@@ -5,7 +5,7 @@ const databaseId = process.env.COSMOS_DB_DATABASE_ID
 const containerId = process.env.COSMOS_DB_CONTAINER_LABELS
 
 
-app.http('labels', {
+app.http('deleteLabels', {
     methods: ['DELETE'],
     authLevel: 'anonymous',
     route: 'labels/{id}',

@@ -7,10 +7,15 @@ import { HiPencil, HiTrash } from 'react-icons/hi2'
 
 type TableRowProps<T> = {
   item: T
+  handleDeleteItem: () => void
   children: ReactNode
 }
 
-export default function TableRow({ item, children }: TableRowProps<any>) {
+export default function TableRow({
+  item,
+  children,
+  handleDeleteItem
+}: TableRowProps<any>) {
   const { id } = item
 
   return (
@@ -24,7 +29,7 @@ export default function TableRow({ item, children }: TableRowProps<any>) {
             <ActionsMenu.Toggle id={id} />
           </div>
           <ActionsMenu.Body id={id}>
-            <button>
+            <button onClick={handleDeleteItem}>
               <HiTrash color="#eb2727" />
             </button>
             <Modal.Open opens="product-form">

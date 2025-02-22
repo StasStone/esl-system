@@ -4,6 +4,7 @@ import TemplatePage from './pages/TemplatePage'
 import AppLayout from './pages/Layout/Layout'
 import LabelEditor from './components/LabelEditor/LabelEditor'
 import ProductsTablePage from './pages/ProductsTablePage/ProductsTablePage'
+import LabelsTablePage from './pages/LabelsTablePage/LabelsTablePage'
 
 function App() {
   return (
@@ -11,7 +12,8 @@ function App() {
       <Routes>
         <Route element={<AppLayout />}>
           <Route index element={<Navigate replace to="table" />} />
-          <Route path="table" element={<ProductsTablePage />} />
+          <Route path="products" element={<ProductsTablePage />} />
+          <Route path="labels" element={<LabelsTablePage />} />
           <Route path="templates" element={<TemplatePage />}>
             <Route path="/templates/:templateTitle" element={<LabelEditor />} />
           </Route>
