@@ -2,12 +2,12 @@ const { app } = require('@azure/functions')
 const cosmosClient = require('../CosmosClient')
 
 const databaseId = process.env.COSMOS_DB_DATABASE_ID
-const containerId = process.env.COSMOS_DB_CONTAINER_LABELS
+const containerId = process.env.COSMOS_DB_CONTAINER_PRODUCTS
 
 app.http('deleteLabels', {
     methods: ['DELETE'],
     authLevel: 'anonymous',
-    route: 'labels/{id}/{partitionKey}',
+    route: 'products/{id}/{partitionKey}',
     handler: async (request, context) => {
         context.log(`Http function processed request for url "${request.url}"`)
         const { id, partitionKey } = request.params
@@ -39,7 +39,7 @@ app.http('deleteLabels', {
             return {
                 status: 500,
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ error: "Error retrieving labels" })
+                body: JSON.stringify({ error: "Error retrieving products" })
             }
         }
     }

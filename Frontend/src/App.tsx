@@ -11,14 +11,14 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route element={<AppLayout />}>
-          <Route index element={<Navigate replace to="table" />} />
+          <Route index element={<Navigate replace to="labels" />} />
           <Route path="products" element={<ProductsTablePage />} />
           <Route path="labels" element={<LabelsTablePage />} />
           <Route path="templates" element={<TemplatePage />}>
             <Route path="/templates/:templateTitle" element={<LabelEditor />} />
           </Route>
         </Route>
-        <Route index element={<Navigate replace to="table" />} />
+        <Route index element={<Navigate replace to="labels" />} />
         {/* <Route path="login" element={<LoginPage />} />
         <Route path="*" element={<NotFoundPage />} /> */}
       </Routes>

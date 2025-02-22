@@ -65,7 +65,7 @@ export default function CreateEditProductForm({
       </FormRow>
       <FormRow>
         <button className="standard-btn" type="submit">
-          Create cabin
+          Create Product
         </button>
       </FormRow>
     </form>
