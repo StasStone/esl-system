@@ -9,9 +9,9 @@ app.http('createProduct', {
     authLevel: 'anonymous',
     route: 'products/new',
     handler: async (request, context) => {
-        const { id, label_id, producer, price, discount = 0, name, inventory_count, sku } = await request.json()
+        const { id, labels, producer, price, discount = 0, name, inventory_count, sku } = await request.json()
 
-        if (!label_id || !producer || price === undefined || !name || !id || !sku) {
+        if (!labels || !producer || price === undefined || !name || !id || !sku) {
             context.res = {
                 status: 400,
                 headers: { "Content-Type": "application/json" },
@@ -22,22 +22,21 @@ app.http('createProduct', {
 
         const newProduct = {
             id,
-            label_id,
             producer,
             price,
             discount,
             name,
             inventory_count: inventory_count || 0,
-            labels: [label_id]
+            labels: [labels]
         }
 
         try {
-            const database = cosmosClient.database(databaseId);
-            const container = database.container(containerId);
+            const database = cosmosClient.database(databaseId)
+            const container = database.container(containerId)
 
             const { resource: createdProduct } = await container.items.upsert(newProduct)
 
-            context.log("Product created successfully:", createdProduct)
+            context.log(createdProduct)
 
             context.res = {
                 status: 201,
@@ -51,7 +50,7 @@ app.http('createProduct', {
                 status: 500,
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ error: "Error creating product." })
-            };
+            }
         }
     }
 })

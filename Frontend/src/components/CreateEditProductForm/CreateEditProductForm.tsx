@@ -2,6 +2,7 @@ import { useForm } from 'react-hook-form'
 import FormRow from '../FormRow/FormRow'
 import './CreateEditProductForm.scss'
 import { Product } from '../../models/product'
+import useCreateProduct from '../../hooks/useCreateProduct'
 
 export default function CreateEditProductForm({
   product = null
@@ -13,13 +14,14 @@ export default function CreateEditProductForm({
   })
 
   const { errors } = formState
+  const { createProduct, isCreating } = useCreateProduct()
 
   function onError() {
     console.log(formState.errors)
   }
 
-  function onSubmit(data: any) {
-    console.log(data)
+  function onSubmit(data: Product) {
+    createProduct(data)
   }
 
   return (
