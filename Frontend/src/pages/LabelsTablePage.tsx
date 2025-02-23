@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'react'
-import Table from '../../components/Table/Table'
+import Table from '../components/Table/Table'
 
 import {
   defaultLabelFilterParams,
   Label,
   labelAttributes,
   LabelFilterParams
-} from '../../models/label'
-import Filter from '../../components/Filter/Filter'
-import useFilter from '../../hooks/useFilter'
-import useDeleteLabel from '../../hooks/useDeleteLabel'
+} from '../models/label'
+import Filter from '../components/Filter/Filter'
+import useFilter from '../hooks/useFilter'
+import useDeleteLabel from '../hooks/useDeleteLabel'
 
 function LabelsTablePage() {
   const labelTableHeaders = ['id', 'product_id', 'last_updated']
@@ -61,6 +61,7 @@ function LabelsTablePage() {
           data={filteredData}
           render={label => (
             <Table.Row
+              modalName="label-form"
               key={label.id}
               item={label}
               handleDeleteItem={() => deleteLabel(label.id, label.product_id)}

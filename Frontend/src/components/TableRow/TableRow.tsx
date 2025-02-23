@@ -9,12 +9,14 @@ type TableRowProps<T> = {
   item: T
   handleDeleteItem: () => void
   children: ReactNode
+  modalName: string
 }
 
 export default function TableRow({
   item,
   children,
-  handleDeleteItem
+  handleDeleteItem,
+  modalName
 }: TableRowProps<any>) {
   const { id } = item
 
@@ -25,21 +27,21 @@ export default function TableRow({
       ))}
       <Modal>
         <ActionsMenu>
-          <div className="product-actions">
+          <div className="actions">
             <ActionsMenu.Toggle id={id} />
           </div>
           <ActionsMenu.Body id={id}>
             <button onClick={handleDeleteItem}>
               <HiTrash color="#eb2727" />
             </button>
-            <Modal.Open opens="product-form">
+            <Modal.Open opens={modalName}>
               <button>
                 <HiPencil />
               </button>
             </Modal.Open>
           </ActionsMenu.Body>
         </ActionsMenu>
-        <Modal.Window name="product-form">{children}</Modal.Window>
+        <Modal.Window name={modalName}>{children}</Modal.Window>
       </Modal>
     </div>
   )

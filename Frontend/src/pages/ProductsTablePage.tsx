@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'react'
-import Table from '../../components/Table/Table'
+import Table from '../components/Table/Table'
 
 import {
   defaultProductFilterParams,
   Product,
   productAttributes,
   ProductFilterParams
-} from '../../models/product'
-import { applyFilters } from '../../models/filter-param'
-import CreateEditProductForm from '../../components/CreateEditProductForm/CreateEditProductForm'
-import Filter from '../../components/Filter/Filter'
+} from '../models/product'
+import { applyFilters } from '../models/filter-param'
+import CreateEditProductForm from '../components/CreateEditProductForm/CreateEditProductForm'
+import Filter from '../components/Filter/Filter'
 
 function ProductsTablePage() {
   const productTableHeaders = [
@@ -64,6 +64,7 @@ function ProductsTablePage() {
           data={filteredData}
           render={product => (
             <Table.Row
+              modalName="product-form"
               key={product.id}
               item={product}
               handleDeleteItem={handleDeleteItem}

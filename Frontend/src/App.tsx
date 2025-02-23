@@ -3,8 +3,8 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import TemplatePage from './pages/TemplatePage'
 import AppLayout from './pages/Layout/Layout'
 import LabelEditor from './components/LabelEditor/LabelEditor'
-import ProductsTablePage from './pages/ProductsTablePage/ProductsTablePage'
-import LabelsTablePage from './pages/LabelsTablePage/LabelsTablePage'
+import ProductsTablePage from './pages/ProductsTablePage'
+import LabelsTablePage from './pages/LabelsTablePage'
 
 function App() {
   return (
