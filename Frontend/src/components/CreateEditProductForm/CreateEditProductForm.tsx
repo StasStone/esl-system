@@ -1,15 +1,15 @@
-import { Label } from '../../models/label'
 import { useForm } from 'react-hook-form'
 import FormRow from '../FormRow/FormRow'
 import './CreateEditProductForm.scss'
+import { Product } from '../../models/product'
 
 export default function CreateEditProductForm({
-  label = null
+  product = null
 }: {
-  label: Label | null
+  product: Product | null
 }) {
   const { register, handleSubmit, reset, getValues, formState } = useForm({
-    defaultValues: label ? label : {}
+    defaultValues: product ? product : {}
   })
 
   function onError() {
@@ -65,7 +65,7 @@ export default function CreateEditProductForm({
       </FormRow>
       <FormRow>
         <button className="standard-btn" type="submit">
-          Create cabin
+          Create Product
         </button>
       </FormRow>
     </form>

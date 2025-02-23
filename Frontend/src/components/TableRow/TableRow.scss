@@ -1,6 +1,18 @@
-.table__row {
+.table__row6 {
   display: grid;
-  grid-template-columns: 3.6fr 2fr 3.6fr 0.8fr;
+  grid-template-columns: 1.2fr 1.6fr 0.4fr 0.4fr 1.6fr 0.4fr 0.4fr;
+  padding: 0.6rem 1.4rem;
+  column-gap: 2.4rem;
+  align-items: center;
+  transition: none;
+  border-bottom: 1px solid var(--color-grey-100);
+  align-items: start;
+  min-height: 4rem;
+}
+
+.table__row3 {
+  display: grid;
+  grid-template-columns: 3fr 3fr 3fr 0.8fr;
   padding: 0.6rem 1.4rem;
   column-gap: 2.4rem;
   align-items: center;

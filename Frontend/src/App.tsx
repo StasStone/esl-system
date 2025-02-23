@@ -1,22 +1,24 @@
 import './global.scss'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-import TablePage from './pages/TablePage/TablePage'
 import TemplatePage from './pages/TemplatePage'
 import AppLayout from './pages/Layout/Layout'
 import LabelEditor from './components/LabelEditor/LabelEditor'
+import ProductsTablePage from './pages/ProductsTablePage'
+import LabelsTablePage from './pages/LabelsTablePage'
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route element={<AppLayout />}>
-          <Route index element={<Navigate replace to="table" />} />
-          <Route path="table" element={<TablePage />} />
+          <Route index element={<Navigate replace to="labels" />} />
+          <Route path="products" element={<ProductsTablePage />} />
+          <Route path="labels" element={<LabelsTablePage />} />
           <Route path="templates" element={<TemplatePage />}>
             <Route path="/templates/:templateTitle" element={<LabelEditor />} />
           </Route>
         </Route>
-        <Route index element={<Navigate replace to="table" />} />
+        <Route index element={<Navigate replace to="labels" />} />
         {/* <Route path="login" element={<LoginPage />} />
         <Route path="*" element={<NotFoundPage />} /> */}
       </Routes>

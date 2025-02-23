@@ -1,12 +1,11 @@
 import { ReactElement } from 'react'
-import { Label } from '../../models/label'
 
-type TableBodyProps = {
-  data: Label[]
-  render: (label: Label) => ReactElement
+type TableBodyProps<T> = {
+  data: T[]
+  render: (item: T) => ReactElement
 }
 
-export default function TableBody({ data, render }: TableBodyProps) {
+export default function TableBody({ data, render }: TableBodyProps<any>) {
   if (!data.length) return <div>No data</div>
   return <div>{data.map(render)}</div>
 }

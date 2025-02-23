@@ -1,31 +1,21 @@
+import { Filter } from './filter-param'
+
 export type Label = {
   id: string
-  name: string
-  price: string
-  discount?: string
-  producer: string
+  product_id: string
+  last_updated: string
 }
 
-export const LabelAttributes: Array<keyof FilterParams> = [
+export const labelAttributes: Array<keyof LabelFilterParams> = [
   'id',
-  'name',
-  'price',
-  'discount',
-  'producer'
+  'product_id',
+  'last_updated'
 ]
 
-export type FilterParams = {
-  id: { value: string; active: boolean }
-  discount: { value: string; active: boolean }
-  name: { value: string; active: boolean }
-  price: { value: string; active: boolean }
-  producer: { value: string; active: boolean }
-}
+export type LabelFilterParams = Filter<Label>
 
-export const DefaultFilterParams: FilterParams = {
+export const defaultLabelFilterParams: LabelFilterParams = {
   id: { value: '', active: false },
-  name: { value: '', active: false },
-  discount: { value: '', active: false },
-  price: { value: '', active: false },
-  producer: { value: '', active: false }
+  product_id: { value: '', active: false },
+  last_updated: { value: '', active: false }
 }
