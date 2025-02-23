@@ -13,3 +13,19 @@
   padding: 0.8rem 1.2rem;
   box-shadow: var(--shadow-sm);
 }
+
+.form-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  padding: 0 0.4rem;
+  min-width: 34rem;
+}
+
+.form-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}

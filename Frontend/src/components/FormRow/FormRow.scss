@@ -1,8 +1,9 @@
 .form-row {
   display: grid;
   align-items: center;
-  grid-template-columns: 24rem 1fr 1.2fr;
+  grid-template-columns: 1.2fr 2fr 1.2fr;
   gap: 2.4rem;
+  width: 100%;
 
   padding: 1.2rem 0;
 
