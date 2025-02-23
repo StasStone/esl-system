@@ -4,6 +4,7 @@ import Modal from '../Modal/Modal'
 
 import './TableRow.scss'
 import { HiPencil, HiTrash } from 'react-icons/hi2'
+import { rowClasses } from '../../models/columns'
 
 type TableRowProps<T> = {
   item: T
@@ -19,9 +20,10 @@ export default function TableRow({
   modalName
 }: TableRowProps<any>) {
   const { id } = item
-
+  const columns = Object.keys(item)
+  const rowClass = rowClasses[columns.length - 1]
   return (
-    <div className="table__row">
+    <div className={rowClass}>
       {Object.keys(item).map(prop => (
         <div key={prop}>{item[prop]}</div>
       ))}

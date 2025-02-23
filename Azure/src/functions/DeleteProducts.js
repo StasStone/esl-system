@@ -4,7 +4,7 @@ const cosmosClient = require('../CosmosClient')
 const databaseId = process.env.COSMOS_DB_DATABASE_ID
 const containerId = process.env.COSMOS_DB_CONTAINER_PRODUCTS
 
-app.http('deleteLabels', {
+app.http('deleteProducts', {
     methods: ['DELETE'],
     authLevel: 'anonymous',
     route: 'products/{id}/{partitionKey}',

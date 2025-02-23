@@ -16,7 +16,8 @@ app.http('getProducts', {
             const filters = await request.json()
 
             // Define a query to filter products
-            let query = 'SELECT c.id, c.prive, c.discoutn, c.producer, c.inventory_count FROM c WHERE 1=1'
+            let query =
+                'SELECT c.id, c.name, c.price, c.discount, c.producer, c.inventory_count FROM c WHERE 1=1'
             const params = []
             Object.entries(filters).forEach(([key, filter], index) => {
                 if (filter.active && filter.value) {
@@ -24,7 +25,6 @@ app.http('getProducts', {
                     params.push({ name: `@param${index}`, value: filter.value })
                 }
             })
-
             const querySpec = {
                 query,
                 parameters: params
@@ -36,7 +36,7 @@ app.http('getProducts', {
 
             let filteredProducts = products
 
-            filteredProducts = labels.filter(data =>
+            filteredProducts = products.filter(data =>
                 Object.entries(filters).every(([key, filter]) => {
                     if (!filter.active || !filter.value) return true
                     const dataValue = data[key]
@@ -49,11 +49,9 @@ app.http('getProducts', {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ labels: filteredProducts })
+                body: JSON.stringify({ products: filteredProducts })
             }
         } catch (error) {
-            context.log.error('Error retrieving products:', error)
-
             return {
                 status: 500,
                 headers: { 'Content-Type': 'application/json' },

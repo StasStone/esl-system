@@ -38,7 +38,7 @@ function ProductsTablePage() {
       })
       const data = await res.json()
       console.log(data)
-      if (data && data.labels) setFilteredData(data.labels)
+      if (data && data.products) setFilteredData(data.products)
     }
 
     if (isFilterActive() && !isFilterEmpty()) {
