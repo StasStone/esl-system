@@ -16,7 +16,7 @@ app.http('getProducts', {
             const filters = await request.json()
 
             // Define a query to filter products
-            let query = 'SELECT c.id, c.product_id, c.last_updated FROM c WHERE 1=1'
+            let query = 'SELECT c.id, c.prive, c.discoutn, c.producer, c.inventory_count FROM c WHERE 1=1'
             const params = []
             Object.entries(filters).forEach(([key, filter], index) => {
                 if (filter.active && filter.value) {

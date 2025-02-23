@@ -7,9 +7,10 @@ import {
   productAttributes,
   ProductFilterParams
 } from '../models/product'
-import { applyFilters } from '../models/filter-param'
 import CreateEditProductForm from '../components/CreateEditProductForm/CreateEditProductForm'
 import Filter from '../components/Filter/Filter'
+import useFilter from '../hooks/useFilter'
+import useDeleteProduct from '../hooks/useDeleteProduct'
 
 function ProductsTablePage() {
   const productTableHeaders = [
@@ -24,29 +25,32 @@ function ProductsTablePage() {
   const [filteredData, setFilteredData] = useState<Partial<Product>[]>([])
   const [activeFilterParams, setActiveFilterParams] =
     useState<ProductFilterParams>(defaultProductFilterParams)
+  const [appliedFilterParams, setAppliedFilterParams] =
+    useState<ProductFilterParams>(defaultProductFilterParams)
+  const { isFilterActive, isFilterEmpty } = useFilter(activeFilterParams)
+  const { deleteProduct } = useDeleteProduct()
 
   useEffect(() => {
-    const getData = async function () {
-      const res = await fetch('http://localhost:7071/api/products')
+    const getData = async function (filters: ProductFilterParams) {
+      const res = await fetch('http://localhost:7071/api/products', {
+        method: 'POST',
+        body: JSON.stringify(filters)
+      })
       const data = await res.json()
       console.log(data)
-      setFilteredData(data.products)
+      if (data && data.labels) setFilteredData(data.labels)
     }
 
-    getData()
-  }, [activeFilterParams])
+    if (isFilterActive() && !isFilterEmpty()) {
+      getData(activeFilterParams)
+    }
+    if (isFilterEmpty() || !isFilterActive()) {
+      getData(defaultProductFilterParams)
+    }
+  }, [appliedFilterParams])
 
   function handleApplyFilters(productFilter: ProductFilterParams): void {
-    const newFilteredData = applyFilters<Partial<Product>>(
-      filteredData,
-      productFilter
-    )
-
-    setFilteredData(newFilteredData)
-  }
-
-  function handleDeleteItem() {
-    console.log('item deleted')
+    setAppliedFilterParams(productFilter)
   }
 
   return (
@@ -67,7 +71,9 @@ function ProductsTablePage() {
               modalName="product-form"
               key={product.id}
               item={product}
-              handleDeleteItem={handleDeleteItem}
+              handleDeleteItem={() =>
+                deleteProduct(product.id, product.producer)
+              }
             >
               <CreateEditProductForm product={product} />
             </Table.Row>
