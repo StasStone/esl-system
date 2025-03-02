@@ -3,6 +3,8 @@ import FormRow from '../FormRow/FormRow'
 import './CreateEditProductForm.scss'
 import { Product } from '../../models/product'
 import useCreateProduct from '../../hooks/useCreateProduct'
+import { useContext } from 'react'
+import { ModalContext } from '../Modal/Modal'
 
 export default function CreateEditProductForm({
   product = null
@@ -14,6 +16,8 @@ export default function CreateEditProductForm({
   })
 
   const { errors } = formState
+  const { close } = useContext(ModalContext)!
+
   const { createProduct, isCreating } = useCreateProduct()
 
   function onError() {
@@ -21,7 +25,10 @@ export default function CreateEditProductForm({
   }
 
   function onSubmit(data: Product) {
-    createProduct(data)
+    const newLabelString = data.labels.toString()
+    const newLabels = newLabelString.split(',')
+    createProduct({ ...data, labels: newLabels })
+    close()
   }
 
   return (
@@ -58,16 +65,6 @@ export default function CreateEditProductForm({
         </div>
 
         <div className="form-column">
-          <FormRow label="sku" error={errors.sku?.message}>
-            <input
-              className="form-input"
-              type="text"
-              id="sku"
-              {...register('sku', {
-                required: 'sku is required'
-              })}
-            />
-          </FormRow>
           <FormRow label="discount" error={errors.discount?.message}>
             <input
               className="form-input"
@@ -87,21 +84,6 @@ export default function CreateEditProductForm({
               type="text"
               id="labels"
               {...register('labels', { required: 'Label id is required' })}
-            />
-          </FormRow>
-          <FormRow
-            label="inventory_count"
-            error={errors.inventory_count?.message}
-          >
-            <input
-              className="form-input"
-              type="number"
-              id="inventory_count"
-              {...register('inventory_count', {
-                validate: value =>
-                  value! <= getValues().inventory_count ||
-                  'Discount shouldn`t be less than 0'
-              })}
             />
           </FormRow>
         </div>
