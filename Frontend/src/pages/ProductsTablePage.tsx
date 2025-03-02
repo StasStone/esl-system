@@ -19,7 +19,7 @@ function ProductsTablePage() {
     'price',
     'discount',
     'producer',
-    'inventory_count'
+    'labels'
   ]
 
   const [filteredData, setFilteredData] = useState<Partial<Product>[]>([])

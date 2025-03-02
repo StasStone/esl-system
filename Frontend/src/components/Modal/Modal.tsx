@@ -8,7 +8,7 @@ type ModalContext = {
   openName: string
 }
 
-const ModalContext = createContext<ModalContext | undefined>(undefined)
+export const ModalContext = createContext<ModalContext | undefined>(undefined)
 
 export default function Modal({ children }: { children: any }) {
   const [openName, setOpenName] = useState('')
