@@ -3,20 +3,22 @@ import FormRow from '../FormRow/FormRow'
 import './EditLabelForm.scss'
 import { useContext } from 'react'
 import { ModalContext } from '../Modal/Modal'
-import { v4 as uuidv4 } from 'uuid'
 import { Label } from '../../models/label'
+import { useCreateLabel } from '../../hooks/useCreateLabel'
+import { v4 as uuidv4 } from 'uuid'
 
 export default function EditLabelForm({
   label = null
 }: {
   label: Label | null
 }) {
-  const { register, handleSubmit, reset, getValues, formState } = useForm({
+  const { register, handleSubmit, formState } = useForm({
     defaultValues: label ? label : {}
   })
 
   const { errors } = formState
   const { close } = useContext(ModalContext)!
+  const { createLabel } = useCreateLabel()
 
   function onError() {
     console.log(formState.errors)
@@ -24,6 +26,7 @@ export default function EditLabelForm({
 
   function onSubmit(data: Label) {
     const newID = label ? label.id : uuidv4()
+    createLabel({ ...data, id: newID })
     close()
   }
 

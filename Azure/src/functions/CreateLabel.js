@@ -34,7 +34,7 @@ app.http('createLabel', {
             // Insert the new product into CosmosDB
             const { resource: createdLabel } = await container.items.create(newLabel)
 
-            context.log("Product created successfully:", createdLabel)
+            context.log("Label created successfully:", createdLabel)
 
             context.res = {
                 status: 201,
@@ -47,7 +47,7 @@ app.http('createLabel', {
             context.res = {
                 status: 500,
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ error: "Error creating product." })
+                body: JSON.stringify({ error: "Error creating label." })
             }
         }
     }
