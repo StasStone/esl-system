@@ -7,11 +7,11 @@ const containerId = process.env.COSMOS_DB_CONTAINER_LABELS
 app.http('createLabel', {
     methods: ['POST'],
     authLevel: 'anonymous',
-    route: 'label/new',
+    route: 'labels/new',
     handler: async (request, context) => {
         const { product_id, id, last_updated } = await request.json()
 
-        if (!product_id || !id || !last) {
+        if (!product_id || !last_updated) {
             context.res = {
                 status: 400,
                 headers: { "Content-Type": "application/json" },
@@ -34,7 +34,7 @@ app.http('createLabel', {
             // Insert the new product into CosmosDB
             const { resource: createdLabel } = await container.items.create(newLabel)
 
-            context.log("Product created successfully:", createdLabel)
+            context.log("Label created successfully:", createdLabel)
 
             context.res = {
                 status: 201,
@@ -47,7 +47,7 @@ app.http('createLabel', {
             context.res = {
                 status: 500,
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ error: "Error creating product." })
+                body: JSON.stringify({ error: "Error creating label." })
             }
         }
     }

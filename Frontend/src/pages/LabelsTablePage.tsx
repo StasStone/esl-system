@@ -10,6 +10,10 @@ import {
 import Filter from '../components/Filter/Filter'
 import useFilter from '../hooks/useFilter'
 import useDeleteLabel from '../hooks/useDeleteLabel'
+import { useCreateLabel } from '../hooks/useCreateLabel'
+import EditLabelForm from '../components/EditLabelForm/EditLabelForm'
+import { v4 as uuidv4 } from 'uuid'
+import Modal from '../components/Modal/Modal'
 
 function LabelsTablePage() {
   const labelTableHeaders = ['id', 'product_id', 'last_updated']
@@ -22,6 +26,9 @@ function LabelsTablePage() {
   const { isFilterActive, isFilterEmpty } = useFilter(activeFilterParams)
 
   const { deleteLabel } = useDeleteLabel()
+  const { createLabel } = useCreateLabel()
+
+  const modalName = 'label-form'
 
   useEffect(() => {
     const getData = async function (filters: LabelFilterParams) {
@@ -55,18 +62,28 @@ function LabelsTablePage() {
         defaultFilterParams={defaultLabelFilterParams}
         handleApplyFilters={handleApplyFilters}
       />
+      <div className="create-product-container">
+        <Modal>
+          <Modal.Open opens={modalName}>
+            <button className="standard-btn">Add new label</button>
+          </Modal.Open>
+          <Modal.Window name={modalName}>
+            <EditLabelForm label={null} />
+          </Modal.Window>
+        </Modal>
+      </div>
       <Table>
         <Table.Header headers={labelTableHeaders}></Table.Header>
         <Table.Body
           data={filteredData}
           render={label => (
             <Table.Row
-              modalName="label-form"
+              modalName={modalName}
               key={label.id}
               item={label}
               handleDeleteItem={() => deleteLabel(label.id, label.product_id)}
             >
-              <div>Hello</div>
+              <EditLabelForm label={label} />
             </Table.Row>
           )}
         ></Table.Body>
