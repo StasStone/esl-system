@@ -69,7 +69,7 @@ function ProductsTablePage() {
         <Modal>
           <Modal>
             <Modal.Open opens={modalName}>
-              <button>Add new product</button>
+              <button className="standard-btn">Add new product</button>
             </Modal.Open>
             <Modal.Window name={modalName}>
               <CreateEditProductForm product={null} />
