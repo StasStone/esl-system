@@ -26,7 +26,7 @@ app.http('createProduct', {
             price,
             discount,
             name,
-            labels,
+            labels
         }
 
         try {

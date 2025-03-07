@@ -5,6 +5,7 @@ import { Product } from '../../models/product'
 import useCreateProduct from '../../hooks/useCreateProduct'
 import { useContext } from 'react'
 import { ModalContext } from '../Modal/Modal'
+import { v4 as uuidv4 } from 'uuid'
 
 export default function CreateEditProductForm({
   product = null
@@ -27,7 +28,8 @@ export default function CreateEditProductForm({
   function onSubmit(data: Product) {
     const newLabelString = data.labels.toString()
     const newLabels = newLabelString.split(',')
-    createProduct({ ...data, labels: newLabels })
+    const newID = product ? product.id : uuidv4()
+    createProduct({ ...data, labels: newLabels, id: newID })
     close()
   }
 

@@ -11,6 +11,8 @@ import CreateEditProductForm from '../components/CreateEditProductForm/CreateEdi
 import Filter from '../components/Filter/Filter'
 import useFilter from '../hooks/useFilter'
 import useDeleteProduct from '../hooks/useDeleteProduct'
+import './ProductsTablePage.scss'
+import Modal from '../components/Modal/Modal'
 
 function ProductsTablePage() {
   const productTableHeaders = [
@@ -29,6 +31,7 @@ function ProductsTablePage() {
     useState<ProductFilterParams>(defaultProductFilterParams)
   const { isFilterActive, isFilterEmpty } = useFilter(activeFilterParams)
   const { deleteProduct } = useDeleteProduct()
+  const modalName = 'product-form'
 
   useEffect(() => {
     const getData = async function (filters: ProductFilterParams) {
@@ -62,13 +65,25 @@ function ProductsTablePage() {
         attributes={productAttributes}
         defaultFilterParams={defaultProductFilterParams}
       />
+      <div className="create-product-container">
+        <Modal>
+          <Modal>
+            <Modal.Open opens={modalName}>
+              <button>Add new product</button>
+            </Modal.Open>
+            <Modal.Window name={modalName}>
+              <CreateEditProductForm product={null} />
+            </Modal.Window>
+          </Modal>
+        </Modal>
+      </div>
       <Table>
         <Table.Header headers={productTableHeaders}></Table.Header>
         <Table.Body
           data={filteredData}
           render={product => (
             <Table.Row
-              modalName="product-form"
+              modalName={modalName}
               key={product.id}
               item={product}
               handleDeleteItem={() =>
