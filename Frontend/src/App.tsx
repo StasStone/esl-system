@@ -5,6 +5,7 @@ import AppLayout from './pages/Layout/Layout'
 import LabelEditor from './components/LabelEditor/LabelEditor'
 import ProductsTablePage from './pages/ProductsTablePage'
 import LabelsTablePage from './pages/LabelsTablePage'
+import LoginPage from './pages/LoginPage/LoginPage'
 
 function App() {
   return (
@@ -19,7 +20,8 @@ function App() {
           </Route>
         </Route>
         <Route index element={<Navigate replace to="labels" />} />
-        {/* <Route path="login" element={<LoginPage />} />
+        <Route path="login" element={<LoginPage />} />
+        {/*
         <Route path="*" element={<NotFoundPage />} /> */}
       </Routes>
     </BrowserRouter>
