@@ -9,7 +9,8 @@
   },
   "dependencies": {
     "@azure/cosmos": "^4.2.0",
-    "@azure/functions": "^4.0.0"
+    "@azure/functions": "^4.0.0",
+    "bcrypt-nodejs": "^0.0.3"
   },
   "devDependencies": {
     "azure-functions-core-tools": "^4.x"

@@ -1,4 +1,5 @@
 import useLogin from '../../hooks/useLogin'
+import useSignup from '../../hooks/useSignup'
 import { User, userEmpty } from '../../models/user'
 import FormRow from '../FormRow/FormRow'
 import './LoginForm.scss'
@@ -10,16 +11,18 @@ export default function LoginForm() {
   })
   const { errors } = formState
   const { login } = useLogin()
+  const { signup } = useSignup()
 
   function onSubmit(data: User) {
-    login(data.email, data.password)
+    // login(data.email, data.password)
+    signup(data.email, data.password)
   }
 
   function onError() {}
 
   return (
     <form onSubmit={handleSubmit(onSubmit, onError)}>
-      <FormRow label="email" error={errors.email!.message}>
+      <FormRow label="email" error={errors.email?.message}>
         <input
           type="email"
           id="email"
@@ -37,7 +40,7 @@ export default function LoginForm() {
         />
       </FormRow>
       <FormRow>
-        <button className="btn-standard">Login</button>
+        <button className="standard-btn">Login</button>
       </FormRow>
     </form>
   )

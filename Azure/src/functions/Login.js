@@ -1,6 +1,6 @@
 const { app } = require('@azure/functions')
 const cosmosClient = require('../CosmosClient')
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt-nodejs')
 
 const databaseId = process.env.COSMOS_DB_DATABASE_ID
 const containerId = process.env.COSMOS_DB_CONTAINER_USERS
@@ -53,8 +53,6 @@ app.http('login', {
                 body: JSON.stringify({ message: 'Login successful', user: { email: user.email } })
             }
         } catch (error) {
-            context.log.error('Error logging in:', error)
-
             return {
                 status: 500,
                 headers: { 'Content-Type': 'application/json' },
