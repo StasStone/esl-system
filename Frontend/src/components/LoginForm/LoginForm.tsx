@@ -1,3 +1,4 @@
+import useLogin from '../../hooks/useLogin'
 import { User, userEmpty } from '../../models/user'
 import FormRow from '../FormRow/FormRow'
 import './LoginForm.scss'
@@ -8,9 +9,10 @@ export default function LoginForm() {
     defaultValues: userEmpty
   })
   const { errors } = formState
+  const { login } = useLogin()
 
   function onSubmit(data: User) {
-    console.log(data)
+    login(data.email, data.password)
   }
 
   function onError() {}
