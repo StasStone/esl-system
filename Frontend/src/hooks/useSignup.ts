@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { User } from '../models/user'
+import AuthContext from '../pages/AuthProvider'
 
 export default function useSignup() {
-  const [user, setUser] = useState<User | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const { storeToken } = useContext(AuthContext)!
 
   const signup = async (email: string, password: string) => {
     try {
@@ -17,13 +18,13 @@ export default function useSignup() {
         throw new Error('Error signing up')
       }
 
-      const { user } = await res.json()
+      const { token } = await res.json()
 
-      setUser(user)
+      storeToken(token)
     } catch (error: any) {
       setError(error.message)
     }
   }
 
-  return { user, error, signup }
+  return { error, signup }
 }

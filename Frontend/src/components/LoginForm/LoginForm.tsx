@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom'
 import useLogin from '../../hooks/useLogin'
 import useSignup from '../../hooks/useSignup'
 import { User, userEmpty } from '../../models/user'
@@ -9,6 +10,7 @@ export default function LoginForm() {
   const { register, handleSubmit, formState } = useForm({
     defaultValues: userEmpty
   })
+  const navigate = useNavigate()
   const { errors } = formState
   const { login } = useLogin()
   const { signup } = useSignup()
@@ -16,6 +18,7 @@ export default function LoginForm() {
   function onSubmit(data: User) {
     // login(data.email, data.password)
     signup(data.email, data.password)
+    navigate('/labels')
   }
 
   function onError() {}

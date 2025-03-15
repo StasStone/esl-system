@@ -1,9 +1,11 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
+import AuthContext from '../pages/AuthProvider'
 import { User } from '../models/user'
 
 export default function useLogin() {
-  const [user, setUser] = useState<User | null>(null)
   const [error, setError] = useState<string | null>(null)
+
+  const { storeToken } = useContext(AuthContext)!
 
   const login = async (email: string, password: string) => {
     try {
@@ -17,13 +19,13 @@ export default function useLogin() {
         throw new Error('Error logging')
       }
 
-      const { user } = await res.json()
+      const { token } = await res.json()
 
-      setUser(user)
+      storeToken(token)
     } catch (error: any) {
       setError(error.message)
     }
   }
 
-  return { user, error, login }
+  return { error, login }
 }

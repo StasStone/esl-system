@@ -7,30 +7,36 @@ import ProductsTablePage from './pages/ProductsTablePage'
 import LabelsTablePage from './pages/LabelsTablePage'
 import LoginPage from './pages/LoginPage/LoginPage'
 import ProtectedRoute from './pages/ProtectedRoute'
+import { AuthProvider } from './pages/AuthProvider'
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route
-          element={
-            <ProtectedRoute>
-              <AppLayout />
-            </ProtectedRoute>
-          }
-        >
-          <Route index element={<Navigate replace to="labels" />} />
-          <Route path="products" element={<ProductsTablePage />} />
-          <Route path="labels" element={<LabelsTablePage />} />
-          <Route path="templates" element={<TemplatePage />}>
-            <Route path="/templates/:templateTitle" element={<LabelEditor />} />
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route
+            element={
+              <ProtectedRoute>
+                <AppLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<Navigate replace to="labels" />} />
+            <Route path="products" element={<ProductsTablePage />} />
+            <Route path="labels" element={<LabelsTablePage />} />
+            <Route path="templates" element={<TemplatePage />}>
+              <Route
+                path="/templates/:templateTitle"
+                element={<LabelEditor />}
+              />
+            </Route>
           </Route>
-        </Route>
-        <Route path="login" element={<LoginPage />} />
-        {/*
+          <Route path="login" element={<LoginPage />} />
+          {/*
         <Route path="*" element={<NotFoundPage />} /> */}
-      </Routes>
-    </BrowserRouter>
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   )
 }
 

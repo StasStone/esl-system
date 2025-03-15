@@ -1,65 +1,49 @@
 const { app } = require('@azure/functions')
 const cosmosClient = require('../CosmosClient')
-const bcrypt = require('bcrypt-nodejs')
-const jwt = require('jsonwebtoken')
-const fs = require('fs')
 
 const databaseId = process.env.COSMOS_DB_DATABASE_ID
 const containerId = process.env.COSMOS_DB_CONTAINER_USERS
 
-app.http('login', {
-    methods: ['POST'],
+app.http('getUser', {
+    methods: ['GET'],
     authLevel: 'anonymous',
-    route: 'login',
+    route: 'users/{user_id}',
     handler: async (request, context) => {
         try {
             // Get a reference to the database and container
             const database = cosmosClient.database(databaseId)
             const container = database.container(containerId)
+            const { user_id } = request.params
 
-            const jwtPrivate = fs.readFileSync('../jwtRS256.key', 'utf8')
-
-            const { email, password } = await request.json()
+            context.log(user_id)
 
             // Define a query to find the user by email
-            let query = 'SELECT c.email, c.password FROM c WHERE c.email = @Email'
+            let query = `SELECT c.email FROM c WHERE c.user_id = @userId`
 
             // Execute the query with the email parameter
             const { resources: users } = await container.items
-                .query(query, { parameters: [{ name: '@Email', value: email }] })
+                .query(query, { parameters: [{ name: '@userId', value: user_id }] })
                 .fetchAll()
+
+            context.log(users)
 
             // If no user is found, return an error
             if (users.length === 0) {
                 return {
-                    status: 401,
+                    status: 404,
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ error: 'Invalid email or password' })
+                    body: JSON.stringify({ error: 'User not found' })
                 }
             }
-
             const user = users[0]
-
-            // Compare the provided password with the stored (hashed) password
-            const passwordMatch = await bcrypt.compare(password, user.password)
-
-            if (!passwordMatch) {
-                return {
-                    status: 401,
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ error: 'Invalid email or password' })
-                }
-            }
-
-            // Successful login, return JWT token
-            const token = jwt.sign({ userId: newUser.user_id }, jwtPrivate, { algorithm: "RS256", expiresIn: "1h" })
 
             return {
                 status: 200,
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: 'Login successful', token })
+                body: JSON.stringify({ user })
             }
         } catch (error) {
+            context.log(error.message)
             return {
                 status: 500,
                 headers: { 'Content-Type': 'application/json' },

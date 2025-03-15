@@ -1,16 +1,13 @@
-import { useNavigate } from 'react-router-dom'
-import { ReactNode, useEffect } from 'react'
+import { ReactNode, useContext } from 'react'
+import AuthContext from './AuthProvider'
+import { Navigate } from 'react-router-dom'
 
 const ProtectedRoute = ({ children }: { children: ReactNode }) => {
-  const navigate = useNavigate()
-  const { isLoading, isAuthenticated } = useUser()
+  const { isAuthenticated, isLoading } = useContext(AuthContext)!
 
-  useEffect(
-    function () {
-      if (!isAuthenticated && !isLoading) navigate('/login')
-    },
-    [isAuthenticated, isLoading, navigate]
-  )
+  if (!isAuthenticated && !isLoading) {
+    return <Navigate to="/login" />
+  }
 
   if (isLoading) {
     return <div>Content is loading</div>
