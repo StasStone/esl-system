@@ -6,6 +6,7 @@ const fs = require('fs')
 
 const databaseId = process.env.COSMOS_DB_DATABASE_ID
 const containerId = process.env.COSMOS_DB_CONTAINER_USERS
+const jwtPrivate = fs.readFileSync('/Users/stanislau/Developer/esl-system/Azure/jwtRS256.key', 'utf8')
 
 app.http('login', {
     methods: ['POST'],
@@ -17,20 +18,20 @@ app.http('login', {
             const database = cosmosClient.database(databaseId)
             const container = database.container(containerId)
 
-            const jwtPrivate = fs.readFileSync('../jwtRS256.key', 'utf8')
-
             const { email, password } = await request.json()
 
             // Define a query to find the user by email
-            let query = 'SELECT c.email, c.password FROM c WHERE c.email = @Email'
+            let query = 'SELECT c.email, c.password, c.user_id FROM c WHERE 1=1'
 
             // Execute the query with the email parameter
             const { resources: users } = await container.items
-                .query(query, { parameters: [{ name: '@Email', value: email }] })
+                .query(query)
                 .fetchAll()
 
+            const filteredUsers = users.filter((user) => user.email === email)
+
             // If no user is found, return an error
-            if (users.length === 0) {
+            if (filteredUsers.length === 0) {
                 return {
                     status: 401,
                     headers: { 'Content-Type': 'application/json' },
@@ -38,10 +39,19 @@ app.http('login', {
                 }
             }
 
-            const user = users[0]
+            const user = filteredUsers[0]
 
             // Compare the provided password with the stored (hashed) password
-            const passwordMatch = await bcrypt.compare(password, user.password)
+
+            const passwordMatch = await new Promise((resolve, reject) => {
+                bcrypt.compare(password, user.password, (err, match) => {
+                    if (err) {
+                        reject(err)
+                    } else {
+                        resolve(match)
+                    }
+                })
+            })
 
             if (!passwordMatch) {
                 return {
@@ -52,7 +62,7 @@ app.http('login', {
             }
 
             // Successful login, return JWT token
-            const token = jwt.sign({ userId: newUser.user_id }, jwtPrivate, { algorithm: "RS256", expiresIn: "1h" })
+            const token = jwt.sign({ userId: user.user_id }, jwtPrivate, { algorithm: "RS256", expiresIn: "1h" })
 
             return {
                 status: 200,
@@ -60,6 +70,7 @@ app.http('login', {
                 body: JSON.stringify({ message: 'Login successful', token })
             }
         } catch (error) {
+            context.log(error.message)
             return {
                 status: 500,
                 headers: { 'Content-Type': 'application/json' },
