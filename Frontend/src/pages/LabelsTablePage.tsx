@@ -10,9 +10,7 @@ import {
 import Filter from '../components/Filter/Filter'
 import useFilter from '../hooks/useFilter'
 import useDeleteLabel from '../hooks/useDeleteLabel'
-import { useCreateLabel } from '../hooks/useCreateLabel'
 import EditLabelForm from '../components/EditLabelForm/EditLabelForm'
-import { v4 as uuidv4 } from 'uuid'
 import Modal from '../components/Modal/Modal'
 
 function LabelsTablePage() {
@@ -26,7 +24,6 @@ function LabelsTablePage() {
   const { isFilterActive, isFilterEmpty } = useFilter(activeFilterParams)
 
   const { deleteLabel } = useDeleteLabel()
-  const { createLabel } = useCreateLabel()
 
   const modalName = 'label-form'
 

@@ -1,0 +1,20 @@
+.login-layout {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 48rem;
+  align-content: center;
+  justify-content: center;
+  gap: 3.2rem;
+  background-color: var(--color-grey-50);
+}
+
+.signup__link {
+  cursor: pointer;
+  color: var(--color-brand-900);
+  transition: all 3ms;
+
+  &:hover {
+    color: var(--color-brand-500);
+    text-decoration: underline;
+  }
+}
