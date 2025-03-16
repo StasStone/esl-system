@@ -6,7 +6,10 @@ export default function useSaveTemplate() {
   const [error, setError] = useState<string | null>(null)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
 
-  const createTemplate = async (templateItems: TemplateItems) => {
+  const createTemplate = async (
+    templateItems: TemplateItems,
+    store_id: string
+  ) => {
     setIsCreating(true)
     setError(null)
     setSuccessMessage(null)
@@ -14,7 +17,7 @@ export default function useSaveTemplate() {
     try {
       const res = await fetch(`http://localhost:7071/api/templates/new`, {
         method: 'POST',
-        body: JSON.stringify({ items: templateItems })
+        body: JSON.stringify({ items: templateItems, store_id: store_id })
       })
 
       if (!res.ok) {

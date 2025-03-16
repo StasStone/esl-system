@@ -8,9 +8,10 @@ import {
   DraggableItem,
   TemplateItems
 } from '../../models/draggable-item'
-import { useEffect } from 'react'
+import { useContext, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import useSaveTemplate from '../../hooks/useSaveTemplate'
+import AuthContext from '../../pages/AuthProvider'
 
 const LabelEditor = () => {
   const {
@@ -27,6 +28,7 @@ const LabelEditor = () => {
   } = useTemplate(defaultTemplateItems)
   const { templateTitle } = useParams()
   const { createTemplate } = useSaveTemplate()
+  const { user } = useContext(AuthContext)!
 
   useEffect(
     function () {
@@ -48,7 +50,8 @@ const LabelEditor = () => {
   )
 
   const handleSaveTemplate = () => {
-    createTemplate(elements)
+    const { store_id } = user!
+    createTemplate(elements, store_id)
   }
 
   const isTemplateItemCreated = (type: string): boolean => {
@@ -61,7 +64,7 @@ const LabelEditor = () => {
         <h3>Toolbar</h3>
         {['Price', 'Producer', 'Discount', 'Title'].map(type => (
           <button
-            disabled={isTemplateItemCreated(type)}
+            disabled={isTemplateItemCreated(type.toLowerCase())}
             key={type}
             onClick={() => addElement(type)}
           >

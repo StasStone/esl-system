@@ -12,12 +12,11 @@ app.http('createProduct', {
         const { id, labels, producer, price, discount = 0, name } = await request.json()
         context.log(labels)
         if (!labels || !producer || price === undefined || !name || !id) {
-            context.res = {
+            return {
                 status: 400,
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ error: "Missing required parameters." })
             }
-            return
         }
 
         const newProduct = {
@@ -37,7 +36,7 @@ app.http('createProduct', {
 
             context.log(createdProduct)
 
-            context.res = {
+            return {
                 status: 201,
                 headers: {
                     "Content-Type": "application/json",
@@ -45,7 +44,7 @@ app.http('createProduct', {
                 body: JSON.stringify(createdProduct)
             }
         } catch (error) {
-            context.res = {
+            return {
                 status: 500,
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ error: "Error creating product." })

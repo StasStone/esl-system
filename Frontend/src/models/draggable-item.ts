@@ -35,18 +35,19 @@ export const MapTypeToSize: TypeToSize = {
 
 export type Template = {
   template_id: string
+  store_id: string
   items: TemplateItems
 }
 
 export type TemplateItems = {
-  name: DraggableItem | null
+  title: DraggableItem | null
   price: DraggableItem | null
   discount: DraggableItem | null
   producer: DraggableItem | null
 }
 
 export const defaultTemplateItems: TemplateItems = {
-  name: null,
+  title: null,
   price: null,
   discount: null,
   producer: null

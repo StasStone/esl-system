@@ -10,20 +10,19 @@ app.http('createTemplate', {
     authLevel: 'anonymous',
     route: 'templates/new',
     handler: async (request, context) => {
-        const { items } = await request.json()
-        context.log(items)
+        const { items, store_id } = await request.json()
 
-        if (items) {
-            context.res = {
+        if (!items) {
+            return {
                 status: 400,
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ error: "Missing template items" })
             }
-            return
         }
 
         const newTemplate = {
             template_id: v4(),
+            store_id,
             ...items
         }
 
@@ -33,9 +32,9 @@ app.http('createTemplate', {
 
             const { resource: createdTemplate } = await container.items.upsert(newTemplate)
 
-            context.log(createdProduct)
+            context.log(createdTemplate)
 
-            context.res = {
+            return {
                 status: 201,
                 headers: {
                     "Content-Type": "application/json",
@@ -43,7 +42,7 @@ app.http('createTemplate', {
                 body: JSON.stringify(createdTemplate)
             }
         } catch (error) {
-            context.res = {
+            return {
                 status: 500,
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ error: "Error creating template." })

@@ -31,13 +31,15 @@ export function useTemplate(defaultTemplateItems: TemplateItems) {
   }
 
   const updateElement = (type: string, updates: DraggableItem) => {
-    const newTemplateItems = { ...elements, [type]: updates }
+    const loweredType = type.toLowerCase()
+    const newTemplateItems = { ...elements, [loweredType]: updates }
 
     setElements(newTemplateItems)
   }
 
   const removeElement = (type: string) => {
-    const newTemplateItems = { ...elements, [type]: null }
+    const loweredType = type.toLowerCase()
+    const newTemplateItems = { ...elements, [loweredType]: null }
 
     setElements(newTemplateItems)
   }
