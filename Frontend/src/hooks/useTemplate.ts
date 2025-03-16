@@ -5,7 +5,7 @@ import {
   getItemTypeKey,
   MapTypeToSize
 } from '../models/draggable-item'
-import { v4 as uuidv4 } from 'uuid'
+import { buildTemplate } from '../utils/buildTemplate'
 
 export function useTemplate(defaultElements: DraggableItem[]) {
   const [elements, setElements] = useState<DraggableItem[]>(defaultElements)
@@ -15,15 +15,15 @@ export function useTemplate(defaultElements: DraggableItem[]) {
   const addElement = (type: string) => {
     const { width, height } = MapTypeToSize[getItemTypeKey(type)]
 
-    const newElement = {
-      id: uuidv4(),
-      type: getItemType(type),
-      text: type,
-      x: 10,
-      y: 10,
+    const newElement = buildTemplate(
       width,
-      height
-    }
+      height,
+      10,
+      10,
+      type,
+      getItemType(type)
+    )
+
     setElements([...elements, newElement])
   }
 
