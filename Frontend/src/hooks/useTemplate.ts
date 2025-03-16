@@ -3,13 +3,14 @@ import {
   DraggableItem,
   getItemType,
   getItemTypeKey,
-  MapTypeToSize
+  MapTypeToSize,
+  TemplateItems
 } from '../models/draggable-item'
 import { buildTemplate } from '../utils/buildTemplate'
 
-export function useTemplate(defaultElements: DraggableItem[]) {
-  const [elements, setElements] = useState<DraggableItem[]>(defaultElements)
-  const [editingItemId, setEditingItemId] = useState<string | null>(null)
+export function useTemplate(defaultTemplateItems: TemplateItems) {
+  const [elements, setElements] = useState<TemplateItems>(defaultTemplateItems)
+  const [editingItem, setEditingItem] = useState<string | null>(null)
   const [editedText, setEditedText] = useState<string>('')
 
   const addElement = (type: string) => {
@@ -24,27 +25,29 @@ export function useTemplate(defaultElements: DraggableItem[]) {
       getItemType(type)
     )
 
-    setElements([...elements, newElement])
+    const newTemplateItems = { ...elements, [type.toLowerCase()]: newElement }
+
+    setElements(newTemplateItems)
   }
 
-  const updateElement = (id: string, updates: DraggableItem) => {
-    setElements(
-      elements.map((el: DraggableItem) =>
-        el.id === id ? { ...el, ...updates } : el
-      )
-    )
+  const updateElement = (type: string, updates: DraggableItem) => {
+    const newTemplateItems = { ...elements, [type]: updates }
+
+    setElements(newTemplateItems)
   }
 
-  const removeElement = (id: string) => {
-    setElements(elements.filter((el: DraggableItem) => el.id !== id))
+  const removeElement = (type: string) => {
+    const newTemplateItems = { ...elements, [type]: null }
+
+    setElements(newTemplateItems)
   }
 
-  const patchElements = (newElements: DraggableItem[]) => {
+  const patchElements = (newElements: TemplateItems) => {
     setElements(newElements)
   }
 
-  const editItem = (id: string, text: string) => {
-    setEditingItemId(id)
+  const editItem = (type: string, text: string) => {
+    setEditingItem(type)
     setEditedText(text)
   }
 
@@ -53,9 +56,9 @@ export function useTemplate(defaultElements: DraggableItem[]) {
   }
 
   const handleSaveText = (element: DraggableItem) => {
-    if (editingItemId) {
-      updateElement(editingItemId, { ...element, text: editedText })
-      setEditingItemId(null)
+    if (editingItem) {
+      updateElement(editingItem, { ...element, text: editedText })
+      setEditingItem(null)
     }
   }
 
@@ -69,6 +72,6 @@ export function useTemplate(defaultElements: DraggableItem[]) {
     editItem,
     handleTextChange,
     handleSaveText,
-    editingItemId
+    editingItem
   }
 }

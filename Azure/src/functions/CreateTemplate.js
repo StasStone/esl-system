@@ -1,4 +1,5 @@
 const { app } = require('@azure/functions')
+const { v4 } = require('uuid')
 const cosmosClient = require('../CosmosClient')
 
 const databaseId = process.env.COSMOS_DB_DATABASE_ID
@@ -10,14 +11,20 @@ app.http('createTemplate', {
     route: 'templates/new',
     handler: async (request, context) => {
         const { items } = await request.json()
+        context.log(items)
 
-        if (items.length === 0) {
+        if (items) {
             context.res = {
                 status: 400,
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ error: "Missing template items" })
             }
             return
+        }
+
+        const newTemplate = {
+            template_id: v4(),
+            ...items
         }
 
         try {
