@@ -8,6 +8,7 @@ import LabelsTablePage from './pages/LabelsTablePage'
 import LoginPage from './pages/LoginPage/LoginPage'
 import ProtectedRoute from './pages/ProtectedRoute'
 import { AuthProvider } from './pages/AuthProvider'
+import SetupPage from './pages/SetupPage'
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
             <Route index element={<Navigate replace to="labels" />} />
             <Route path="products" element={<ProductsTablePage />} />
             <Route path="labels" element={<LabelsTablePage />} />
+            <Route path="setup" element={<SetupPage />} />
             <Route path="templates" element={<TemplatePage />}>
               <Route
                 path="/templates/:templateTitle"
