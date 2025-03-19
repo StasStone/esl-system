@@ -1,3 +1,9 @@
+import LabelScanner from '../components/LabelScanner/LabelScanner'
+
 export default function SetupPage() {
-  return <div>SetupPage</div>
+  return (
+    <div>
+      <LabelScanner />
+    </div>
+  )
 }
