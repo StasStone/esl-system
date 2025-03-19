@@ -1,18 +1,16 @@
-import { useEffect, useState } from 'react'
-import Table from '../components/Table/Table'
-
+import { useState, useEffect } from 'react'
+import CreateEditProductForm from '../../components/CreateEditProductForm/CreateEditProductForm'
+import Filter from '../../components/Filter/Filter'
+import Modal from '../../components/Modal/Modal'
+import Table from '../../components/Table/Table'
+import useDeleteProduct from '../../hooks/useDeleteProduct'
+import useFilter from '../../hooks/useFilter'
 import {
-  defaultProductFilterParams,
   Product,
-  productAttributes,
-  ProductFilterParams
-} from '../models/product'
-import CreateEditProductForm from '../components/CreateEditProductForm/CreateEditProductForm'
-import Filter from '../components/Filter/Filter'
-import useFilter from '../hooks/useFilter'
-import useDeleteProduct from '../hooks/useDeleteProduct'
-import './ProductsTablePage.scss'
-import Modal from '../components/Modal/Modal'
+  ProductFilterParams,
+  defaultProductFilterParams,
+  productAttributes
+} from '../../models/product'
 
 function ProductsTablePage() {
   const productTableHeaders = [
