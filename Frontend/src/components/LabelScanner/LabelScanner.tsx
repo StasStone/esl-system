@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useEffect } from 'react'
 import { QrReader } from 'react-qr-reader'
 import Quagga from '@ericblade/quagga2'
+import './LabelScanner.scss'
 
 export default function LabelScanner() {
   const [qrData, setQrData] = useState(null)
@@ -52,7 +53,7 @@ export default function LabelScanner() {
   }, [isScanning])
 
   return (
-    <div className="p-4 flex flex-col gap-4 items-center">
+    <div className="scanner__container">
       <h1 className="text-xl font-bold">QR & Barcode Scanner</h1>
       <div className="w-full max-w-md p-4">
         <div>
@@ -66,9 +67,9 @@ export default function LabelScanner() {
         </div>
       </div>
       {qrData && (
-        <div className="w-full max-w-md p-4">
+        <div className="scanned-data__container">
           <div>
-            <h2 className="text-lg font-semibold">Scanned QR Data</h2>
+            <h2 className="scanned-data__title">Scanned QR Data</h2>
             <p>{qrData}</p>
             <button onClick={() => setIsScanning(true)} className="mt-2">
               Scan Barcode
@@ -77,9 +78,9 @@ export default function LabelScanner() {
         </div>
       )}
       {barcodeData && (
-        <div className="w-full max-w-md p-4">
+        <div className="scanned-data_container">
           <div>
-            <h2 className="text-lg font-semibold">Scanned Barcode</h2>
+            <h2 className="scanned-data__title">Scanned Barcode</h2>
             <p>{barcodeData}</p>
           </div>
         </div>
