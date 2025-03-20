@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useEffect } from 'react'
 import { QrReader } from 'react-qr-reader'
-import Quagga from 'quagga'
+import Quagga from '@ericblade/quagga2'
 
 export default function LabelScanner() {
   const [qrData, setQrData] = useState(null)
@@ -30,7 +30,7 @@ export default function LabelScanner() {
           },
           locate: true
         },
-        function (err) {
+        function (err: any) {
           if (err) {
             console.error('Error initializing Quagga:', err)
             return
@@ -39,7 +39,7 @@ export default function LabelScanner() {
         }
       )
 
-      Quagga.onDetected(data => {
+      Quagga.onDetected((data: any) => {
         setBarcodeData(data.codeResult.code)
         setIsScanning(false)
         Quagga.stop()
@@ -54,36 +54,35 @@ export default function LabelScanner() {
   return (
     <div className="p-4 flex flex-col gap-4 items-center">
       <h1 className="text-xl font-bold">QR & Barcode Scanner</h1>
-      <Card className="w-full max-w-md p-4">
-        <CardContent>
+      <div className="w-full max-w-md p-4">
+        <div>
           <h2 className="text-lg font-semibold">Scan QR Code</h2>
           <QrReader
             constraints={{ facingMode: 'environment' }}
-            onResult={(result, error) => {
+            onResult={(result: any, error) => {
               if (result) setQrData(result?.text)
             }}
-            style={{ width: '100%' }}
           />
-        </CardContent>
-      </Card>
+        </div>
+      </div>
       {qrData && (
-        <Card className="w-full max-w-md p-4">
-          <CardContent>
+        <div className="w-full max-w-md p-4">
+          <div>
             <h2 className="text-lg font-semibold">Scanned QR Data</h2>
             <p>{qrData}</p>
-            <Button onClick={() => setIsScanning(true)} className="mt-2">
+            <button onClick={() => setIsScanning(true)} className="mt-2">
               Scan Barcode
-            </Button>
-          </CardContent>
-        </Card>
+            </button>
+          </div>
+        </div>
       )}
       {barcodeData && (
-        <Card className="w-full max-w-md p-4">
-          <CardContent>
+        <div className="w-full max-w-md p-4">
+          <div>
             <h2 className="text-lg font-semibold">Scanned Barcode</h2>
             <p>{barcodeData}</p>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       )}
     </div>
   )
