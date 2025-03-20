@@ -1,5 +1,4 @@
 export type DraggableItem = {
-  id: string
   x: number
   y: number
   width: number
@@ -32,4 +31,24 @@ export const MapTypeToSize: TypeToSize = {
   Producer: { width: 150, height: 50 },
   Discount: { width: 100, height: 30 },
   Title: { width: 200, height: 60 }
+}
+
+export type Template = {
+  template_id: string
+  store_id: string
+  items: TemplateItems
+}
+
+export type TemplateItems = {
+  title: DraggableItem | null
+  price: DraggableItem | null
+  discount: DraggableItem | null
+  producer: DraggableItem | null
+}
+
+export const defaultTemplateItems: TemplateItems = {
+  title: null,
+  price: null,
+  discount: null,
+  producer: null
 }

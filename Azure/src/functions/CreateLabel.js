@@ -12,12 +12,11 @@ app.http('createLabel', {
         const { product_id, id, last_updated } = await request.json()
 
         if (!product_id || !last_updated) {
-            context.res = {
+            return {
                 status: 400,
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ error: "Missing required parameters." })
             }
-            return
         }
 
         const newLabel = {
@@ -36,7 +35,7 @@ app.http('createLabel', {
 
             context.log("Label created successfully:", createdLabel)
 
-            context.res = {
+            return {
                 status: 201,
                 headers: {
                     "Content-Type": "application/json",
@@ -44,7 +43,7 @@ app.http('createLabel', {
                 body: JSON.stringify(createdLabel)
             }
         } catch (error) {
-            context.res = {
+            return {
                 status: 500,
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ error: "Error creating label." })

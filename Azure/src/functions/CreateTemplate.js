@@ -1,53 +1,51 @@
 const { app } = require('@azure/functions')
+const { v4 } = require('uuid')
 const cosmosClient = require('../CosmosClient')
 
 const databaseId = process.env.COSMOS_DB_DATABASE_ID
-const containerId = process.env.COSMOS_DB_CONTAINER_PRODUCTS
+const containerId = process.env.COSMOS_DB_CONTAINER_TEMPLATES
 
-app.http('createProduct', {
+app.http('createTemplate', {
     methods: ['POST'],
     authLevel: 'anonymous',
-    route: 'products/new',
+    route: 'templates/new',
     handler: async (request, context) => {
-        const { id, labels, producer, price, discount = 0, name } = await request.json()
-        context.log(labels)
-        if (!labels || !producer || price === undefined || !name || !id) {
+        const { items, store_id } = await request.json()
+
+        if (!items) {
             return {
                 status: 400,
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ error: "Missing required parameters." })
+                body: JSON.stringify({ error: "Missing template items" })
             }
         }
 
-        const newProduct = {
-            id,
-            producer,
-            price,
-            discount,
-            name,
-            labels
+        const newTemplate = {
+            template_id: v4(),
+            store_id,
+            ...items
         }
 
         try {
             const database = cosmosClient.database(databaseId)
             const container = database.container(containerId)
 
-            const { resource: createdProduct } = await container.items.upsert(newProduct)
+            const { resource: createdTemplate } = await container.items.upsert(newTemplate)
 
-            context.log(createdProduct)
+            context.log(createdTemplate)
 
             return {
                 status: 201,
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(createdProduct)
+                body: JSON.stringify(createdTemplate)
             }
         } catch (error) {
             return {
                 status: 500,
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ error: "Error creating product." })
+                body: JSON.stringify({ error: "Error creating template." })
             }
         }
     }

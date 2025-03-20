@@ -3,11 +3,12 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import TemplatePage from './pages/TemplatePage'
 import AppLayout from './pages/Layout/Layout'
 import LabelEditor from './components/LabelEditor/LabelEditor'
-import ProductsTablePage from './pages/ProductsTablePage'
+import ProductsTablePage from './pages/ProductsTablePage/ProductsTablePage'
 import LabelsTablePage from './pages/LabelsTablePage'
 import LoginPage from './pages/LoginPage/LoginPage'
 import ProtectedRoute from './pages/ProtectedRoute'
 import { AuthProvider } from './pages/AuthProvider'
+import SetupPage from './pages/SetupPage'
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
               />
             </Route>
           </Route>
+          <Route path="setup" element={<SetupPage />} />
           <Route path="login" element={<LoginPage />} />
           {/*
         <Route path="*" element={<NotFoundPage />} /> */}
