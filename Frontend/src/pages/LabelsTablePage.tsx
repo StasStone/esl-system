@@ -13,6 +13,7 @@ import useDeleteLabel from '../hooks/useDeleteLabel'
 import EditLabelForm from '../components/EditLabelForm/EditLabelForm'
 import Modal from '../components/Modal/Modal'
 import Pagination from '../components/Pagination/Pagination'
+import Loader from '../components/Loader/Loader'
 
 function LabelsTablePage() {
   const labelTableHeaders = ['id', 'product_id', 'last_updated']
@@ -36,6 +37,7 @@ function LabelsTablePage() {
     filters: LabelFilterParams,
     token: string | null
   ) {
+    setLoading(true)
     const res = await fetch('http://localhost:7071/api/labels', {
       method: 'POST',
       body: JSON.stringify({ filters, limit, continuationToken: token })
@@ -43,6 +45,7 @@ function LabelsTablePage() {
     const data = await res.json()
     console.log(data)
     if (data && data.labels) setFilteredData(data.labels)
+    setLoading(false)
   }
 
   useEffect(() => {
@@ -94,28 +97,36 @@ function LabelsTablePage() {
           </Modal.Window>
         </Modal>
       </div>
-      <Table>
-        <Table.Header headers={labelTableHeaders}></Table.Header>
-        <Table.Body
-          data={filteredData}
-          render={label => (
-            <Table.Row
-              modalName={modalName}
-              key={label.id}
-              item={label}
-              handleDeleteItem={() => deleteLabel(label.id, label.product_id)}
-            >
-              <EditLabelForm label={label} />
-            </Table.Row>
-          )}
-        ></Table.Body>
-      </Table>
-      <Pagination
-        onNext={handleNextPage}
-        onPrev={handlePreviousPage}
-        continuationToken={continuationToken}
-        previousTokens={previousTokens}
-      />
+      {loading ? (
+        <Loader width="1rem" height="1rem" />
+      ) : (
+        <div>
+          <Table>
+            <Table.Header headers={labelTableHeaders}></Table.Header>
+            <Table.Body
+              data={filteredData}
+              render={label => (
+                <Table.Row
+                  modalName={modalName}
+                  key={label.id}
+                  item={label}
+                  handleDeleteItem={() =>
+                    deleteLabel(label.id, label.product_id)
+                  }
+                >
+                  <EditLabelForm label={label} />
+                </Table.Row>
+              )}
+            ></Table.Body>
+          </Table>
+          <Pagination
+            onNext={handleNextPage}
+            onPrev={handlePreviousPage}
+            continuationToken={continuationToken}
+            previousTokens={previousTokens}
+          />
+        </div>
+      )}
     </>
   )
 }
