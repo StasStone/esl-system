@@ -55,7 +55,7 @@ function LabelsTablePage() {
     if (isFilterEmpty() || !isFilterActive()) {
       getData(defaultLabelFilterParams, null)
     }
-  }, [appliedFilterParams])
+  }, [appliedFilterParams, loading])
 
   function handleApplyFilters(labelFilter: LabelFilterParams): void {
     setAppliedFilterParams(labelFilter)

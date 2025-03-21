@@ -68,7 +68,7 @@ function ProductsTablePage() {
     if (isFilterEmpty() || !isFilterActive()) {
       getData(defaultProductFilterParams, null)
     }
-  }, [appliedFilterParams])
+  }, [appliedFilterParams, loading])
 
   function handleApplyFilters(productFilter: ProductFilterParams): void {
     setAppliedFilterParams(productFilter)
