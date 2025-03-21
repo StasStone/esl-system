@@ -1,6 +1,7 @@
 import { ReactNode, useContext, useEffect } from 'react'
-import AuthContext from './AuthProvider'
+import AuthContext from '../AuthProvider'
 import { useNavigate } from 'react-router-dom'
+import Loader from '../../components/Loader/Loader'
 
 const ProtectedRoute = ({ children }: { children: ReactNode }) => {
   const navigate = useNavigate()
@@ -16,7 +17,11 @@ const ProtectedRoute = ({ children }: { children: ReactNode }) => {
   )
 
   if (isLoading) {
-    return <div>Content is loading</div>
+    return (
+      <div className="centered-loader">
+        <Loader width="2rem" height="2rem" />
+      </div>
+    )
   }
 
   return children

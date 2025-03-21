@@ -17,3 +17,12 @@
     background-color: var(--color-grey-700);
   }
 }
+
+.nav__link-active {
+  padding: 0.4rem;
+  border-radius: var(--border-radius-sm);
+  padding: 0.4rem;
+  text-transform: capitalize;
+
+  background-color: var(--color-grey-700);
+}

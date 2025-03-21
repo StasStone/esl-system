@@ -6,7 +6,7 @@ import LabelEditor from './components/LabelEditor/LabelEditor'
 import ProductsTablePage from './pages/ProductsTablePage/ProductsTablePage'
 import LabelsTablePage from './pages/LabelsTablePage'
 import LoginPage from './pages/LoginPage/LoginPage'
-import ProtectedRoute from './pages/ProtectedRoute'
+import ProtectedRoute from './pages/ProtectedRoute/ProtectedRoute'
 import { AuthProvider } from './pages/AuthProvider'
 import SetupPage from './pages/SetupPage'
 
