@@ -1,0 +1,24 @@
+.pagination-controls {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pagination-controls__btn {
+  background-color: var(--color-brand-600);
+  border: none;
+  border-radius: var(--border-radius-sm);
+  box-shadow: var(--shadow-sm);
+
+  color: var(--color-grey-800);
+
+  &:hover {
+    background-color: var(--color-brand-700);
+  }
+
+  &:disabled {
+    background-color: var(--color-brand-200);
+  }
+}

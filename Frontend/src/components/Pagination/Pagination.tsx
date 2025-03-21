@@ -15,11 +15,19 @@ export default function Pagination({
 }: PaginationProps) {
   return (
     <div className="pagination-controls">
-      <button onClick={onPrev} disabled={previousTokens.length === 0}>
+      <button
+        className="pagination-controls__btn"
+        onClick={onPrev}
+        disabled={previousTokens.length === 0}
+      >
         Previous Page
       </button>
 
-      <button onClick={onNext} disabled={!continuationToken}>
+      <button
+        className="pagination-controls__btn"
+        onClick={onNext}
+        disabled={!continuationToken}
+      >
         Next Page
       </button>
     </div>
