@@ -11,6 +11,7 @@ import {
   defaultProductFilterParams,
   productAttributes
 } from '../../models/product'
+import Pagination from '../../components/Pagination/Pagination'
 
 function ProductsTablePage() {
   const productTableHeaders = [
@@ -29,29 +30,63 @@ function ProductsTablePage() {
     useState<ProductFilterParams>(defaultProductFilterParams)
   const { isFilterActive, isFilterEmpty } = useFilter(activeFilterParams)
   const { deleteProduct } = useDeleteProduct()
+  const [continuationToken, setContinuationToken] = useState<string | null>(
+    null
+  )
+  const [previousTokens, setPreviousTokens] = useState<string[]>([])
+  const [loading, setLoading] = useState(false)
+  const limit = 10
   const modalName = 'product-form'
 
-  useEffect(() => {
-    const getData = async function (filters: ProductFilterParams) {
-      const res = await fetch('http://localhost:7071/api/products', {
-        method: 'POST',
-        body: JSON.stringify(filters)
-      })
-      const data = await res.json()
-      console.log(data)
-      if (data && data.products) setFilteredData(data.products)
-    }
+  const getData = async function (
+    filters: ProductFilterParams,
+    token: string | null
+  ) {
+    const res = await fetch('http://localhost:7071/api/products', {
+      method: 'POST',
+      body: JSON.stringify({ filters, limit, continuationToken: token })
+    })
+    const data = await res.json()
+    console.log(data)
+    if (data && data.products) {
+      setFilteredData(data.products)
+      setContinuationToken(data.continuationToken || null)
 
+      if (token && !previousTokens.includes(token)) {
+        setPreviousTokens([...previousTokens, token])
+      }
+    }
+    setLoading(false)
+  }
+
+  useEffect(() => {
     if (isFilterActive() && !isFilterEmpty()) {
-      getData(activeFilterParams)
+      getData(activeFilterParams, null)
     }
     if (isFilterEmpty() || !isFilterActive()) {
-      getData(defaultProductFilterParams)
+      getData(defaultProductFilterParams, null)
     }
   }, [appliedFilterParams])
 
   function handleApplyFilters(productFilter: ProductFilterParams): void {
     setAppliedFilterParams(productFilter)
+    setPreviousTokens([])
+    setContinuationToken(null)
+  }
+
+  function handleNextPage() {
+    if (continuationToken) {
+      getData(appliedFilterParams, continuationToken)
+    }
+  }
+
+  function handlePreviousPage() {
+    if (previousTokens.length > 1) {
+      const newTokens = [...previousTokens]
+      newTokens.pop()
+      setPreviousTokens(newTokens)
+      getData(appliedFilterParams, newTokens[newTokens.length - 1] || null)
+    }
   }
 
   return (
@@ -93,6 +128,12 @@ function ProductsTablePage() {
           )}
         ></Table.Body>
       </Table>
+      <Pagination
+        onNext={handleNextPage}
+        onPrev={handlePreviousPage}
+        continuationToken={continuationToken}
+        previousTokens={previousTokens}
+      />
     </>
   )
 }

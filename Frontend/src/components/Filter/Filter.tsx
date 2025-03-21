@@ -39,6 +39,7 @@ function Filter<T extends { [key: string]: FilterParam }>({
         }
       }
       handleApplyFilters(newFilterParams)
+      console.log(newFilterParams)
       return newFilterParams
     })
   }

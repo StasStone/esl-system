@@ -13,7 +13,9 @@ app.http('getProducts', {
             // Get a reference to the database and container
             const database = cosmosClient.database(databaseId)
             const container = database.container(containerId)
-            const filters = await request.json()
+            const { filters = {}, limit = 10, continuationToken } = await request.json()
+
+            context.log(filters)
 
             // Define a query to filter products
             let query =
@@ -21,6 +23,7 @@ app.http('getProducts', {
             const params = []
             Object.entries(filters).forEach(([key, filter], index) => {
                 if (filter.active && filter.value) {
+                    context.log(` AND c.${key} = @param${index}`)
                     query += ` AND c.${key} = @param${index}`
                     params.push({ name: `@param${index}`, value: filter.value })
                 }
@@ -30,26 +33,20 @@ app.http('getProducts', {
                 parameters: params
             }
 
-            const { resources: products } = await container.items
-                .query(querySpec)
-                .fetchAll()
+            // Execute query with pagination
+            const queryIterator = container.items.query(querySpec, {
+                maxItemCount: limit,
+                continuationToken: continuationToken || undefined
+            })
 
-            let filteredProducts = products
-
-            filteredProducts = products.filter(data =>
-                Object.entries(filters).every(([key, filter]) => {
-                    if (!filter.active || !filter.value) return true
-                    const dataValue = data[key]
-                    return dataValue?.toString().toLowerCase() === filter.value
-                })
-            )
+            const { resources: products, continuationToken: nextContinuationToken } = await queryIterator.fetchNext()
 
             return {
                 status: 200,
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ products: filteredProducts })
+                body: JSON.stringify({ products: products, continuationToken: nextContinuationToken })
             }
         } catch (error) {
             return {
