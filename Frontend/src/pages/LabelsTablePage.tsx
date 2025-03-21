@@ -12,6 +12,7 @@ import useFilter from '../hooks/useFilter'
 import useDeleteLabel from '../hooks/useDeleteLabel'
 import EditLabelForm from '../components/EditLabelForm/EditLabelForm'
 import Modal from '../components/Modal/Modal'
+import Pagination from '../components/Pagination/Pagination'
 
 function LabelsTablePage() {
   const labelTableHeaders = ['id', 'product_id', 'last_updated']
@@ -22,32 +23,56 @@ function LabelsTablePage() {
   const [appliedFilterParams, setAppliedFilterParams] =
     useState<LabelFilterParams>(defaultLabelFilterParams)
   const { isFilterActive, isFilterEmpty } = useFilter(activeFilterParams)
-
   const { deleteLabel } = useDeleteLabel()
-
+  const [continuationToken, setContinuationToken] = useState<string | null>(
+    null
+  )
+  const [previousTokens, setPreviousTokens] = useState<string[]>([])
+  const [loading, setLoading] = useState(false)
+  const limit = 10
   const modalName = 'label-form'
 
-  useEffect(() => {
-    const getData = async function (filters: LabelFilterParams) {
-      const res = await fetch('http://localhost:7071/api/labels', {
-        method: 'POST',
-        body: JSON.stringify(filters)
-      })
-      const data = await res.json()
-      console.log(data)
-      if (data && data.labels) setFilteredData(data.labels)
-    }
+  const getData = async function (
+    filters: LabelFilterParams,
+    token: string | null
+  ) {
+    const res = await fetch('http://localhost:7071/api/labels', {
+      method: 'POST',
+      body: JSON.stringify({ filters, limit, continuationToken: token })
+    })
+    const data = await res.json()
+    console.log(data)
+    if (data && data.labels) setFilteredData(data.labels)
+  }
 
+  useEffect(() => {
     if (isFilterActive() && !isFilterEmpty()) {
-      getData(activeFilterParams)
+      getData(activeFilterParams, null)
     }
     if (isFilterEmpty() || !isFilterActive()) {
-      getData(defaultLabelFilterParams)
+      getData(defaultLabelFilterParams, null)
     }
   }, [appliedFilterParams])
 
   function handleApplyFilters(labelFilter: LabelFilterParams): void {
     setAppliedFilterParams(labelFilter)
+    setPreviousTokens([])
+    setContinuationToken(null)
+  }
+
+  function handleNextPage() {
+    if (continuationToken) {
+      getData(appliedFilterParams, continuationToken)
+    }
+  }
+
+  function handlePreviousPage() {
+    if (previousTokens.length > 1) {
+      const newTokens = [...previousTokens]
+      newTokens.pop()
+      setPreviousTokens(newTokens)
+      getData(appliedFilterParams, newTokens[newTokens.length - 1] || null)
+    }
   }
 
   return (
@@ -85,6 +110,12 @@ function LabelsTablePage() {
           )}
         ></Table.Body>
       </Table>
+      <Pagination
+        onNext={handleNextPage}
+        onPrev={handlePreviousPage}
+        continuationToken={continuationToken}
+        previousTokens={previousTokens}
+      />
     </>
   )
 }
