@@ -11,6 +11,14 @@
   overflow: hidden;
 }
 
+.label-editor__template-current {
+  position: relative;
+  width: 400px;
+  height: 300px;
+  border: 2px solid var(--color-brand-800);
+  overflow: hidden;
+}
+
 .label-editor__item-delete {
   position: absolute;
   background-color: transparent;

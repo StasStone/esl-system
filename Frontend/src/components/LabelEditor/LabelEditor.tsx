@@ -8,7 +8,7 @@ import {
   DraggableItem,
   TemplateItems
 } from '../../models/draggable-item'
-import { useContext, useEffect } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import useSaveTemplate from '../../hooks/useSaveTemplate'
 import AuthContext from '../../pages/AuthProvider'
@@ -28,6 +28,8 @@ const LabelEditor = () => {
   } = useTemplate(defaultTemplateItems)
   const { templateTitle } = useParams()
   const { createTemplate } = useSaveTemplate()
+  const [isCurrent, setIsCurrent] = useState<boolean>(false)
+
   const { user } = useContext(AuthContext)!
 
   useEffect(
@@ -42,6 +44,8 @@ const LabelEditor = () => {
         if (template.items) {
           patchElements(template.items)
         }
+
+        setIsCurrent(template.current)
       }
 
       getTemplate()
@@ -72,7 +76,9 @@ const LabelEditor = () => {
           </button>
         ))}
       </div>
-      <div className="label-editor__template">
+      <div
+        className={`${isCurrent} ? "label-editor__template-current" : "label-editor__template"`}
+      >
         {Object.values(elements).map(
           (el: DraggableItem | null) =>
             el && (
