@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { TemplateItems } from '../models/draggable-item'
-
+import { Template, TemplateItems } from '../models/draggable-item'
+import { v4 as uuidv4 } from 'uuid'
 export default function useSaveTemplate() {
   const [isCreating, setIsCreating] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -15,9 +15,16 @@ export default function useSaveTemplate() {
     setSuccessMessage(null)
 
     try {
+      const newTemplate: Template = {
+        template_id: uuidv4(),
+        items: templateItems,
+        store_id: store_id,
+        current: true
+      }
+
       const res = await fetch(`http://localhost:7071/api/templates/new`, {
         method: 'POST',
-        body: JSON.stringify({ items: templateItems, store_id: store_id })
+        body: JSON.stringify(newTemplate)
       })
 
       if (!res.ok) {

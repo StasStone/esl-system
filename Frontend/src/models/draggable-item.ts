@@ -37,6 +37,7 @@ export type Template = {
   template_id: string
   store_id: string
   items: TemplateItems
+  current: boolean
 }
 
 export type TemplateItems = {
