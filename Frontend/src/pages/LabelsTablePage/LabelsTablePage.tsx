@@ -1,19 +1,20 @@
 import { useEffect, useState } from 'react'
-import Table from '../components/Table/Table'
+import Table from '../../components/Table/Table'
 
 import {
   defaultLabelFilterParams,
   Label,
   labelAttributes,
   LabelFilterParams
-} from '../models/label'
-import Filter from '../components/Filter/Filter'
-import useFilter from '../hooks/useFilter'
-import useDeleteLabel from '../hooks/useDeleteLabel'
-import EditLabelForm from '../components/EditLabelForm/EditLabelForm'
-import Modal from '../components/Modal/Modal'
-import Pagination from '../components/Pagination/Pagination'
-import Loader from '../components/Loader/Loader'
+} from '../../models/label'
+import Filter from '../../components/Filter/Filter'
+import useFilter from '../../hooks/useFilter'
+import useDeleteLabel from '../../hooks/useDeleteLabel'
+import EditLabelForm from '../../components/EditLabelForm/EditLabelForm'
+import Modal from '../../components/Modal/Modal'
+import Pagination from '../../components/Pagination/Pagination'
+import Loader from '../../components/Loader/Loader'
+import './LabelsTablePage.scss'
 
 function LabelsTablePage() {
   const labelTableHeaders = ['id', 'product_id', 'last_updated']
@@ -55,7 +56,7 @@ function LabelsTablePage() {
     if (isFilterEmpty() || !isFilterActive()) {
       getData(defaultLabelFilterParams, null)
     }
-  }, [appliedFilterParams, loading])
+  }, [appliedFilterParams])
 
   function handleApplyFilters(labelFilter: LabelFilterParams): void {
     setAppliedFilterParams(labelFilter)
@@ -98,7 +99,9 @@ function LabelsTablePage() {
         </Modal>
       </div>
       {loading ? (
-        <Loader width="1rem" height="1rem" />
+        <div className="table__loader">
+          <Loader width="1rem" height="1rem" />
+        </div>
       ) : (
         <div>
           <Table>

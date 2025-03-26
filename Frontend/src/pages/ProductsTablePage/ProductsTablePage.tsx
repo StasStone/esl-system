@@ -13,6 +13,7 @@ import {
 } from '../../models/product'
 import Pagination from '../../components/Pagination/Pagination'
 import Loader from '../../components/Loader/Loader'
+import './ProductsTablePage.scss'
 
 function ProductsTablePage() {
   const productTableHeaders = [
@@ -68,7 +69,7 @@ function ProductsTablePage() {
     if (isFilterEmpty() || !isFilterActive()) {
       getData(defaultProductFilterParams, null)
     }
-  }, [appliedFilterParams, loading])
+  }, [appliedFilterParams])
 
   function handleApplyFilters(productFilter: ProductFilterParams): void {
     setAppliedFilterParams(productFilter)
@@ -113,7 +114,9 @@ function ProductsTablePage() {
         </Modal>
       </div>
       {loading ? (
-        <Loader width="1rem" height="1rem" />
+        <div className="table__loader">
+          <Loader width="1rem" height="1rem" />
+        </div>
       ) : (
         <div>
           <Table>
