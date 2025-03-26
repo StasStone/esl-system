@@ -12,6 +12,8 @@ import {
   productAttributes
 } from '../../models/product'
 import Pagination from '../../components/Pagination/Pagination'
+import Loader from '../../components/Loader/Loader'
+import './ProductsTablePage.scss'
 
 function ProductsTablePage() {
   const productTableHeaders = [
@@ -42,6 +44,7 @@ function ProductsTablePage() {
     filters: ProductFilterParams,
     token: string | null
   ) {
+    setLoading(true)
     const res = await fetch('http://localhost:7071/api/products', {
       method: 'POST',
       body: JSON.stringify({ filters, limit, continuationToken: token })
@@ -110,30 +113,38 @@ function ProductsTablePage() {
           </Modal>
         </Modal>
       </div>
-      <Table>
-        <Table.Header headers={productTableHeaders}></Table.Header>
-        <Table.Body
-          data={filteredData}
-          render={product => (
-            <Table.Row
-              modalName={modalName}
-              key={product.id}
-              item={product}
-              handleDeleteItem={() =>
-                deleteProduct(product.id, product.producer)
-              }
-            >
-              <CreateEditProductForm product={product} />
-            </Table.Row>
-          )}
-        ></Table.Body>
-      </Table>
-      <Pagination
-        onNext={handleNextPage}
-        onPrev={handlePreviousPage}
-        continuationToken={continuationToken}
-        previousTokens={previousTokens}
-      />
+      {loading ? (
+        <div className="table__loader">
+          <Loader width="1rem" height="1rem" />
+        </div>
+      ) : (
+        <div>
+          <Table>
+            <Table.Header headers={productTableHeaders}></Table.Header>
+            <Table.Body
+              data={filteredData}
+              render={product => (
+                <Table.Row
+                  modalName={modalName}
+                  key={product.id}
+                  item={product}
+                  handleDeleteItem={() =>
+                    deleteProduct(product.id, product.producer)
+                  }
+                >
+                  <CreateEditProductForm product={product} />
+                </Table.Row>
+              )}
+            ></Table.Body>
+          </Table>
+          <Pagination
+            onNext={handleNextPage}
+            onPrev={handlePreviousPage}
+            continuationToken={continuationToken}
+            previousTokens={previousTokens}
+          />
+        </div>
+      )}
     </>
   )
 }

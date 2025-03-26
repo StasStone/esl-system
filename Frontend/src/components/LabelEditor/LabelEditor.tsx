@@ -8,10 +8,12 @@ import {
   DraggableItem,
   TemplateItems
 } from '../../models/draggable-item'
-import { useContext, useEffect } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import useSaveTemplate from '../../hooks/useSaveTemplate'
 import AuthContext from '../../pages/AuthProvider'
+import Loader from '../Loader/Loader'
+import './LabelEditor.scss'
 
 const LabelEditor = () => {
   const {
@@ -26,27 +28,35 @@ const LabelEditor = () => {
     handleTextChange,
     handleSaveText
   } = useTemplate(defaultTemplateItems)
-  const { templateTitle } = useParams()
+  const { templateId } = useParams()
   const { createTemplate } = useSaveTemplate()
+  const [isLoading, setIsLoading] = useState(false)
+  const [isCurrent, setIsCurrent] = useState(false)
+
   const { user } = useContext(AuthContext)!
 
   useEffect(
     function () {
       const getTemplate = async function () {
+        setIsLoading(true)
         const res = await fetch(
-          `http://localhost:7071/api/templates/${templateTitle}`
+          `http://localhost:7071/api/templates/${templateId}`
         )
-        const { data } = await res.json()
+        const data = await res.json()
+        console.log(data)
         const { template } = data
 
         if (template.items) {
           patchElements(template.items)
         }
+
+        setIsCurrent(template.current)
+        setIsLoading(false)
       }
 
       getTemplate()
     },
-    [templateTitle]
+    [templateId]
   )
 
   const handleSaveTemplate = () => {
@@ -57,6 +67,8 @@ const LabelEditor = () => {
   const isTemplateItemCreated = (type: string): boolean => {
     return !!elements[type as keyof TemplateItems]
   }
+
+  if (isLoading) return <Loader width="1rem" height="1rem" />
 
   return (
     <div className="label-editor__container">
@@ -72,7 +84,9 @@ const LabelEditor = () => {
           </button>
         ))}
       </div>
-      <div className="label-editor__template">
+      <div
+        className={`${isCurrent ? 'label-editor__template-current' : 'label-editor__template'}`}
+      >
         {Object.values(elements).map(
           (el: DraggableItem | null) =>
             el && (

@@ -1,5 +1,4 @@
 const { app } = require('@azure/functions')
-const { v4 } = require('uuid')
 const cosmosClient = require('../CosmosClient')
 
 const databaseId = process.env.COSMOS_DB_DATABASE_ID
@@ -10,7 +9,7 @@ app.http('createTemplate', {
     authLevel: 'anonymous',
     route: 'templates/new',
     handler: async (request, context) => {
-        const { items, store_id } = await request.json()
+        const { items, store_id, current, template_id } = await request.json()
 
         if (!items) {
             return {
@@ -21,8 +20,9 @@ app.http('createTemplate', {
         }
 
         const newTemplate = {
-            template_id: v4(),
+            template_id,
             store_id,
+            current,
             ...items
         }
 

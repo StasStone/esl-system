@@ -4,9 +4,9 @@ import TemplatePage from './pages/TemplatePage'
 import AppLayout from './pages/Layout/Layout'
 import LabelEditor from './components/LabelEditor/LabelEditor'
 import ProductsTablePage from './pages/ProductsTablePage/ProductsTablePage'
-import LabelsTablePage from './pages/LabelsTablePage'
+import LabelsTablePage from './pages/LabelsTablePage/LabelsTablePage'
 import LoginPage from './pages/LoginPage/LoginPage'
-import ProtectedRoute from './pages/ProtectedRoute'
+import ProtectedRoute from './pages/ProtectedRoute/ProtectedRoute'
 import { AuthProvider } from './pages/AuthProvider'
 import SetupPage from './pages/SetupPage'
 
@@ -26,10 +26,7 @@ function App() {
             <Route path="products" element={<ProductsTablePage />} />
             <Route path="labels" element={<LabelsTablePage />} />
             <Route path="templates" element={<TemplatePage />}>
-              <Route
-                path="/templates/:templateTitle"
-                element={<LabelEditor />}
-              />
+              <Route path="/templates/:templateId" element={<LabelEditor />} />
             </Route>
           </Route>
           <Route path="setup" element={<SetupPage />} />
