@@ -1,18 +1,27 @@
 import { useContext } from 'react'
-import './Header.scss'
 import AuthContext from '../../pages/AuthProvider'
+import Modal from '../Modal/Modal'
+import Settings from '../Settings/Settings'
+import './Header.scss'
 
 export default function Header() {
-  const { user } = useContext(AuthContext)!
+  const { user, isLoading } = useContext(AuthContext)!
+  const userModal = 'user-modal'
 
-  function handleUserClick() {
-    console.log('Click')
-  }
+  if (isLoading) return <div>Content loading</div>
+
   return (
-    <header className="header__container">
-      <div onClick={handleUserClick} className="header__user-info">
-        {user && user.email}
-      </div>
-    </header>
+    <>
+      <Modal>
+        <Modal>
+          <Modal.Open opens={userModal}>
+            <div className="header__user-info">{user?.email}</div>
+          </Modal.Open>
+          <Modal.Window name={userModal}>
+            <Settings user={user!} />
+          </Modal.Window>
+        </Modal>
+      </Modal>
+    </>
   )
 }

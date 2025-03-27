@@ -38,7 +38,9 @@ const AppLayout = () => {
 
   return (
     <div className="layout">
-      <Header />
+      <header className="header">
+        <Header />
+      </header>
       <aside className="sidebar">
         <SideNavigation links={routes} />
       </aside>

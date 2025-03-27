@@ -5,6 +5,14 @@
   overflow: hidden;
 }
 
+.header {
+  grid-area: header;
+  background-color: var(--color-grey-900);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
 .sidebar {
   grid-area: sidebar;
   color: white;
