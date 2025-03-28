@@ -27,12 +27,12 @@ export default function useUser() {
     }
   }
 
-  const updateUser = async (newUser: { email: string; password: string }) => {
+  const updateUser = async (newUser: User) => {
     setIsLoading(true)
     try {
       const res = await fetch('http://localhost:7071/api/users', {
         method: 'PUT',
-        body: JSON.stringify(newUser)
+        body: JSON.stringify({ user: newUser })
       })
 
       if (!res.ok) {
@@ -40,8 +40,8 @@ export default function useUser() {
       }
       const data = await res.json()
       console.log(data)
-
-      setUser(data)
+      const { user } = data
+      setUser(user)
     } catch (error: any) {
       setError(error.message)
     } finally {

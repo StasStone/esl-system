@@ -17,7 +17,7 @@ export default function Settings({ user }: { user: User }) {
   const { clearToken } = useContext(AuthContext)!
 
   function onSubmit(data: any) {
-    updateUser(data)
+    updateUser({ ...user, ...data })
     clearToken()
   }
 
