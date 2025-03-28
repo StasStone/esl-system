@@ -27,5 +27,27 @@ export default function useUser() {
     }
   }
 
-  return { error, isLoading, user, getUser }
+  const updateUser = async (newUser: User) => {
+    setIsLoading(true)
+    try {
+      const res = await fetch('http://localhost:7071/api/users', {
+        method: 'PUT',
+        body: JSON.stringify({ user: newUser })
+      })
+
+      if (!res.ok) {
+        throw new Error('Error updating the user')
+      }
+      const data = await res.json()
+      console.log(data)
+      const { user } = data
+      setUser(user)
+    } catch (error: any) {
+      setError(error.message)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  return { error, isLoading, user, getUser, updateUser }
 }

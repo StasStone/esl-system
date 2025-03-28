@@ -3,6 +3,7 @@ import './Layout.scss'
 import SideNavigation from '../../components/SideNavigation/SideNavigation'
 import { Link } from '../../models/template-link'
 import { useEffect, useState } from 'react'
+import Header from '../../components/Header/Header'
 const AppLayout = () => {
   const [routes, setRoutes] = useState<Link[]>([])
 
@@ -37,7 +38,9 @@ const AppLayout = () => {
 
   return (
     <div className="layout">
-      <header>Header</header>
+      <header className="header">
+        <Header />
+      </header>
       <aside className="sidebar">
         <SideNavigation links={routes} />
       </aside>

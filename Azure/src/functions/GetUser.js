@@ -41,7 +41,7 @@ app.http('getUser', {
             return {
                 status: 200,
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ user: { email: user.email, store_id: user.store_id } })
+                body: JSON.stringify(user)
             }
         } catch (error) {
             context.log(error.message)
