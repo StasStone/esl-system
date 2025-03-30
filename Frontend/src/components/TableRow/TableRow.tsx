@@ -11,19 +11,21 @@ type TableRowProps<T> = {
   handleDeleteItem: () => void
   children: ReactNode
   modalName: string
+  outlined: boolean
 }
 
 export default function TableRow({
   item,
   children,
   handleDeleteItem,
-  modalName
+  modalName,
+  outlined = false
 }: TableRowProps<any>) {
   const { id } = item
   const columns = Object.keys(item)
   const rowClass = rowClasses[columns.length - 1]
   return (
-    <div className={rowClass}>
+    <div className={`${rowClass} ${outlined && 'outlined_row'}`}>
       {Object.keys(item).map(prop => (
         <div key={prop}>{item[prop]}</div>
       ))}
