@@ -1,12 +1,8 @@
 const { app } = require('@azure/functions')
-const { Client } = require('azure-iot-device')
-const { Mqtt } = require('azure-iot-device-mqtt')
 const cosmosClient = require('../CosmosClient')
 
 const databaseId = process.env.COSMOS_DB_DATABASE_ID
 const containerId = process.env.COSMOS_DB_CONTAINER_LABELS
-const connectionString = process.env.IOT_HUB_CONNECTION_STRING
-const client = Client.fromConnectionString(connectionString, Mqtt)
 
 app.http('createLabel', {
     methods: ['POST'],

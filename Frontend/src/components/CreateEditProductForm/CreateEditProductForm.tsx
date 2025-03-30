@@ -12,14 +12,14 @@ export default function CreateEditProductForm({
 }: {
   product: Product | null
 }) {
-  const { register, handleSubmit, reset, getValues, formState } = useForm({
+  const { register, handleSubmit, getValues, formState } = useForm({
     defaultValues: product ? product : {}
   })
 
   const { errors } = formState
   const { close } = useContext(ModalContext)!
 
-  const { createProduct, isCreating } = useCreateProduct()
+  const { createProduct } = useCreateProduct()
 
   function onError() {
     console.log(formState.errors)
@@ -29,7 +29,7 @@ export default function CreateEditProductForm({
     const newLabelString = data.labels.toString()
     const newLabels = newLabelString.split(',')
     const newID = product ? product.id : uuidv4()
-    createProduct({ ...data, labels: newLabels, id: newID })
+    createProduct({ ...data, labels: newLabels, id: newID, updating: true })
     close()
   }
 
