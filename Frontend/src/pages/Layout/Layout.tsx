@@ -24,6 +24,7 @@ const AppLayout = () => {
       const builtRouts = [
         { name: 'labels', link: 'labels' },
         { name: 'products', link: 'products' },
+        { name: 'setup', link: 'setup' },
         {
           name: 'templates',
           subLinks: templateLinks,
