@@ -22,11 +22,11 @@ export default function TableRow({
   outlined = false
 }: TableRowProps<any>) {
   const { id } = item
-  const columns = Object.keys(item)
+  const columns = Object.keys(item).filter(item => item !== 'updating')
   const rowClass = rowClasses[columns.length - 1]
   return (
-    <div className={`${rowClass} ${outlined && 'outlined_row'}`}>
-      {Object.keys(item).map(prop => (
+    <div className={`${rowClass} ${outlined ? 'outlined__row' : ''}`}>
+      {columns.map(prop => (
         <div key={prop}>{item[prop]}</div>
       ))}
       <Modal>
