@@ -110,6 +110,7 @@ function LabelsTablePage() {
               data={filteredData}
               render={label => (
                 <Table.Row
+                  outlined={false}
                   modalName={modalName}
                   key={label.id}
                   item={label}

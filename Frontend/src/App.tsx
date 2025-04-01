@@ -25,11 +25,11 @@ function App() {
             <Route index element={<Navigate replace to="labels" />} />
             <Route path="products" element={<ProductsTablePage />} />
             <Route path="labels" element={<LabelsTablePage />} />
+            <Route path="setup" element={<SetupPage />} />
             <Route path="templates" element={<TemplatePage />}>
               <Route path="/templates/:templateId" element={<LabelEditor />} />
             </Route>
           </Route>
-          <Route path="setup" element={<SetupPage />} />
           <Route path="login" element={<LoginPage />} />
           {/*
         <Route path="*" element={<NotFoundPage />} /> */}

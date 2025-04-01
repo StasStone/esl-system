@@ -9,8 +9,13 @@
   },
   "dependencies": {
     "@azure/cosmos": "^4.2.0",
-    "@azure/functions": "^4.0.0",
-    "bcrypt-nodejs": "^0.0.3"
+    "@azure/event-hubs": "^5.12.2",
+    "@azure/functions": "^4.7.0",
+    "azure-iot-device": "^1.18.3",
+    "azure-iot-device-mqtt": "^1.16.3",
+    "azure-iothub": "^1.16.5",
+    "bcrypt-nodejs": "^0.0.3",
+    "dotenv": "^16.4.7"
   },
   "devDependencies": {
     "azure-functions-core-tools": "^4.x"

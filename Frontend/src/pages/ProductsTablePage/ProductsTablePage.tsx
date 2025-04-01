@@ -123,11 +123,12 @@ function ProductsTablePage() {
             <Table.Header headers={productTableHeaders}></Table.Header>
             <Table.Body
               data={filteredData}
-              render={product => (
+              render={(product: Product) => (
                 <Table.Row
                   modalName={modalName}
                   key={product.id}
                   item={product}
+                  outlined={product.updating}
                   handleDeleteItem={() =>
                     deleteProduct(product.id, product.producer)
                   }

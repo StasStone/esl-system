@@ -6,8 +6,8 @@ export type Product = {
   price: string
   discount?: string
   producer: string
-  description?: string
   labels: string[]
+  updating: boolean
 }
 
 export const productAttributes: Array<keyof ProductFilterParams> = [

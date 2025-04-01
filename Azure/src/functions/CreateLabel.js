@@ -14,8 +14,8 @@ app.http('createLabel', {
         if (!product_id || !last_updated) {
             return {
                 status: 400,
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ error: "Missing required parameters." })
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ error: 'Missing required parameters.' })
             }
         }
 
@@ -33,20 +33,20 @@ app.http('createLabel', {
             // Insert the new product into CosmosDB
             const { resource: createdLabel } = await container.items.create(newLabel)
 
-            context.log("Label created successfully:", createdLabel)
+            context.log('Label created successfully:', createdLabel)
 
             return {
                 status: 201,
                 headers: {
-                    "Content-Type": "application/json",
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(createdLabel)
             }
         } catch (error) {
             return {
                 status: 500,
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ error: "Error creating label." })
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ error: 'Error creating label.' })
             }
         }
     }
