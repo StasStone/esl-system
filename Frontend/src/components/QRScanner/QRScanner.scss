@@ -1,0 +1,18 @@
+.scanner {
+  display: flex;
+  flex-direction: column;
+  gap: 6rem;
+}
+
+.scanned-data__container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  align-items: center;
+  padding: 0.8rem 0rem;
+}
+
+.scanned-data__container p {
+  margin: 0;
+  padding: 0;
+}
