@@ -16,7 +16,7 @@ app.http('getLabels', {
             const { filters = {}, limit = 10, continuationToken } = await request.json()
 
             // Define query with filters
-            let query = 'SELECT c.label_id, c.product_id, c.last_updated FROM c WHERE 1=1'
+            let query = 'SELECT c.id, c.product_id, c.last_updated FROM c WHERE 1=1'
             const params = []
             Object.entries(filters).forEach(([key, filter], index) => {
                 if (filter.active && filter.value) {

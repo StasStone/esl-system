@@ -17,7 +17,7 @@ import Loader from '../../components/Loader/Loader'
 import './LabelsTablePage.scss'
 
 function LabelsTablePage() {
-  const labelTableHeaders = ['label_id', 'product_id', 'last_updated']
+  const labelTableHeaders = ['id', 'product_id', 'last_updated']
 
   const [filteredData, setFilteredData] = useState<Label[]>([])
   const [activeFilterParams, setActiveFilterParams] =
@@ -108,7 +108,7 @@ function LabelsTablePage() {
             <Table.Header headers={labelTableHeaders}></Table.Header>
             <Table.Body
               data={filteredData}
-              render={label => (
+              render={(label: Label) => (
                 <Table.Row
                   outlined={false}
                   modalName={modalName}

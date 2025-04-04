@@ -9,8 +9,8 @@ app.http('createLabel', {
     authLevel: 'anonymous',
     route: 'labels/new',
     handler: async (request, context) => {
-        const { product_id, label_id, last_updated } = await request.json()
-        context.log(product_id, label_id, last_updated)
+        const { product_id, id, last_updated } = await request.json()
+
         if (!product_id || !last_updated) {
             return {
                 status: 400,
@@ -20,7 +20,7 @@ app.http('createLabel', {
         }
 
         const newLabel = {
-            label_id,
+            id,
             product_id,
             last_updated
         }

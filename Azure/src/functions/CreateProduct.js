@@ -47,14 +47,22 @@ app.http('createProduct', {
             .query({ query, parameters: params })
             .fetchAll()
 
-        if (!products.length) {
-            return { status: 404, body: { error: 'Product not found.' } }
+        let newProductData = {
+            labels: [],
+            id,
+            producer,
+            price,
+            discount,
+            name,
+            updating,
         }
 
-        const oldProductData = products[0]
+        if (products.length) {
+            newProductData = { ...products[0], updating }
+        }
 
         if (!oldProductData.updating) {
-            await containerProducts.items.upsert({ ...oldProductData, updating })
+            await containerProducts.items.upsert(newProductData)
         }
 
         try {
@@ -82,9 +90,9 @@ app.http('createProduct', {
             const messagePromises = labels.map(async label_id => {
                 try {
                     const updateMessage = {
-                        update_id,
+                        id,
                         label_id,
-                        product_id: id,
+                        product_id,
                         producer,
                         price,
                         discount,

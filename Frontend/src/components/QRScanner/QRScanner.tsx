@@ -42,7 +42,7 @@ const QRScanner = () => {
       {scanned && !error ? (
         result ? (
           <div className="scanned-data__container">
-            <p>{result.label_id}</p>
+            <p>{result.id}</p>
             <p>{result.product_id}</p>
             <p>{result.last_updated || 'Newly created'}</p>
           </div>
