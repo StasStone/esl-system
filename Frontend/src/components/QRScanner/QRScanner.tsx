@@ -2,6 +2,7 @@ import { useState } from 'react'
 import QrReader from 'react-web-qr-reader'
 import { Label } from '../../models/label'
 import './QRScanner.scss'
+import { useCreateLabel } from '../../hooks/useCreateLabel'
 
 const QRScanner = () => {
   const delay = 500
@@ -15,12 +16,15 @@ const QRScanner = () => {
   const [error, setError] = useState<string>('')
   const [scanned, setScanned] = useState<boolean>()
 
+  const { createLabel } = useCreateLabel()
+
   const handleScan = (result: any) => {
     if (result) {
       try {
         const parsedData = JSON.parse(result.chunks[1].text)
         setResult(parsedData)
         setScanned(true)
+        createLabel(parsedData)
       } catch (error: any) {
         setError(error.message)
       }
@@ -38,7 +42,7 @@ const QRScanner = () => {
       {scanned && !error ? (
         result ? (
           <div className="scanned-data__container">
-            <p>{result.id}</p>
+            <p>{result.label_id}</p>
             <p>{result.product_id}</p>
             <p>{result.last_updated || 'Newly created'}</p>
           </div>

@@ -17,7 +17,7 @@ import Loader from '../../components/Loader/Loader'
 import './LabelsTablePage.scss'
 
 function LabelsTablePage() {
-  const labelTableHeaders = ['id', 'product_id', 'last_updated']
+  const labelTableHeaders = ['label_id', 'product_id', 'last_updated']
 
   const [filteredData, setFilteredData] = useState<Label[]>([])
   const [activeFilterParams, setActiveFilterParams] =
