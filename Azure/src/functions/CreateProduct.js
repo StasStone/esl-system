@@ -24,15 +24,16 @@ app.http('createProduct', {
     route: 'products/new',
     handler: async (request, context) => {
         const {
-            id,
+            id: product_id,
             labels,
             producer,
             price,
             discount = 0,
-            name
+            name,
+            updating
         } = await request.json()
 
-        if (!labels || !producer || price === undefined || !name || !id) {
+        if (!labels || !producer || price === undefined || !name || !product_id) {
             return { status: 400, body: { error: 'Missing required parameters.' } }
         }
 
@@ -42,14 +43,14 @@ app.http('createProduct', {
 
         // Fetch existing product data
         const query = 'SELECT * FROM c WHERE c.id = @id'
-        const params = [{ name: `@id`, value: id }]
+        const params = [{ name: `@id`, value: product_id }]
         const { resources: products } = await containerProducts.items
             .query({ query, parameters: params })
             .fetchAll()
 
         let newProductData = {
-            labels: [],
-            id,
+            labels,
+            product_id,
             producer,
             price,
             discount,
@@ -57,11 +58,7 @@ app.http('createProduct', {
             updating,
         }
 
-        if (products.length) {
-            newProductData = { ...products[0], updating }
-        }
-
-        if (!oldProductData.updating) {
+        if (!products.length) {
             await containerProducts.items.upsert(newProductData)
         }
 
@@ -75,7 +72,7 @@ app.http('createProduct', {
                     query:
                         "SELECT * FROM c WHERE c.product_id = @productId AND c.updateHash = @updateHash AND c.status = 'Pending'",
                     parameters: [
-                        { name: '@productId', value: id },
+                        { name: '@productId', value: product_id },
                         { name: '@updateHash', value: updateHash }
                     ]
                 })
@@ -90,7 +87,7 @@ app.http('createProduct', {
             const messagePromises = labels.map(async label_id => {
                 try {
                     const updateMessage = {
-                        id,
+                        id: update_id,
                         label_id,
                         product_id,
                         producer,
