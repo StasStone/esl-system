@@ -21,10 +21,15 @@ const QRScanner = () => {
   const handleScan = (result: any) => {
     if (result) {
       try {
-        const parsedData = JSON.parse(result.chunks[1].text)
-        setResult(parsedData)
+        const parsedLabelId = JSON.parse(result.chunks[1].text)
+        const createdLabel: Label = {
+          id: parsedLabelId,
+          product_id: '',
+          last_updated: 'Just updated'
+        }
+        setResult(createdLabel)
         setScanned(true)
-        createLabel(parsedData)
+        createLabel(createdLabel)
       } catch (error: any) {
         setError(error.message)
       }
@@ -33,7 +38,7 @@ const QRScanner = () => {
 
   const handleError = (error: any) => {
     console.log(error)
-    setError('Error scanning the qr code')
+    setError('Error scanning the QR code')
     setScanned(true)
   }
 
