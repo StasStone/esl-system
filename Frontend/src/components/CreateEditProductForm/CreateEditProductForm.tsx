@@ -12,6 +12,7 @@ export default function CreateEditProductForm({
 }: {
   product: Product | null
 }) {
+  console.log(product)
   const { register, handleSubmit, getValues, formState } = useForm({
     defaultValues: product ? product : {}
   })

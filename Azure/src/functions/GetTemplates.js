@@ -22,8 +22,6 @@ app.http('getTemplates', {
                 .query(query)
                 .fetchAll()
 
-            context.log(templates)
-
             return {
                 status: 200,
                 headers: {

@@ -60,6 +60,8 @@ app.http('createProduct', {
 
         if (!products.length) {
             await containerProducts.items.upsert(newProductData)
+        } else {
+            await containerProducts.items.upsert({ ...products[0], updating })
         }
 
         try {
