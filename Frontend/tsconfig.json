@@ -2,7 +2,8 @@
   "files": [],
   "compilerOptions": {
     "esModuleInterop": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "jsx": "react-jsx"
   },
   "references": [
     { "path": "./tsconfig.app.json" },
