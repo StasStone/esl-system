@@ -4,7 +4,8 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "jest"
+    "test": "jest",
+    "test:coverage": "jest --collect-coverage"
   },
   "dependencies": {
     "@ericblade/quagga2": "^0.0.14",
