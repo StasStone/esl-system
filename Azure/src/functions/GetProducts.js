@@ -2,7 +2,8 @@ const { app } = require('@azure/functions')
 const cosmosClient = require('../CosmosClient')
 
 const databaseId = process.env.COSMOS_DB_DATABASE_ID
-const containerId = process.env.COSMOS_DB_CONTAINER_PRODUCTS
+const productsContainerId = process.env.COSMOS_DB_CONTAINER_PRODUCTS
+const updatesContainerId = process.env.COSMOS_DB_CONTAINER_UPDATES
 
 app.http('getProducts', {
     methods: ['POST'],
@@ -10,43 +11,70 @@ app.http('getProducts', {
     route: 'products',
     handler: async (request, context) => {
         try {
-            // Get a reference to the database and container
             const database = cosmosClient.database(databaseId)
-            const container = database.container(containerId)
+            const productsContainer = database.container(productsContainerId)
+            const updatesContainer = database.container(updatesContainerId)
             const { filters = {}, limit = 10, continuationToken } = await request.json()
-
-            context.log(filters)
 
             // Define a query to filter products
             let query =
                 'SELECT c.id, c.name, c.price, c.discount, c.producer, c.labels, c.updating FROM c WHERE 1=1'
-            const params = []
-            Object.entries(filters).forEach(([key, filter], index) => {
-                if (filter.active && filter.value) {
-                    context.log(` AND c.${key} = @param${index}`)
-                    query += ` AND c.${key} = @param${index}`
-                    params.push({ name: `@param${index}`, value: filter.value })
-                }
-            })
-            const querySpec = {
-                query,
-                parameters: params
-            }
 
             // Execute query with pagination
-            const queryIterator = container.items.query(querySpec, {
+            const queryIterator = productsContainer.items.query(query, {
                 maxItemCount: limit,
                 continuationToken: continuationToken || undefined
             })
 
             const { resources: products, continuationToken: nextContinuationToken } = await queryIterator.fetchNext()
 
+            context.log(products)
+
+            // Identify products that are updating
+            const updatingProducts = products.filter(p => p.updating)
+
+            // Fetch latest updates for those products
+            if (updatingProducts.length > 0) {
+                const updateQueries = updatingProducts.map(p => ({
+                    query: 'SELECT TOP 1 c.product_id, c.name, c.price, c.discount, c.producer FROM c WHERE c.product_id = @productId ORDER BY c._ts DESC',
+                    parameters: [{ name: '@productId', value: p.id }]
+                }))
+
+                const updatePromises = updateQueries.map(q =>
+                    updatesContainer.items.query(q).fetchNext()
+                )
+
+                const updatesResults = await Promise.all(updatePromises)
+                const updatesMap = Object.fromEntries(
+                    updatesResults
+                        .filter(res => res.resources.length > 0)
+                        .map(res => {
+                            const resource = res.resources[0]
+                            const { product_id: id, name, price, discount, producer } = resource
+                            return [res.resources[0].product_id, { id, name, price, discount, producer }]
+                        })
+                )
+
+                // Replace updating products with their updates
+                for (let i = 0; i < products.length; i++) {
+                    if (updatesMap[products[i].id]) {
+                        const { updating, labels } = products[i]
+                        products[i] = { ...updatesMap[products[i].id], labels, updating } // Replace with latest update
+                    }
+                }
+            }
+
+            const filteredProducts = products.filter(product => {
+                return Object.entries(filters).every(([key, filter]) => {
+                    if (!filter.active || !filter.value) return true
+                    return product[key] == filter.value
+                })
+            })
+
             return {
                 status: 200,
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ products: products, continuationToken: nextContinuationToken })
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ products: filteredProducts, continuationToken: nextContinuationToken })
             }
         } catch (error) {
             return {

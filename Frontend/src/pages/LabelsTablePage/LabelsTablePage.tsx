@@ -108,7 +108,7 @@ function LabelsTablePage() {
             <Table.Header headers={labelTableHeaders}></Table.Header>
             <Table.Body
               data={filteredData}
-              render={label => (
+              render={(label: Label) => (
                 <Table.Row
                   outlined={false}
                   modalName={modalName}
