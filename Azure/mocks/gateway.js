@@ -1,7 +1,7 @@
 const { Client, Message } = require('azure-iot-device')
 const { Mqtt } = require('azure-iot-device-mqtt')
 
-const connectionString = "HostName=esl-broker.azure-devices.net;DeviceId=gateway-test;SharedAccessKey=o+wPfL3/a4YFpwJXaqn9n5Bzq06Ger9dh8THDbjTXRI="
+const connectionString = process.env.IOT_HUB_CONNECTION_STRING
 
 const client = Client.fromConnectionString(connectionString, Mqtt)
 
@@ -18,8 +18,6 @@ async function connectDevice() {
             // Simulate processing delay
             await new Promise(res => setTimeout(res, 1000))
 
-            // Try to extract an update ID if the message is JSON
-            let id = 'unknown'
             try {
                 const parsed = JSON.parse(receivedData)
                 update_id = parsed.id || 'unknown'
