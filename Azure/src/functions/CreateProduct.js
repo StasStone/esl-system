@@ -7,6 +7,7 @@ const cosmosClient = require('../CosmosClient')
 
 const databaseId = process.env.COSMOS_DB_DATABASE_ID
 const updatesContainerId = process.env.COSMOS_DB_CONTAINER_UPDATES
+const labelsContainerId = process.env.COSMOS_DB_CONTAINER_LABELS
 const productsContainerId = process.env.COSMOS_DB_CONTAINER_PRODUCTS
 const connectionString = process.env.IOT_HUB_CONNECTION_STRING
 const client = Client.fromConnectionString(connectionString)
@@ -39,6 +40,7 @@ app.http('createProduct', {
 
         const database = cosmosClient.database(databaseId)
         const containerProducts = database.container(productsContainerId)
+        const containerLabels = database.container(labelsContainerId)
         const containerUpdates = database.container(updatesContainerId)
 
         // Fetch existing product data
@@ -55,7 +57,7 @@ app.http('createProduct', {
             price,
             discount,
             name,
-            updating,
+            updating
         }
 
         if (!products.length) {
@@ -87,6 +89,18 @@ app.http('createProduct', {
             await client.open() // Open IoT Hub connection
 
             const messagePromises = labels.map(async label_id => {
+                const { resources: [gateway] } = await containerLabels.items
+                    .query({
+                        query:
+                            "SELECT c.gateway_id FROM c WHERE c.id = @labelId",
+                        parameters: [
+                            { name: '@labelId', value: label_id },
+                        ]
+                    })
+                    .fetchAll()
+
+                const { gateway_id } = gateway
+
                 try {
                     const updateMessage = {
                         id: update_id,
@@ -101,12 +115,13 @@ app.http('createProduct', {
                     }
 
                     await containerUpdates.items.upsert(updateMessage)
+
                     const message = new Message(JSON.stringify(updateMessage))
                     message.contentType = "application/json"
                     message.contentEncoding = "utf-8"
                     message.messageId = v4()
-                    message.to = "gateway-test"
-                    context.log(message)
+                    message.to = gateway_id
+
                     await client.send('gateway-test', message)
                     context.log(`Event sent for label ${label_id}`)
                 } catch (err) {
@@ -114,8 +129,8 @@ app.http('createProduct', {
                 }
             })
 
-            await Promise.all(messagePromises) // Wait for all messages to be sent
-            await client.close() // Close IoT Hub connection
+            await Promise.all(messagePromises)
+            await client.close()
 
             return { status: 201, body: { message: 'Product is being updated' } }
         } catch (error) {

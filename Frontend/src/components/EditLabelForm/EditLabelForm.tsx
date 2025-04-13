@@ -38,7 +38,15 @@ export default function EditLabelForm({
           className="form-input"
           type="text"
           id="product_id"
-          {...register('product_id', { required: 'product_id is required' })}
+          {...register('product_id')}
+        />
+      </FormRow>
+      <FormRow label="gateway_id" error={errors.gateway_id?.message}>
+        <input
+          className="form-input"
+          type="text"
+          id="gateway_id"
+          {...register('gateway_id', { required: 'gateway_id is required' })}
         />
       </FormRow>
       <FormRow>

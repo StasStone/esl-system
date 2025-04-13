@@ -6,7 +6,7 @@ const updatesContainerId = process.env.COSMOS_DB_CONTAINER_UPDATES
 const productsContainerId = process.env.COSMOS_DB_CONTAINER_PRODUCTS
 
 app.eventHub('processUpdateConfirmation', {
-    eventHubName: 'IOT_HUB_EVENT_HUB_NAME',
+    eventHubName: 'IOT_HUB_NAME',
     connection: 'IOT_HUB_ENDPOINT',
     cardinality: 'many',
     handler: async (messages, context) => {
