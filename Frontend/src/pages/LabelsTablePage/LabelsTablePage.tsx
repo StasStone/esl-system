@@ -115,7 +115,7 @@ function LabelsTablePage() {
                   key={label.id}
                   item={label}
                   handleDeleteItem={() =>
-                    deleteLabel(label.id, label.product_id)
+                    deleteLabel(label.id, label.gateway_id)
                   }
                 >
                   <EditLabelForm label={label} />

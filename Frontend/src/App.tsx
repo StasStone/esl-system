@@ -9,6 +9,7 @@ import LoginPage from './pages/LoginPage/LoginPage'
 import ProtectedRoute from './pages/ProtectedRoute/ProtectedRoute'
 import { AuthProvider } from './pages/AuthProvider'
 import SetupPage from './pages/SetupPage'
+import NotFoundPage from './pages/NotFoundPage/NotFoundPage'
 
 function App() {
   return (
@@ -31,8 +32,7 @@ function App() {
             </Route>
           </Route>
           <Route path="login" element={<LoginPage />} />
-          {/*
-        <Route path="*" element={<NotFoundPage />} /> */}
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>
