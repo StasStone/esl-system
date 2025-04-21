@@ -61,9 +61,11 @@ app.http('createProduct', {
 
         if (!products.length) {
             await containerProducts.items.upsert(newProductData)
-            return { status: 201, body: { product: newProductData } }
+            return { status: 201, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ product: newProductData }) }
         }
-        await containerProducts.items.upsert({ ...products[0], updating: true })
+
+        const oldProduct = products[0]
+        await containerProducts.items.upsert({ ...oldProduct, labels, updating: true })
 
         try {
             const updatePayload = { producer, price, discount, name }
@@ -82,7 +84,7 @@ app.http('createProduct', {
                 .fetchAll()
 
             if (existingUpdates.length > 0) {
-                return { status: 200, body: { message: 'Duplicate update ignored.' } }
+                return { status: 200, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: 'Duplicate update ignored.', product: oldProduct }) }
             }
 
             await client.open() // Open IoT Hub connection
@@ -121,7 +123,7 @@ app.http('createProduct', {
                     message.messageId = v4()
                     message.to = gateway_id
 
-                    await client.send('gateway-test', message)
+                    await client.send(gateway_id, message)
                     context.log(`Event sent for label ${label_id}`)
                 } catch (err) {
                     throw new Error(err.message)
@@ -131,10 +133,9 @@ app.http('createProduct', {
             await Promise.all(messagePromises)
             await client.close()
 
-            return { status: 201, body: { message: 'Product is being updated' } }
+            return { status: 201, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: 'Product is being updated', product: { ...newProductData, updating: true } }) }
         } catch (error) {
-            context.log(error)
-            return { status: 500, body: { error: 'Error creating product.' } }
+            return { status: 500, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ error: 'Error creating product.', product: { ...newProductData, updating: true } }) }
         }
     }
 })

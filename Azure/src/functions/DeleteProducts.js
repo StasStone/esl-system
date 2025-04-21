@@ -32,7 +32,7 @@ app.http('deleteProducts', {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    message: "Label deleted successfully"
+                    message: "Product deleted successfully"
                 })
             }
         } catch (error) {

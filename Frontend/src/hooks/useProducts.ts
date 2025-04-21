@@ -13,7 +13,7 @@ const getProducts = async function (
   token: string | null,
   limit: number
 ): Promise<Array<Product>> {
-  console.log(filters, limit, token)
+  console.log('Data refetched')
   const res = await fetch('http://localhost:7071/api/products', {
     method: 'POST',
     body: JSON.stringify({ filters, limit, continuationToken: token })
@@ -43,5 +43,7 @@ export default function useProducts() {
     queryKey: ['products', filters, continuationToken],
     queryFn: () => getProducts(filters, continuationToken, PAGE_SIZE)
   })
+
+  console.log('QUERY KEY:', ['products', filters, continuationToken])
   return { isLoading, error, products: products ? products : [] }
 }

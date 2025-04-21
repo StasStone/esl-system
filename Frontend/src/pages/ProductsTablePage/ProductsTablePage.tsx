@@ -30,7 +30,7 @@ function ProductsTablePage() {
   const [previousTokens, setPreviousTokens] = useState<string[]>([])
 
   const { deleteProduct } = useDeleteProduct()
-  const { isLoading, error, products } = useProducts()
+  const { isLoading, products } = useProducts()
 
   useEffect(() => {
     productAttributes.forEach(attribute => {
@@ -105,7 +105,10 @@ function ProductsTablePage() {
                   item={product}
                   outlined={product.updating}
                   handleDeleteItem={() =>
-                    deleteProduct(product.id, product.producer)
+                    deleteProduct({
+                      id: product.id,
+                      partition: product.producer
+                    })
                   }
                 >
                   <CreateEditProductForm product={product} />

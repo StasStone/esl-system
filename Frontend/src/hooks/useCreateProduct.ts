@@ -1,39 +1,42 @@
-import { useState } from 'react'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Product } from '../models/product'
 
-export default function useCreateProduct() {
-  const [isCreating, setIsCreating] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [successMessage, setSuccessMessage] = useState<string | null>(null)
+const createEditProduct = async (newProduct: Product) => {
+  try {
+    const res = await fetch(`http://localhost:7071/api/products/new`, {
+      method: 'POST',
+      body: JSON.stringify(newProduct)
+    })
 
-  const createProduct = async (newProduct: Product) => {
-    setIsCreating(true)
-    setError(null)
-    setSuccessMessage(null)
-
-    try {
-      const res = await fetch(`http://localhost:7071/api/products/new`, {
-        method: 'POST',
-        body: JSON.stringify(newProduct)
-      })
-
-      if (!res.ok) {
-        throw new Error('Error creating product')
-      }
-
-      const data = await res.json()
-      setSuccessMessage(data.message)
-    } catch (error) {
-      setError('Failed to create a product. Please try again later.')
-    } finally {
-      setIsCreating(false)
+    if (res.status !== 201) {
+      throw new Error('Error creating product')
     }
+
+    const { product } = await res.json()
+    return product
+  } catch (error) {
+    throw new Error('Failed to create a product. Please try again later.')
   }
+}
+
+export default function useCreateProduct() {
+  const queryClient = useQueryClient()
+  const {
+    error,
+    isPending: isCreating,
+    mutate: createProduct
+  } = useMutation({
+    mutationFn: createEditProduct,
+    onSuccess: () =>
+      queryClient.invalidateQueries({
+        predicate: query =>
+          Array.isArray(query.queryKey) && query.queryKey[0] === 'products'
+      })
+  })
 
   return {
     createProduct,
     isCreating,
-    error,
-    successMessage
+    error
   }
 }

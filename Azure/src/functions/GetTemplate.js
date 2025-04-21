@@ -14,7 +14,6 @@ app.http('getTemplate', {
             const database = cosmosClient.database(databaseId)
             const container = database.container(containerId)
             const { template_id } = request.params
-            context.log(template_id)
 
             // Define a query to filter products
             let query =

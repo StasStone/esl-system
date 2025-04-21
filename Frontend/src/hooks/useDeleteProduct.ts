@@ -1,40 +1,45 @@
-import { useState } from 'react'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { DatabaseId } from '../models/database-id'
+
+const _deleteProductApi = async ({ id, partition }: DatabaseId) => {
+  try {
+    const res = await fetch(
+      `http://localhost:7071/api/products/${id}/${partition}`,
+      {
+        method: 'DELETE'
+      }
+    )
+
+    if (!res.ok) {
+      throw new Error('Error deleting product')
+    }
+
+    const data = await res.json()
+
+    return data
+  } catch (error) {
+    throw new Error('Failed to delete product. Please try again later.')
+  }
+}
 
 export default function useDeleteProduct() {
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [successMessage, setSuccessMessage] = useState<string | null>(null)
-
-  const deleteProduct = async (productId: string, partitionKey: string) => {
-    setIsLoading(true)
-    setError(null)
-    setSuccessMessage(null)
-
-    try {
-      const res = await fetch(
-        `http://localhost:7071/api/products/${productId}/${partitionKey}`,
-        {
-          method: 'DELETE'
-        }
-      )
-
-      if (!res.ok) {
-        throw new Error('Error deleting product')
-      }
-
-      const data = await res.json()
-      setSuccessMessage(data.message)
-    } catch (error) {
-      setError('Failed to delete product. Please try again later.')
-    } finally {
-      setIsLoading(false)
-    }
-  }
+  const queryClient = useQueryClient()
+  const {
+    isPending: isDeleting,
+    mutate: deleteProduct,
+    error
+  } = useMutation({
+    mutationFn: _deleteProductApi,
+    onSuccess: () =>
+      queryClient.invalidateQueries({
+        predicate: query =>
+          Array.isArray(query.queryKey) && query.queryKey[0] === 'products'
+      })
+  })
 
   return {
     deleteProduct,
-    isLoading,
-    error,
-    successMessage
+    isDeleting,
+    error
   }
 }

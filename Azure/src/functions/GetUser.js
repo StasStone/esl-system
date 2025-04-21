@@ -23,9 +23,6 @@ app.http('getUser', {
                 .query(query)
                 .fetchAll()
 
-            context.log(users)
-            context.log(user_id)
-
             const user = users.find((user) => user.user_id === user_id)
 
             context.log(user)

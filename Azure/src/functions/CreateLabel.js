@@ -31,7 +31,7 @@ app.http('createLabel', {
             const database = cosmosClient.database(databaseId)
             const container = database.container(containerId)
 
-            // Insert the new product into CosmosDB
+            // Insert the new label into CosmosDB
             const { resource: createdLabel } = await container.items.create(newLabel)
 
             context.log('Label created successfully:', createdLabel)
