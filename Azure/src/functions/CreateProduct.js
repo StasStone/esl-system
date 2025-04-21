@@ -31,10 +31,9 @@ app.http('createProduct', {
             price,
             discount = 0,
             name,
-            updating
         } = await request.json()
 
-        if (!labels || !producer || price === undefined || !name || !product_id) {
+        if (!producer || price === undefined || !name || !product_id) {
             return { status: 400, body: { error: 'Missing required parameters.' } }
         }
 
@@ -51,20 +50,20 @@ app.http('createProduct', {
             .fetchAll()
 
         let newProductData = {
+            id: product_id,
             labels,
-            product_id,
             producer,
             price,
             discount,
             name,
-            updating
+            updating: false
         }
 
         if (!products.length) {
             await containerProducts.items.upsert(newProductData)
-        } else {
-            await containerProducts.items.upsert({ ...products[0], updating })
+            return { status: 201, body: { product: newProductData } }
         }
+        await containerProducts.items.upsert({ ...products[0], updating: true })
 
         try {
             const updatePayload = { producer, price, discount, name }

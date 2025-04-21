@@ -8,7 +8,6 @@ const ProtectedRoute = ({ children }: { children: ReactNode }) => {
   const navigate = useNavigate()
 
   const { isAuthenticated, isLoading } = useContext(AuthContext)!
-  console.log(isAuthenticated, isLoading)
 
   useEffect(
     function () {

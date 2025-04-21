@@ -86,7 +86,7 @@ export default function CreateEditProductForm({
               className="form-input"
               type="text"
               id="labels"
-              {...register('labels', { required: 'Label id is required' })}
+              {...register('labels')}
             />
           </FormRow>
         </div>

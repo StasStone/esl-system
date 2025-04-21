@@ -10,31 +10,41 @@ import ProtectedRoute from './pages/ProtectedRoute/ProtectedRoute'
 import { AuthProvider } from './pages/AuthProvider'
 import SetupPage from './pages/SetupPage'
 import NotFoundPage from './pages/NotFoundPage/NotFoundPage'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+
+const queryClient = new QueryClient({
+  defaultOptions: { queries: { staleTime: 0 } }
+})
 
 function App() {
   return (
     <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route
-            element={
-              <ProtectedRoute>
-                <AppLayout />
-              </ProtectedRoute>
-            }
-          >
-            <Route index element={<Navigate replace to="labels" />} />
-            <Route path="products" element={<ProductsTablePage />} />
-            <Route path="labels" element={<LabelsTablePage />} />
-            <Route path="setup" element={<SetupPage />} />
-            <Route path="templates" element={<TemplatePage />}>
-              <Route path="/templates/:templateId" element={<LabelEditor />} />
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <Routes>
+            <Route
+              element={
+                <ProtectedRoute>
+                  <AppLayout />
+                </ProtectedRoute>
+              }
+            >
+              <Route index element={<Navigate replace to="labels" />} />
+              <Route path="products" element={<ProductsTablePage />} />
+              <Route path="labels" element={<LabelsTablePage />} />
+              <Route path="setup" element={<SetupPage />} />
+              <Route path="templates" element={<TemplatePage />}>
+                <Route
+                  path="/templates/:templateId"
+                  element={<LabelEditor />}
+                />
+              </Route>
             </Route>
-          </Route>
-          <Route path="login" element={<LoginPage />} />
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
-      </BrowserRouter>
+            <Route path="login" element={<LoginPage />} />
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        </BrowserRouter>
+      </QueryClientProvider>
     </AuthProvider>
   )
 }

@@ -1,5 +1,4 @@
 import { DraggableItem, ItemType } from '../models/draggable-item'
-import { v4 as uuidv4 } from 'uuid'
 
 export function buildTemplate(
   width: number,
@@ -10,7 +9,6 @@ export function buildTemplate(
   type: ItemType
 ): DraggableItem {
   return {
-    id: uuidv4(),
     width,
     height,
     x,

@@ -28,8 +28,6 @@ app.http('getProducts', {
 
             const { resources: products, continuationToken: nextContinuationToken } = await queryIterator.fetchNext()
 
-            context.log(products)
-
             // Identify products that are updating
             const updatingProducts = products.filter(p => p.updating)
 
@@ -66,10 +64,12 @@ app.http('getProducts', {
 
             const filteredProducts = products.filter(product => {
                 return Object.entries(filters).every(([key, filter]) => {
-                    if (!filter.active || !filter.value) return true
-                    return product[key] == filter.value
+                    if (!filter) return true
+                    return product[key] == filter
                 })
             })
+
+            context.log(filteredProducts)
 
             return {
                 status: 200,

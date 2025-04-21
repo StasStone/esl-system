@@ -17,7 +17,6 @@ export default function useUser() {
         throw new Error('Error fetching the user')
       }
       const data = await res.json()
-      console.log(data)
 
       setUser(data)
     } catch (error: any) {
@@ -39,7 +38,6 @@ export default function useUser() {
         throw new Error('Error updating the user')
       }
       const data = await res.json()
-      console.log(data)
       const { user } = data
       setUser(user)
     } catch (error: any) {

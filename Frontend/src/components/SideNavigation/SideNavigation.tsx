@@ -12,7 +12,6 @@ function SideNavigation({ links }: { links: Link[] }) {
     navigate(link)
     setActiveLink(link)
   }
-  console.log(links)
   return (
     <nav className="nav__container">
       {links.map(link => {
