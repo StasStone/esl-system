@@ -22,8 +22,13 @@ export const getItemType = (key: string) => {
   return ItemType[getItemTypeKey(key)]
 }
 
+export type ItemFont = {
+  fontSize: string
+  fontWeight: number
+}
+
 type TypeToFont = {
-  [key in ItemType]: { fontSize: string; fontWeight: number }
+  [key in ItemType]: ItemFont
 }
 
 export const MapTypeToSize: TypeToFont = {

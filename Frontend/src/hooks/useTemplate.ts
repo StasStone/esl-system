@@ -3,17 +3,18 @@ import {
   DraggableItem,
   getItemType,
   getItemTypeKey,
+  ItemFont,
   MapTypeToSize,
   TemplateItems
 } from '../models/draggable-item'
 import { buildTemplate } from '../utils/buildTemplate'
 
 export function useTemplate(defaultTemplateItems: TemplateItems) {
-  const [elements, setElements] = useState<TemplateItems>(defaultTemplateItems)
+  const [items, setItems] = useState<TemplateItems>(defaultTemplateItems)
   const [editingItem, setEditingItem] = useState<string | null>(null)
   const [editedText, setEditedText] = useState<string>('')
 
-  const addElement = (type: string) => {
+  const addItem = (type: string) => {
     const { fontSize, fontWeight } = MapTypeToSize[getItemTypeKey(type)]
 
     const newElement = buildTemplate(
@@ -25,32 +26,42 @@ export function useTemplate(defaultTemplateItems: TemplateItems) {
       getItemType(type)
     )
 
-    const newTemplateItems = { ...elements, [type.toLowerCase()]: newElement }
+    const newTemplateItems = { ...items, [type.toLowerCase()]: newElement }
 
-    setElements(newTemplateItems)
+    setItems(newTemplateItems)
   }
 
-  const updateElement = (type: string, updates: DraggableItem) => {
+  const updateItem = (type: string, updates: DraggableItem) => {
     const loweredType = type.toLowerCase()
-    const newTemplateItems = { ...elements, [loweredType]: updates }
+    const newTemplateItems = { ...items, [loweredType]: updates }
 
-    setElements(newTemplateItems)
+    setItems(newTemplateItems)
   }
 
-  const removeElement = (type: string) => {
+  const removeItem = (type: string) => {
     const loweredType = type.toLowerCase()
-    const newTemplateItems = { ...elements, [loweredType]: null }
+    const newTemplateItems = { ...items, [loweredType]: null }
 
-    setElements(newTemplateItems)
+    setItems(newTemplateItems)
   }
 
-  const patchElements = (newElements: TemplateItems) => {
-    setElements(newElements)
+  const patchItems = (newitems: TemplateItems) => {
+    setItems(newitems)
   }
 
   const editItem = (type: string, text: string) => {
     setEditingItem(type)
     setEditedText(text)
+  }
+
+  const editItemFont = (type: string, font: ItemFont) => {
+    const loweredType = type.toLowerCase()
+    const updatedItem = {
+      ...items[loweredType as keyof TemplateItems],
+      ...font
+    }
+    const newTemplateItems = { ...items, [loweredType]: updatedItem }
+    setItems(newTemplateItems)
   }
 
   const handleTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,19 +70,20 @@ export function useTemplate(defaultTemplateItems: TemplateItems) {
 
   const handleSaveText = (element: DraggableItem) => {
     if (editingItem) {
-      updateElement(editingItem, { ...element, text: editedText })
+      updateItem(editingItem, { ...element, text: editedText })
       setEditingItem(null)
     }
   }
 
   return {
-    elements,
+    items,
     editedText,
-    addElement,
-    updateElement,
-    removeElement,
-    patchElements,
+    addItem,
+    updateItem,
+    removeItem,
+    patchItems,
     editItem,
+    editItemFont,
     handleTextChange,
     handleSaveText,
     editingItem
