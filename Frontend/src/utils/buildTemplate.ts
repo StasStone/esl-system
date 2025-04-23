@@ -1,16 +1,16 @@
 import { DraggableItem, ItemType } from '../models/draggable-item'
 
 export function buildTemplate(
-  width: number,
-  height: number,
+  fontSize: string,
+  fontWeight: number,
   x: number,
   y: number,
   text: string,
   type: ItemType
 ): DraggableItem {
   return {
-    width,
-    height,
+    fontSize,
+    fontWeight,
     x,
     y,
     text,

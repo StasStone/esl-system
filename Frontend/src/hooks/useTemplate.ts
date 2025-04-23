@@ -14,11 +14,11 @@ export function useTemplate(defaultTemplateItems: TemplateItems) {
   const [editedText, setEditedText] = useState<string>('')
 
   const addElement = (type: string) => {
-    const { width, height } = MapTypeToSize[getItemTypeKey(type)]
+    const { fontSize, fontWeight } = MapTypeToSize[getItemTypeKey(type)]
 
     const newElement = buildTemplate(
-      width,
-      height,
+      fontSize,
+      fontWeight,
       10,
       10,
       type,

@@ -43,15 +43,30 @@
 
 .label-editor__draggable-item {
   position: absolute;
-  border: 2px dashed gray;
+  border: 2px transparent;
   padding: 10px;
-  background: white;
+  background: transparent;
   text-align: center;
   cursor: move;
   user-select: none;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: fit-content;
+  max-width: 100px;
+
+  &:hover {
+    border: 2px dashed grey;
+  }
+}
+
+.label-editor__draggable-item-edited {
+  width: fit-content;
+  max-width: 100px;
+
+  & input {
+    width: 100%;
+  }
 }
 
 .label-editor__item-text {

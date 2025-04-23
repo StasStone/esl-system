@@ -17,7 +17,7 @@ app.http('getTemplate', {
 
             // Define a query to filter products
             let query =
-                'SELECT c.template_id, c.title, c.price, c.producer, c.discount, c.current from c WHERE c.template_id = @Template'
+                'SELECT c.id, c.name, c.price, c.producer, c.discount, c.current from c WHERE c.id = @Template'
             const params = [{ name: `@Template`, value: template_id }]
             const querySpec = {
                 query,
@@ -27,8 +27,9 @@ app.http('getTemplate', {
             const { resources } = await container.items
                 .query(querySpec)
                 .fetchAll()
+
             const template = resources[0]
-            const createdTemplate = { template_id, current: template.current || false, items: { title: template.title, price: template.price, producer: template.producer, discount: template.discount } }
+            const createdTemplate = { id: template_id, current: template.current || false, items: { name: template.name, price: template.price, producer: template.producer, discount: template.discount } }
             context.log(createdTemplate)
             return {
                 status: 200,

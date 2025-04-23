@@ -14,6 +14,9 @@ import useSaveTemplate from '../../hooks/useSaveTemplate'
 import AuthContext from '../../pages/AuthProvider'
 import Loader from '../Loader/Loader'
 import './LabelEditor.scss'
+import Modal from '../Modal/Modal'
+import { TEMPLATE_MODAL } from '../../utils/constants'
+import CreateTemplateForm from '../CreateTemplateForm/CreateTemplateForm'
 
 const LabelEditor = () => {
   const {
@@ -39,29 +42,37 @@ const LabelEditor = () => {
     function () {
       const getTemplate = async function () {
         setIsLoading(true)
-        const res = await fetch(
-          `http://localhost:7071/api/templates/${templateId}`
-        )
-        const data = await res.json()
-        console.log(data)
-        const { template } = data
+        try {
+          const res = await fetch(
+            `http://localhost:7071/api/templates/${templateId}`
+          )
 
-        if (template.items) {
-          patchElements(template.items)
+          if (!res.ok) {
+            throw new Error('No templates')
+          }
+
+          const data = await res.json()
+          console.log(data)
+          const { template } = data
+
+          if (template.items) {
+            patchElements(template.items)
+            setIsCurrent(template.current)
+          }
+        } catch (error) {
+          console.log(error)
+        } finally {
+          setIsLoading(false)
         }
-
-        setIsCurrent(template.current)
-        setIsLoading(false)
       }
-
       getTemplate()
     },
     [templateId]
   )
 
-  const handleSaveTemplate = () => {
+  const onCreateTemplate = (title: string) => {
     const { store_id } = user!
-    createTemplate(elements, store_id)
+    createTemplate(elements, store_id, title)
   }
 
   const isTemplateItemCreated = (type: string): boolean => {
@@ -74,7 +85,7 @@ const LabelEditor = () => {
     <div className="label-editor__container">
       <div className="label-editor__toolbox">
         <h3>Toolbar</h3>
-        {['Price', 'Producer', 'Discount', 'Title'].map(type => (
+        {['Price', 'Producer', 'Discount', 'Name'].map(type => (
           <button
             disabled={isTemplateItemCreated(type.toLowerCase())}
             key={type}
@@ -98,12 +109,9 @@ const LabelEditor = () => {
                   updateElement(el.type, { ...el, x: data.x, y: data.y })
                 }
               >
-                <div
-                  className="label-editor__draggable-item"
-                  style={{ width: `${el.width}px`, height: `${el.height}px` }}
-                >
+                <div className="label-editor__draggable-item">
                   {editingItem == el.type ? (
-                    <div>
+                    <div className="label-editor__draggable-item-edited">
                       <input
                         type="text"
                         value={editedText}
@@ -139,7 +147,16 @@ const LabelEditor = () => {
             )
         )}
       </div>
-      <button onClick={handleSaveTemplate}>Save template</button>
+      <Modal>
+        <Modal>
+          <Modal.Open opens={TEMPLATE_MODAL}>
+            <button>Save template</button>
+          </Modal.Open>
+          <Modal.Window name={TEMPLATE_MODAL}>
+            <CreateTemplateForm onCreateTemplate={onCreateTemplate} />
+          </Modal.Window>
+        </Modal>
+      </Modal>
     </div>
   )
 }

@@ -9,7 +9,7 @@ app.http('createTemplate', {
     authLevel: 'anonymous',
     route: 'templates/new',
     handler: async (request, context) => {
-        const { items, store_id, current, template_id } = await request.json()
+        const { items, store_id, current, template_id, title } = await request.json()
 
         if (!items) {
             return {
@@ -19,10 +19,11 @@ app.http('createTemplate', {
             }
         }
 
-        const newTemplate = {
-            template_id,
+        const newTemplateData = {
+            id: template_id,
             store_id,
             current,
+            title,
             ...items
         }
 
@@ -30,9 +31,9 @@ app.http('createTemplate', {
             const database = cosmosClient.database(databaseId)
             const container = database.container(containerId)
 
-            const { resource: createdTemplate } = await container.items.upsert(newTemplate)
+            const { resource: newTemplate } = await container.items.upsert(newTemplateData)
 
-            context.log(createdTemplate)
+            const createdTemplate = { id: newTemplate.id, title: newTemplate.title, name: newTemplate.name, price: newTemplate.price, producer: newTemplate.producer, discount: newTemplate.discount }
 
             return {
                 status: 201,
