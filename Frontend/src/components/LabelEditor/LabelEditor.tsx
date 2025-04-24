@@ -36,6 +36,7 @@ const LabelEditor = () => {
   } = useTemplate(defaultTemplateItems)
   const { templateId } = useParams()
   const { createTemplate } = useSaveTemplate()
+  const [templateTitle, setTemplateTitle] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [isCurrent, setIsCurrent] = useState(false)
   const [openDropdownType, setOpenDropdownType] = useState<string | null>(null)
@@ -59,7 +60,8 @@ const LabelEditor = () => {
           console.log(data)
           const { template } = data
 
-          if (template.items) {
+          if (template) {
+            setTemplateTitle(template.title)
             patchItems(template.items)
             setIsCurrent(template.current)
           }
@@ -74,7 +76,7 @@ const LabelEditor = () => {
     [templateId]
   )
 
-  const onCreateTemplate = (title: string) => {
+  const handleCreateTemplate = (title: string) => {
     const { store_id } = user!
     createTemplate(items, store_id, title)
   }
@@ -181,19 +183,22 @@ const LabelEditor = () => {
             )
         )}
       </div>
-      <Modal>
+      {templateId !== 'new' ? (
         <Modal>
-          <Modal.Open opens={TEMPLATE_MODAL}>
-            // add so this opens a modal only when the template is new, add
-            automatic rerouting to the newly created template and add the button
-            in the SideNavigation for adding a new template
-            <button>Save template</button>
-          </Modal.Open>
-          <Modal.Window name={TEMPLATE_MODAL}>
-            <CreateTemplateForm onCreateTemplate={onCreateTemplate} />
-          </Modal.Window>
+          <Modal>
+            <Modal.Open opens={TEMPLATE_MODAL}>
+              <button>Save template</button>
+            </Modal.Open>
+            <Modal.Window name={TEMPLATE_MODAL}>
+              <CreateTemplateForm onCreateTemplate={handleCreateTemplate} />
+            </Modal.Window>
+          </Modal>
         </Modal>
-      </Modal>
+      ) : (
+        <button onClick={() => handleCreateTemplate(templateTitle)}>
+          Create template
+        </button>
+      )}
     </div>
   )
 }

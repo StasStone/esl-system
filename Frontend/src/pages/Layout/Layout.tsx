@@ -18,6 +18,7 @@ const AppLayout = () => {
         name: template.title,
         link: template.id
       }))
+
       const firstSublink = templateLinks[0].link
 
       const builtRouts = [
@@ -28,7 +29,8 @@ const AppLayout = () => {
           name: 'templates',
           subLinks: templateLinks,
           link: `templates/${firstSublink}`
-        }
+        },
+        { name: 'new template', link: 'templates/new' }
       ]
       setRoutes(builtRouts)
     }
