@@ -30,8 +30,14 @@ export default function ItemFontDropdown({
           <input
             type="number"
             value={fontSize}
-            onChange={e => setFontSize(Number(e.target.value))}
+            onChange={e => {
+              const value = Number(e.target.value)
+              if (value >= 1 && value <= 60) {
+                setFontSize(value)
+              }
+            }}
             min="1"
+            max="60"
           />
           <span>px</span>
         </div>

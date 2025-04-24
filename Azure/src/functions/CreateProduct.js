@@ -90,17 +90,18 @@ app.http('createProduct', {
             await client.open() // Open IoT Hub connection
 
             const messagePromises = labels.map(async label_id => {
-                const { resources: [gateway] } = await containerLabels.items
+                context.log(label_id)
+                const { resources: [label] } = await containerLabels.items
                     .query({
                         query:
-                            "SELECT c.gateway_id FROM c WHERE c.id = @labelId",
+                            "SELECT c.gateway_id, c.id, c.product_id FROM c WHERE c.id = @labelId",
                         parameters: [
                             { name: '@labelId', value: label_id },
                         ]
                     })
                     .fetchAll()
 
-                const { gateway_id } = gateway
+                const { gateway_id } = label
 
                 try {
                     const updateMessage = {
@@ -116,16 +117,18 @@ app.http('createProduct', {
                     }
 
                     await containerUpdates.items.upsert(updateMessage)
+                    const newL = await containerLabels.item(label_id, gateway_id).replace({ ...label, product_id })
+                    context.log(newL)
 
                     const message = new Message(JSON.stringify(updateMessage))
                     message.contentType = "application/json"
                     message.contentEncoding = "utf-8"
                     message.messageId = v4()
-                    message.to = gateway_id
 
                     await client.send(gateway_id, message)
                     context.log(`Event sent for label ${label_id}`)
                 } catch (err) {
+                    context.log(err);
                     throw new Error(err.message)
                 }
             })

@@ -184,6 +184,9 @@ const LabelEditor = () => {
       <Modal>
         <Modal>
           <Modal.Open opens={TEMPLATE_MODAL}>
+            // add so this opens a modal only when the template is new, add
+            automatic rerouting to the newly created template and add the button
+            in the SideNavigation for adding a new template
             <button>Save template</button>
           </Modal.Open>
           <Modal.Window name={TEMPLATE_MODAL}>

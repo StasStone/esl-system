@@ -35,7 +35,7 @@ export const MapTypeToSize: TypeToFont = {
   Price: { fontSize: '60px', fontWeight: 400 },
   Producer: { fontSize: '40px', fontWeight: 200 },
   Discount: { fontSize: '20px', fontWeight: 300 },
-  Name: { fontSize: '60px', fontWeight: 4000 }
+  Name: { fontSize: '60px', fontWeight: 400 }
 }
 
 export type Template = {
