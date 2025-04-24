@@ -12,10 +12,11 @@ export default function CreateEditProductForm({
 }: {
   product: Product | null
 }) {
-  console.log(product)
   const { register, handleSubmit, getValues, formState } = useForm({
     defaultValues: product ? product : {}
   })
+
+  const isEditMode = !!product
 
   const { errors } = formState
   const { close } = useContext(ModalContext)!
@@ -86,7 +87,14 @@ export default function CreateEditProductForm({
               className="form-input"
               type="text"
               id="labels"
-              {...register('labels', { required: 'Label id is required' })}
+              {...register(
+                'labels',
+                isEditMode
+                  ? {
+                      required: 'Labels are required'
+                    }
+                  : {}
+              )}
             />
           </FormRow>
         </div>

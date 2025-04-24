@@ -6,7 +6,7 @@ const updatesContainerId = process.env.COSMOS_DB_CONTAINER_UPDATES
 const productsContainerId = process.env.COSMOS_DB_CONTAINER_PRODUCTS
 
 app.eventHub('processUpdateConfirmation', {
-    eventHubName: 'IOT_HUB_EVENT_HUB_NAME',
+    eventHubName: 'IOT_HUB_NAME',
     connection: 'IOT_HUB_ENDPOINT',
     cardinality: 'many',
     handler: async (messages, context) => {
@@ -24,14 +24,13 @@ app.eventHub('processUpdateConfirmation', {
                     context.log('Invalid message format, ignoring...')
                     continue
                 }
-
                 const updateQuerySpec = {
                     query:
                         'SELECT c.product_id, c.name, c.price, c.discount, c.producer FROM c WHERE c.id = @updateId',
                     parameters: [{ name: '@updateId', value: update_id }]
                 }
 
-                const { resource: [updateData] } = await containerUpdates.items
+                const { resources: [updateData] } = await containerUpdates.items
                     .query(updateQuerySpec)
                     .fetchAll()
 
@@ -39,25 +38,12 @@ app.eventHub('processUpdateConfirmation', {
 
                 const productQuerySpec = {
                     query:
-                        'SELECT c.id, c.name, c.price, c.discount, c.producer FROM c WHERE c.id = @productId',
+                        'SELECT c.id, c.name, c.price, c.discount, c.producer, c.labels FROM c WHERE c.id = @productId',
                     parameters: [{ name: '@productId', value: product_id }]
                 }
 
-                const { resource: [product] } = await containerProducts.items
-                    .query(productQuerySpec)
-                    .fetchAll()
-
-                if (status === 'Success') {
-                    if (product) {
-                        product.discount = newDiscount
-                        product.name = newName
-                        product.producer = newProducer
-                        product.price = newPrice
-                    }
-                }
-
                 // Delete update from updates container
-                await containerUpdates.item(update_id, update_id).delete()
+                await containerUpdates.item(update_id, product_id).delete()
 
                 const remainingUpdatesQuery = {
                     query: `
@@ -68,15 +54,28 @@ app.eventHub('processUpdateConfirmation', {
                     parameters: [{ name: '@productId', value: product_id }]
                 }
 
-                const { resource: [count] } = await containerUpdates.items
+                const { resources: [count] } = await containerUpdates.items
                     .query(remainingUpdatesQuery)
                     .fetchAll()
 
-                product.updating = count === 0
 
-                await containerProducts
-                    .item(product_id, product.producer)
-                    .replace(product)
+                const { resources: [product] } = await containerProducts.items
+                    .query(productQuerySpec)
+                    .fetchAll()
+
+                if (status === 'Success') {
+                    if (product) {
+                        product.discount = newDiscount
+                        product.name = newName
+                        product.producer = newProducer
+                        product.price = newPrice
+                        product.updating = count > 0
+                        context.log(product)
+                        await containerProducts
+                            .item(product_id, product.producer)
+                            .replace(product)
+                    }
+                }
 
             } catch (error) {
                 context.log(

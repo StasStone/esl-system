@@ -14,9 +14,7 @@ app.http('getTemplates', {
             const database = cosmosClient.database(databaseId)
             const container = database.container(containerId)
 
-            // Define a query to filter products
-            const query =
-                'SELECT c.template_id from c WHERE 1=1'
+            const query = 'SELECT c.id, c.title from c WHERE 1=1'
 
             const { resources: templates } = await container.items
                 .query(query)

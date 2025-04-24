@@ -7,6 +7,7 @@ const cosmosClient = require('../CosmosClient')
 
 const databaseId = process.env.COSMOS_DB_DATABASE_ID
 const updatesContainerId = process.env.COSMOS_DB_CONTAINER_UPDATES
+const labelsContainerId = process.env.COSMOS_DB_CONTAINER_LABELS
 const productsContainerId = process.env.COSMOS_DB_CONTAINER_PRODUCTS
 const connectionString = process.env.IOT_HUB_CONNECTION_STRING
 const client = Client.fromConnectionString(connectionString)
@@ -30,15 +31,15 @@ app.http('createProduct', {
             price,
             discount = 0,
             name,
-            updating
         } = await request.json()
 
-        if (!labels || !producer || price === undefined || !name || !product_id) {
+        if (!producer || price === undefined || !name || !product_id) {
             return { status: 400, body: { error: 'Missing required parameters.' } }
         }
 
         const database = cosmosClient.database(databaseId)
         const containerProducts = database.container(productsContainerId)
+        const containerLabels = database.container(labelsContainerId)
         const containerUpdates = database.container(updatesContainerId)
 
         // Fetch existing product data
@@ -49,20 +50,22 @@ app.http('createProduct', {
             .fetchAll()
 
         let newProductData = {
+            id: product_id,
             labels,
-            product_id,
             producer,
             price,
             discount,
             name,
-            updating,
+            updating: false
         }
 
         if (!products.length) {
             await containerProducts.items.upsert(newProductData)
-        } else {
-            await containerProducts.items.upsert({ ...products[0], updating })
+            return { status: 201, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ product: newProductData }) }
         }
+
+        const oldProduct = products[0]
+        await containerProducts.items.upsert({ ...oldProduct, labels, updating: true })
 
         try {
             const updatePayload = { producer, price, discount, name }
@@ -81,12 +84,25 @@ app.http('createProduct', {
                 .fetchAll()
 
             if (existingUpdates.length > 0) {
-                return { status: 200, body: { message: 'Duplicate update ignored.' } }
+                return { status: 200, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: 'Duplicate update ignored.', product: oldProduct }) }
             }
 
             await client.open() // Open IoT Hub connection
 
             const messagePromises = labels.map(async label_id => {
+                context.log(label_id)
+                const { resources: [label] } = await containerLabels.items
+                    .query({
+                        query:
+                            "SELECT c.gateway_id, c.id, c.product_id FROM c WHERE c.id = @labelId",
+                        parameters: [
+                            { name: '@labelId', value: label_id },
+                        ]
+                    })
+                    .fetchAll()
+
+                const { gateway_id } = label
+
                 try {
                     const updateMessage = {
                         id: update_id,
@@ -101,26 +117,28 @@ app.http('createProduct', {
                     }
 
                     await containerUpdates.items.upsert(updateMessage)
+                    const newL = await containerLabels.item(label_id, gateway_id).replace({ ...label, product_id })
+                    context.log(newL)
+
                     const message = new Message(JSON.stringify(updateMessage))
                     message.contentType = "application/json"
                     message.contentEncoding = "utf-8"
                     message.messageId = v4()
-                    message.to = "gateway-test"
-                    context.log(message)
-                    await client.send('gateway-test', message)
+
+                    await client.send(gateway_id, message)
                     context.log(`Event sent for label ${label_id}`)
                 } catch (err) {
+                    context.log(err);
                     throw new Error(err.message)
                 }
             })
 
-            await Promise.all(messagePromises) // Wait for all messages to be sent
-            await client.close() // Close IoT Hub connection
+            await Promise.all(messagePromises)
+            await client.close()
 
-            return { status: 201, body: { message: 'Product is being updated' } }
+            return { status: 201, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: 'Product is being updated', product: { ...newProductData, updating: true } }) }
         } catch (error) {
-            context.log(error)
-            return { status: 500, body: { error: 'Error creating product.' } }
+            return { status: 500, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ error: 'Error creating product.', product: { ...newProductData, updating: true } }) }
         }
     }
 })

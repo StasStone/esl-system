@@ -14,11 +14,11 @@ const AppLayout = () => {
       })
       const data = await res.json()
       const { templates } = data
-
       const templateLinks: Link[] = templates.map((template: any) => ({
-        name: template.template_id,
-        link: template.template_id
+        name: template.title,
+        link: template.id
       }))
+
       const firstSublink = templateLinks[0].link
 
       const builtRouts = [
@@ -29,7 +29,8 @@ const AppLayout = () => {
           name: 'templates',
           subLinks: templateLinks,
           link: `templates/${firstSublink}`
-        }
+        },
+        { name: 'new template', link: 'templates/new' }
       ]
       setRoutes(builtRouts)
     }

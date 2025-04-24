@@ -18,8 +18,6 @@ async function connectDevice() {
             // Simulate processing delay
             await new Promise(res => setTimeout(res, 1000))
 
-            // Try to extract an update ID if the message is JSON
-            let id = 'unknown'
             try {
                 const parsed = JSON.parse(receivedData)
                 update_id = parsed.id || 'unknown'

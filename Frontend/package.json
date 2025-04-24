@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@ericblade/quagga2": "^0.0.14",
-    "@tanstack/react-query": "^5.68.0",
+    "@tanstack/react-query": "^5.74.4",
     "@types/jest": "^29.5.14",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",

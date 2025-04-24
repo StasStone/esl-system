@@ -4,7 +4,7 @@ import Filter from '../../components/Filter/Filter'
 import Modal from '../../components/Modal/Modal'
 import Table from '../../components/Table/Table'
 import useDeleteProduct from '../../hooks/useDeleteProduct'
-import useFilter from '../../hooks/useFilter'
+import useProducts from '../../hooks/useProducts'
 import {
   Product,
   ProductFilterParams,
@@ -14,61 +14,35 @@ import {
 import Pagination from '../../components/Pagination/Pagination'
 import Loader from '../../components/Loader/Loader'
 import './ProductsTablePage.scss'
+import { PRODUCT_MODAL, PRODUCT_TABLE_HEADERS } from '../../utils/constants'
+import { useSearchParams } from 'react-router-dom'
 
 function ProductsTablePage() {
-  const productTableHeaders = [
-    'id',
-    'name',
-    'price',
-    'discount',
-    'producer',
-    'labels'
-  ]
+  const [searchParams, setSearchParams] = useSearchParams()
 
-  const [filteredData, setFilteredData] = useState<Partial<Product>[]>([])
   const [activeFilterParams, setActiveFilterParams] =
     useState<ProductFilterParams>(defaultProductFilterParams)
   const [appliedFilterParams, setAppliedFilterParams] =
     useState<ProductFilterParams>(defaultProductFilterParams)
-  const { isFilterActive, isFilterEmpty } = useFilter(activeFilterParams)
-  const { deleteProduct } = useDeleteProduct()
   const [continuationToken, setContinuationToken] = useState<string | null>(
     null
   )
   const [previousTokens, setPreviousTokens] = useState<string[]>([])
-  const [loading, setLoading] = useState(false)
-  const limit = 10
-  const modalName = 'product-form'
 
-  const getData = async function (
-    filters: ProductFilterParams,
-    token: string | null
-  ) {
-    setLoading(true)
-    const res = await fetch('http://localhost:7071/api/products', {
-      method: 'POST',
-      body: JSON.stringify({ filters, limit, continuationToken: token })
-    })
-    const data = await res.json()
-    console.log(data)
-    if (data && data.products) {
-      setFilteredData(data.products)
-      setContinuationToken(data.continuationToken || null)
-
-      if (token && !previousTokens.includes(token)) {
-        setPreviousTokens([...previousTokens, token])
-      }
-    }
-    setLoading(false)
-  }
+  const { deleteProduct } = useDeleteProduct()
+  const { isLoading, products } = useProducts()
 
   useEffect(() => {
-    if (isFilterActive() && !isFilterEmpty()) {
-      getData(activeFilterParams, null)
-    }
-    if (isFilterEmpty() || !isFilterActive()) {
-      getData(defaultProductFilterParams, null)
-    }
+    productAttributes.forEach(attribute => {
+      const filterValue = String(activeFilterParams[attribute]!.value)
+      if (filterValue !== '') {
+        searchParams.set(attribute, filterValue)
+      } else {
+        searchParams.delete(attribute)
+      }
+    })
+    searchParams.set('page', '')
+    setSearchParams(searchParams)
   }, [appliedFilterParams])
 
   function handleApplyFilters(productFilter: ProductFilterParams): void {
@@ -79,7 +53,7 @@ function ProductsTablePage() {
 
   function handleNextPage() {
     if (continuationToken) {
-      getData(appliedFilterParams, continuationToken)
+      searchParams.set('page', continuationToken)
     }
   }
 
@@ -88,7 +62,8 @@ function ProductsTablePage() {
       const newTokens = [...previousTokens]
       newTokens.pop()
       setPreviousTokens(newTokens)
-      getData(appliedFilterParams, newTokens[newTokens.length - 1] || null)
+      const previousToken = newTokens[newTokens.length - 1]
+      searchParams.set('page', previousToken)
     }
   }
 
@@ -104,33 +79,36 @@ function ProductsTablePage() {
       <div className="create-product-container">
         <Modal>
           <Modal>
-            <Modal.Open opens={modalName}>
+            <Modal.Open opens={PRODUCT_MODAL}>
               <button className="standard-btn">Add new product</button>
             </Modal.Open>
-            <Modal.Window name={modalName}>
+            <Modal.Window name={PRODUCT_MODAL}>
               <CreateEditProductForm product={null} />
             </Modal.Window>
           </Modal>
         </Modal>
       </div>
-      {loading ? (
+      {isLoading ? (
         <div className="table__loader">
           <Loader width="1rem" height="1rem" />
         </div>
       ) : (
         <div>
           <Table>
-            <Table.Header headers={productTableHeaders}></Table.Header>
+            <Table.Header headers={PRODUCT_TABLE_HEADERS}></Table.Header>
             <Table.Body
-              data={filteredData}
+              data={products}
               render={(product: Product) => (
                 <Table.Row
-                  modalName={modalName}
+                  modalName={PRODUCT_MODAL}
                   key={product.id}
                   item={product}
                   outlined={product.updating}
                   handleDeleteItem={() =>
-                    deleteProduct(product.id, product.producer)
+                    deleteProduct({
+                      id: product.id,
+                      partition: product.producer
+                    })
                   }
                 >
                   <CreateEditProductForm product={product} />

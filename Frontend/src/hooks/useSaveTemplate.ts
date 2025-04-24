@@ -8,7 +8,8 @@ export default function useSaveTemplate() {
 
   const createTemplate = async (
     templateItems: TemplateItems,
-    store_id: string
+    store_id: string,
+    title: string
   ) => {
     setIsCreating(true)
     setError(null)
@@ -16,9 +17,10 @@ export default function useSaveTemplate() {
 
     try {
       const newTemplate: Template = {
-        template_id: uuidv4(),
+        id: uuidv4(),
+        title,
         items: templateItems,
-        store_id: store_id,
+        store_id,
         current: true
       }
 
@@ -28,13 +30,13 @@ export default function useSaveTemplate() {
       })
 
       if (!res.ok) {
-        throw new Error('Error creating product')
+        throw new Error('Error creating template')
       }
 
       const data = await res.json()
       setSuccessMessage(data.message)
     } catch (error) {
-      setError('Failed to create a product. Please try again later.')
+      setError('Failed to create a template. Please try again later.')
     } finally {
       setIsCreating(false)
     }

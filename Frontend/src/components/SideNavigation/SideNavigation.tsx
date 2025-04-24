@@ -12,14 +12,19 @@ function SideNavigation({ links }: { links: Link[] }) {
     navigate(link)
     setActiveLink(link)
   }
-  console.log(links)
   return (
     <nav className="nav__container">
       {links.map(link => {
         return (
           <div
             key={link.name}
-            className={activeLink === link.link ? activeLinkClass : 'nav__link'}
+            className={
+              activeLink === link.link
+                ? activeLinkClass
+                : link.subLinks
+                  ? 'nav__link-with-subs'
+                  : 'nav__link'
+            }
             onClick={() => handleNavigate(link.link)}
           >
             {link.name}

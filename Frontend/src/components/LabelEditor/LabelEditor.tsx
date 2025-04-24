@@ -1,7 +1,7 @@
 import Draggable from 'react-draggable'
 import 'react-resizable/css/styles.css'
 import './LabelEditor.scss'
-import { HiXMark } from 'react-icons/hi2'
+import { HiChevronDown, HiXMark } from 'react-icons/hi2'
 import { useTemplate } from '../../hooks/useTemplate'
 import {
   defaultTemplateItems,
@@ -14,24 +14,32 @@ import useSaveTemplate from '../../hooks/useSaveTemplate'
 import AuthContext from '../../pages/AuthProvider'
 import Loader from '../Loader/Loader'
 import './LabelEditor.scss'
+import Modal from '../Modal/Modal'
+import { TEMPLATE_MODAL } from '../../utils/constants'
+import CreateTemplateForm from '../CreateTemplateForm/CreateTemplateForm'
+import ItemFontDropdown from '../ItemFontDropdown/ItemFontDropdown'
+import getItemFontByType from '../../utils/getItemFontByType'
 
 const LabelEditor = () => {
   const {
-    elements,
+    items,
     editedText,
-    addElement,
-    updateElement,
-    removeElement,
-    patchElements,
+    addItem,
+    updateItem,
+    removeItem,
+    patchItems,
     editingItem,
     editItem,
+    editItemFont,
     handleTextChange,
     handleSaveText
   } = useTemplate(defaultTemplateItems)
   const { templateId } = useParams()
   const { createTemplate } = useSaveTemplate()
+  const [templateTitle, setTemplateTitle] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [isCurrent, setIsCurrent] = useState(false)
+  const [openDropdownType, setOpenDropdownType] = useState<string | null>(null)
 
   const { user } = useContext(AuthContext)!
 
@@ -39,33 +47,46 @@ const LabelEditor = () => {
     function () {
       const getTemplate = async function () {
         setIsLoading(true)
-        const res = await fetch(
-          `http://localhost:7071/api/templates/${templateId}`
-        )
-        const data = await res.json()
-        console.log(data)
-        const { template } = data
+        try {
+          const res = await fetch(
+            `http://localhost:7071/api/templates/${templateId}`
+          )
 
-        if (template.items) {
-          patchElements(template.items)
+          if (!res.ok) {
+            throw new Error('No templates')
+          }
+
+          const data = await res.json()
+          console.log(data)
+          const { template } = data
+
+          if (template) {
+            setTemplateTitle(template.title)
+            patchItems(template.items)
+            setIsCurrent(template.current)
+          }
+        } catch (error) {
+          console.log(error)
+        } finally {
+          setIsLoading(false)
         }
-
-        setIsCurrent(template.current)
-        setIsLoading(false)
       }
-
       getTemplate()
     },
     [templateId]
   )
 
-  const handleSaveTemplate = () => {
+  const handleCreateTemplate = (title: string) => {
     const { store_id } = user!
-    createTemplate(elements, store_id)
+    createTemplate(items, store_id, title)
   }
 
   const isTemplateItemCreated = (type: string): boolean => {
-    return !!elements[type as keyof TemplateItems]
+    return !!items[type as keyof TemplateItems]
+  }
+
+  const openDropdown = (type: string): void => {
+    setOpenDropdownType(prev => (prev === type ? null : type))
   }
 
   if (isLoading) return <Loader width="1rem" height="1rem" />
@@ -74,20 +95,42 @@ const LabelEditor = () => {
     <div className="label-editor__container">
       <div className="label-editor__toolbox">
         <h3>Toolbar</h3>
-        {['Price', 'Producer', 'Discount', 'Title'].map(type => (
-          <button
-            disabled={isTemplateItemCreated(type.toLowerCase())}
-            key={type}
-            onClick={() => addElement(type)}
-          >
-            Add {type}
-          </button>
-        ))}
+        {['Price', 'Producer', 'Discount', 'Name'].map(type => {
+          const lowerCasedType = type.toLowerCase()
+          return isTemplateItemCreated(lowerCasedType) ? (
+            <div className="label-editor__tool-wrapper">
+              <div
+                key={type}
+                className="label-editor__tool"
+                onClick={() => openDropdown(type)}
+              >
+                {type} <HiChevronDown />
+              </div>
+              {openDropdownType === type && (
+                <div className="label-editor__dropdown">
+                  <ItemFontDropdown
+                    itemType={lowerCasedType}
+                    font={getItemFontByType(lowerCasedType, items)}
+                    onEditFont={editItemFont}
+                  />
+                </div>
+              )}
+            </div>
+          ) : (
+            <button
+              disabled={isTemplateItemCreated(lowerCasedType)}
+              key={type}
+              onClick={() => addItem(type)}
+            >
+              Add {type}
+            </button>
+          )
+        })}
       </div>
       <div
         className={`${isCurrent ? 'label-editor__template-current' : 'label-editor__template'}`}
       >
-        {Object.values(elements).map(
+        {Object.values(items).map(
           (el: DraggableItem | null) =>
             el && (
               <Draggable
@@ -95,15 +138,12 @@ const LabelEditor = () => {
                 position={{ x: el.x, y: el.y }}
                 bounds="parent"
                 onStop={(e, data) =>
-                  updateElement(el.type, { ...el, x: data.x, y: data.y })
+                  updateItem(el.type, { ...el, x: data.x, y: data.y })
                 }
               >
-                <div
-                  className="label-editor__draggable-item"
-                  style={{ width: `${el.width}px`, height: `${el.height}px` }}
-                >
+                <div className="label-editor__draggable-item">
                   {editingItem == el.type ? (
-                    <div>
+                    <div className="label-editor__draggable-item-edited">
                       <input
                         type="text"
                         value={editedText}
@@ -120,6 +160,10 @@ const LabelEditor = () => {
                   ) : (
                     <div
                       className="label-editor__item-text"
+                      style={{
+                        fontSize: el.fontSize,
+                        fontWeight: el.fontWeight
+                      }}
                       onClick={() => editItem(el.type, el.text)}
                     >
                       {el.text}
@@ -129,7 +173,7 @@ const LabelEditor = () => {
                     className="label-editor__item-delete"
                     onClick={e => {
                       e.stopPropagation()
-                      removeElement(el.type)
+                      removeItem(el.type)
                     }}
                   >
                     <HiXMark />
@@ -139,7 +183,22 @@ const LabelEditor = () => {
             )
         )}
       </div>
-      <button onClick={handleSaveTemplate}>Save template</button>
+      {templateId !== 'new' ? (
+        <Modal>
+          <Modal>
+            <Modal.Open opens={TEMPLATE_MODAL}>
+              <button>Save template</button>
+            </Modal.Open>
+            <Modal.Window name={TEMPLATE_MODAL}>
+              <CreateTemplateForm onCreateTemplate={handleCreateTemplate} />
+            </Modal.Window>
+          </Modal>
+        </Modal>
+      ) : (
+        <button onClick={() => handleCreateTemplate(templateTitle)}>
+          Create template
+        </button>
+      )}
     </div>
   )
 }

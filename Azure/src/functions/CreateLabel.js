@@ -9,9 +9,9 @@ app.http('createLabel', {
     authLevel: 'anonymous',
     route: 'labels/new',
     handler: async (request, context) => {
-        const { product_id, id, last_updated } = await request.json()
+        const { product_id, id, last_updated, gateway_id } = await request.json()
 
-        if (!product_id || !last_updated) {
+        if (!last_updated || !gateway_id) {
             return {
                 status: 400,
                 headers: { 'Content-Type': 'application/json' },
@@ -22,6 +22,7 @@ app.http('createLabel', {
         const newLabel = {
             id,
             product_id,
+            gateway_id,
             last_updated
         }
 
@@ -30,7 +31,7 @@ app.http('createLabel', {
             const database = cosmosClient.database(databaseId)
             const container = database.container(containerId)
 
-            // Insert the new product into CosmosDB
+            // Insert the new label into CosmosDB
             const { resource: createdLabel } = await container.items.create(newLabel)
 
             context.log('Label created successfully:', createdLabel)

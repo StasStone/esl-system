@@ -17,7 +17,7 @@ import Loader from '../../components/Loader/Loader'
 import './LabelsTablePage.scss'
 
 function LabelsTablePage() {
-  const labelTableHeaders = ['id', 'product_id', 'last_updated']
+  const labelTableHeaders = ['id', 'product_id', 'gateway', 'last_updated']
 
   const [filteredData, setFilteredData] = useState<Label[]>([])
   const [activeFilterParams, setActiveFilterParams] =
@@ -115,7 +115,7 @@ function LabelsTablePage() {
                   key={label.id}
                   item={label}
                   handleDeleteItem={() =>
-                    deleteLabel(label.id, label.product_id)
+                    deleteLabel(label.id, label.gateway_id)
                   }
                 >
                   <EditLabelForm label={label} />
