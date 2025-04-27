@@ -11,5 +11,21 @@
   "extensionBundle": {
     "id": "Microsoft.Azure.Functions.ExtensionBundle",
     "version": "[4.*, 5.0.0)"
-  }
+  },
+  "functions": [
+    "CreateLabel",
+    "CreateProduct",
+    "CreateTemplate",
+    "DeleteLabel",
+    "DeleteProduct",
+    "GetLabels",
+    "GetProducts",
+    "GetTemplate",
+    "GetTemplates",
+    "GetUser",
+    "Login",
+    "Signup",
+    "ProcessUpdateConfirmation",
+    "UpdateUser"
+  ]
 }

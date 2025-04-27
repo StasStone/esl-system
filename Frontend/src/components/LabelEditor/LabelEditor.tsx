@@ -1,12 +1,11 @@
 import Draggable from 'react-draggable'
 import 'react-resizable/css/styles.css'
 import './LabelEditor.scss'
-import { HiChevronDown, HiXMark } from 'react-icons/hi2'
+import { HiXMark } from 'react-icons/hi2'
 import { useTemplate } from '../../hooks/useTemplate'
 import {
   defaultTemplateItems,
-  DraggableItem,
-  TemplateItems
+  DraggableItem
 } from '../../models/draggable-item'
 import { useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
@@ -14,11 +13,11 @@ import useSaveTemplate from '../../hooks/useSaveTemplate'
 import AuthContext from '../../pages/AuthProvider'
 import Loader from '../Loader/Loader'
 import './LabelEditor.scss'
+import '../LabelEditorToolbox/LabelEditorToolbox'
 import Modal from '../Modal/Modal'
 import { TEMPLATE_MODAL } from '../../utils/constants'
 import CreateTemplateForm from '../CreateTemplateForm/CreateTemplateForm'
-import ItemFontDropdown from '../ItemFontDropdown/ItemFontDropdown'
-import getItemFontByType from '../../utils/getItemFontByType'
+import LabelEditorToolbox from '../LabelEditorToolbox/LabelEditorToolbox'
 
 const LabelEditor = () => {
   const {
@@ -39,7 +38,6 @@ const LabelEditor = () => {
   const [templateTitle, setTemplateTitle] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [isCurrent, setIsCurrent] = useState(false)
-  const [openDropdownType, setOpenDropdownType] = useState<string | null>(null)
 
   const { user } = useContext(AuthContext)!
 
@@ -80,53 +78,15 @@ const LabelEditor = () => {
     const { store_id } = user!
     createTemplate(items, store_id, title)
   }
-
-  const isTemplateItemCreated = (type: string): boolean => {
-    return !!items[type as keyof TemplateItems]
-  }
-
-  const openDropdown = (type: string): void => {
-    setOpenDropdownType(prev => (prev === type ? null : type))
-  }
-
   if (isLoading) return <Loader width="1rem" height="1rem" />
 
   return (
     <div className="label-editor__container">
-      <div className="label-editor__toolbox">
-        <h3>Toolbar</h3>
-        {['Price', 'Producer', 'Discount', 'Name'].map(type => {
-          const lowerCasedType = type.toLowerCase()
-          return isTemplateItemCreated(lowerCasedType) ? (
-            <div className="label-editor__tool-wrapper">
-              <div
-                key={type}
-                className="label-editor__tool"
-                onClick={() => openDropdown(type)}
-              >
-                {type} <HiChevronDown />
-              </div>
-              {openDropdownType === type && (
-                <div className="label-editor__dropdown">
-                  <ItemFontDropdown
-                    itemType={lowerCasedType}
-                    font={getItemFontByType(lowerCasedType, items)}
-                    onEditFont={editItemFont}
-                  />
-                </div>
-              )}
-            </div>
-          ) : (
-            <button
-              disabled={isTemplateItemCreated(lowerCasedType)}
-              key={type}
-              onClick={() => addItem(type)}
-            >
-              Add {type}
-            </button>
-          )
-        })}
-      </div>
+      <LabelEditorToolbox
+        onAddItem={addItem}
+        onEditItemFont={editItemFont}
+        templateItems={items}
+      />
       <div
         className={`${isCurrent ? 'label-editor__template-current' : 'label-editor__template'}`}
       >
