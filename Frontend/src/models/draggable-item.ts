@@ -59,3 +59,11 @@ export const defaultTemplateItems: TemplateItems = {
   discount: null,
   producer: null
 }
+
+export const defaultTemplate: Template = {
+  id: '',
+  title: '',
+  store_id: '',
+  items: defaultTemplateItems,
+  current: false
+}

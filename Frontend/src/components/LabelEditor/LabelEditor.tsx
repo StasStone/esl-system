@@ -3,11 +3,8 @@ import 'react-resizable/css/styles.css'
 import './LabelEditor.scss'
 import { HiXMark } from 'react-icons/hi2'
 import { useTemplate } from '../../hooks/useTemplate'
-import {
-  defaultTemplateItems,
-  DraggableItem
-} from '../../models/draggable-item'
-import { useContext, useEffect, useState } from 'react'
+import { DraggableItem } from '../../models/draggable-item'
+import { useContext } from 'react'
 import { useParams } from 'react-router-dom'
 import useSaveTemplate from '../../hooks/useSaveTemplate'
 import AuthContext from '../../pages/AuthProvider'
@@ -20,64 +17,32 @@ import CreateTemplateForm from '../CreateTemplateForm/CreateTemplateForm'
 import LabelEditorToolbox from '../LabelEditorToolbox/LabelEditorToolbox'
 
 const LabelEditor = () => {
+  const { templateId } = useParams()
+  const { user } = useContext(AuthContext)!
+
   const {
+    template,
     items,
+    isLoading,
     editedText,
     addItem,
     updateItem,
     removeItem,
-    patchItems,
     editingItem,
     editItem,
     editItemFont,
     handleTextChange,
     handleSaveText
-  } = useTemplate(defaultTemplateItems)
-  const { templateId } = useParams()
+  } = useTemplate(templateId)
+
+  const { title, current } = template
   const { createTemplate } = useSaveTemplate()
-  const [templateTitle, setTemplateTitle] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
-  const [isCurrent, setIsCurrent] = useState(false)
-
-  const { user } = useContext(AuthContext)!
-
-  useEffect(
-    function () {
-      const getTemplate = async function () {
-        setIsLoading(true)
-        try {
-          const res = await fetch(
-            `http://localhost:7071/api/templates/${templateId}`
-          )
-
-          if (!res.ok) {
-            throw new Error('No templates')
-          }
-
-          const data = await res.json()
-          console.log(data)
-          const { template } = data
-
-          if (template) {
-            setTemplateTitle(template.title)
-            patchItems(template.items)
-            setIsCurrent(template.current)
-          }
-        } catch (error) {
-          console.log(error)
-        } finally {
-          setIsLoading(false)
-        }
-      }
-      getTemplate()
-    },
-    [templateId]
-  )
 
   const handleCreateTemplate = (title: string) => {
     const { store_id } = user!
     createTemplate(items, store_id, title)
   }
+
   if (isLoading) return <Loader width="1rem" height="1rem" />
 
   return (
@@ -88,7 +53,7 @@ const LabelEditor = () => {
         templateItems={items}
       />
       <div
-        className={`${isCurrent ? 'label-editor__template-current' : 'label-editor__template'}`}
+        className={`${current ? 'label-editor__template-current' : 'label-editor__template'}`}
       >
         {Object.values(items).map(
           (el: DraggableItem | null) =>
@@ -97,7 +62,7 @@ const LabelEditor = () => {
                 key={el.type}
                 position={{ x: el.x, y: el.y }}
                 bounds="parent"
-                onStop={(e, data) =>
+                onStop={(_e, data) =>
                   updateItem(el.type, { ...el, x: data.x, y: data.y })
                 }
               >
@@ -143,11 +108,11 @@ const LabelEditor = () => {
             )
         )}
       </div>
-      {templateId !== 'new' ? (
+      {templateId === 'new' ? (
         <Modal>
           <Modal>
             <Modal.Open opens={TEMPLATE_MODAL}>
-              <button>Save template</button>
+              <button>Create template</button>
             </Modal.Open>
             <Modal.Window name={TEMPLATE_MODAL}>
               <CreateTemplateForm onCreateTemplate={handleCreateTemplate} />
@@ -155,8 +120,8 @@ const LabelEditor = () => {
           </Modal>
         </Modal>
       ) : (
-        <button onClick={() => handleCreateTemplate(templateTitle)}>
-          Create template
+        <button onClick={() => handleCreateTemplate(title)}>
+          Save template
         </button>
       )}
     </div>
