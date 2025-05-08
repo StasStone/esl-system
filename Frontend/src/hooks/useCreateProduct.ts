@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Product } from '../models/product'
+import toast from 'react-hot-toast'
 
 const createEditProduct = async (newProduct: Product) => {
   try {
@@ -27,11 +28,13 @@ export default function useCreateProduct() {
     mutate: createProduct
   } = useMutation({
     mutationFn: createEditProduct,
-    onSuccess: () =>
+    onSuccess: () => {
       queryClient.invalidateQueries({
         predicate: query =>
           Array.isArray(query.queryKey) && query.queryKey[0] === 'products'
       })
+      toast.success('Product created')
+    }
   })
 
   return {

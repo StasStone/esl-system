@@ -30,7 +30,6 @@ app.http('getTemplate', {
 
             const template = resources[0]
             const createdTemplate = { id: template_id, current: template.current || false, items: { name: template.name, price: template.price, producer: template.producer, discount: template.discount } }
-            context.log(createdTemplate)
             return {
                 status: 200,
                 headers: {

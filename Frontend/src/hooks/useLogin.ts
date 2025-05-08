@@ -21,7 +21,6 @@ export default function useLogin() {
       }
 
       const { token } = await res.json()
-      console.log(token)
 
       storeToken(token)
       navigate('/labels')

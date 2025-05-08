@@ -21,7 +21,7 @@ app.http('login', {
             const { email, password } = await request.json()
 
             // Define a query to find the user by email
-            let query = 'SELECT c.email, c.password, c.user_id FROM c WHERE 1=1'
+            let query = 'SELECT c.email, c.password, c.id FROM c WHERE 1=1'
 
             // Execute the query with the email parameter
             const { resources: users } = await container.items
@@ -62,7 +62,7 @@ app.http('login', {
             }
 
             // Successful login, return JWT token
-            const token = jwt.sign({ userId: user.user_id }, jwtPrivate, { algorithm: "RS256", expiresIn: "1h" })
+            const token = jwt.sign({ userId: user.id }, jwtPrivate, { algorithm: "RS256", expiresIn: "1h" })
 
             return {
                 status: 200,

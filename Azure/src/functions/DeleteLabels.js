@@ -9,19 +9,23 @@ app.http('deleteLabels', {
     authLevel: 'anonymous',
     route: 'labels/{id}/{partitionKey}',
     handler: async (request, context) => {
-        context.log(`Http function processed request for url "${request.url}"`)
         const { id, partitionKey } = request.params
         try {
             // Get a reference to the database and container
             const database = cosmosClient.database(databaseId)
             const container = database.container(containerId)
-            // Define a query to select all labels
+
             const { resource: item } = await container.item(id, partitionKey).read()
+
+            context.log(item)
 
             if (!item) {
                 return {
                     status: 404,
-                    body: JSON.stringify({ error: 'Item not found' })
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ error: 'Label not found' })
                 }
             }
 
@@ -36,6 +40,7 @@ app.http('deleteLabels', {
                 })
             }
         } catch (error) {
+            context.log(error)
             return {
                 status: 500,
                 headers: { "Content-Type": "application/json" },

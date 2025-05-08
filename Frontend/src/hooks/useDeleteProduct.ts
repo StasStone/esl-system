@@ -1,7 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { DatabaseId } from '../models/database-id'
 
-const _deleteProductApi = async ({ id, partition }: DatabaseId) => {
+const deleteProductApi = async ({ id, partition }: DatabaseId) => {
+  console.log(id, partition)
   try {
     const res = await fetch(
       `http://localhost:7071/api/products/${id}/${partition}`,
@@ -29,7 +30,7 @@ export default function useDeleteProduct() {
     mutate: deleteProduct,
     error
   } = useMutation({
-    mutationFn: _deleteProductApi,
+    mutationFn: deleteProductApi,
     onSuccess: () =>
       queryClient.invalidateQueries({
         predicate: query =>

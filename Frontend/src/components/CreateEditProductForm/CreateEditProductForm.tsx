@@ -77,7 +77,7 @@ export default function CreateEditProductForm({
               type="float"
               {...register('discount', {
                 validate: value =>
-                  value! <= getValues().price ||
+                  +value! <= +getValues().price ||
                   'Discount should be less than regular price'
               })}
             />

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { User } from '../models/user'
+import { User, UserInfo } from '../models/user'
 
 export default function useUser() {
   const [error, setError] = useState<string | null>(null)
@@ -26,12 +26,15 @@ export default function useUser() {
     }
   }
 
-  const updateUser = async (newUser: User) => {
+  const updateUser = async (newUserData: UserInfo) => {
     setIsLoading(true)
     try {
       const res = await fetch('http://localhost:7071/api/users', {
         method: 'PUT',
-        body: JSON.stringify({ user: newUser })
+        body: JSON.stringify({
+          user: newUserData,
+          interval: newUserData.interval
+        })
       })
 
       if (!res.ok) {

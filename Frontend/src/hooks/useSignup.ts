@@ -1,5 +1,4 @@
 import { useContext, useState } from 'react'
-import { User } from '../models/user'
 import AuthContext from '../pages/AuthProvider'
 import { useNavigate } from 'react-router-dom'
 
@@ -10,7 +9,7 @@ export default function useSignup() {
 
   const signup = async (email: string, password: string, store_id: string) => {
     try {
-      const userAttempt: User = { email, password, store_id }
+      const userAttempt = { email, password, store_id }
       const res = await fetch('http://localhost:7071/api/signup', {
         method: 'POST',
         body: JSON.stringify(userAttempt)

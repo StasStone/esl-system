@@ -1,15 +1,63 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
+  defaultTemplate,
+  defaultTemplateItems,
   DraggableItem,
   getItemType,
   getItemTypeKey,
   ItemFont,
   MapTypeToSize,
+  Template,
   TemplateItems
 } from '../models/draggable-item'
 import { buildTemplate } from '../utils/buildTemplate'
+import { useQuery } from '@tanstack/react-query'
 
-export function useTemplate(defaultTemplateItems: TemplateItems) {
+type TemplateHook = {
+  template: Template
+  items: TemplateItems
+  isLoading: boolean
+  editedText: string
+  addItem: (type: string) => void
+  updateItem: (type: string, updates: DraggableItem) => void
+  removeItem: (type: string) => void
+  editItem: (type: string, text: string) => void
+  editItemFont: (type: string, font: ItemFont) => void
+  handleTextChange: (event: React.ChangeEvent<HTMLInputElement>) => void
+  handleSaveText: (element: DraggableItem) => void
+  editingItem: string | null
+}
+
+const getTemplate = async function (templateId: string): Promise<Template> {
+  const res = await fetch(`http://localhost:7071/api/templates/${templateId}`, {
+    method: 'GET'
+  })
+
+  if (!res.ok) {
+    throw new Error('No templates')
+  }
+
+  const data = await res.json()
+  const { template } = data
+
+  if (template) return template
+
+  return defaultTemplate
+}
+
+export function useTemplate(templateId: string | undefined): TemplateHook {
+  const { isLoading, data: template } = useQuery({
+    queryKey: ['templates', templateId!],
+    queryFn: () => getTemplate(templateId!),
+    enabled: !!templateId
+  })
+
+  useEffect(() => {
+    if (template?.items) {
+      setItems(template.items)
+    }
+  }, [templateId])
+
   const [items, setItems] = useState<TemplateItems>(defaultTemplateItems)
   const [editingItem, setEditingItem] = useState<string | null>(null)
   const [editedText, setEditedText] = useState<string>('')
@@ -34,7 +82,6 @@ export function useTemplate(defaultTemplateItems: TemplateItems) {
   const updateItem = (type: string, updates: DraggableItem) => {
     const loweredType = type.toLowerCase()
     const newTemplateItems = { ...items, [loweredType]: updates }
-
     setItems(newTemplateItems)
   }
 
@@ -43,10 +90,6 @@ export function useTemplate(defaultTemplateItems: TemplateItems) {
     const newTemplateItems = { ...items, [loweredType]: null }
 
     setItems(newTemplateItems)
-  }
-
-  const patchItems = (newitems: TemplateItems) => {
-    setItems(newitems)
   }
 
   const editItem = (type: string, text: string) => {
@@ -76,12 +119,13 @@ export function useTemplate(defaultTemplateItems: TemplateItems) {
   }
 
   return {
+    template: template ? template : defaultTemplate,
     items,
+    isLoading,
     editedText,
     addItem,
     updateItem,
     removeItem,
-    patchItems,
     editItem,
     editItemFont,
     handleTextChange,
