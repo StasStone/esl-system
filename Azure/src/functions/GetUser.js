@@ -16,14 +16,14 @@ app.http('getUser', {
             const { user_id } = request.params
 
             // Define a query to find the user by email
-            let query = 'SELECT c.email, c.store_id, c.user_id  FROM c WHERE 1=1'
+            let query = 'SELECT c.email, c.store_id, c.id  FROM c WHERE 1=1'
 
             // Execute the query with the email parameter
             const { resources: users } = await container.items
                 .query(query)
                 .fetchAll()
-
-            const user = users.find((user) => user.user_id === user_id)
+            context.log(users)
+            const user = users.find((user) => user.id === user_id)
 
             // If no user is found, return an error
             if (!user) {

@@ -3,7 +3,7 @@ const { Mqtt } = require('azure-iot-device-mqtt')
 
 const connectionString = process.env.IOT_HUB_CONNECTION_STRING
 
-const client = Client.fromConnectionString(connectionString, Mqtt)
+const client = Client.fromConnectionString("HostName=esl-broker.azure-devices.net;DeviceId=gateway-test;SharedAccessKey=o+wPfL3/a4YFpwJXaqn9n5Bzq06Ger9dh8THDbjTXRI=", Mqtt)
 
 async function connectDevice() {
     try {

@@ -4,11 +4,11 @@ import FormRow from '../FormRow/FormRow'
 import { useForm } from 'react-hook-form'
 import AuthContext from '../../pages/AuthProvider'
 import './Settings.scss'
-import { User } from '../../models/user'
+import { UserInfo } from '../../models/user'
 
-export default function Settings({ user }: { user: User }) {
+export default function Settings({ user }: { user: UserInfo }) {
   const { register, handleSubmit, formState } = useForm({
-    defaultValues: { email: user.email, password: '' }
+    defaultValues: { email: user.email, password: 'old', interval: 20 }
   })
   const { errors } = formState
 
@@ -25,7 +25,7 @@ export default function Settings({ user }: { user: User }) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit, onError)}>
-      <FormRow label="email" error={errors.email?.message}>
+      <FormRow label="Email" error={errors.email?.message}>
         <input
           type="email"
           id="email"
@@ -33,13 +33,16 @@ export default function Settings({ user }: { user: User }) {
           {...register('email', { required: 'Email is required' })}
         />
       </FormRow>
-      <FormRow label="password" error={errors.password?.message}>
+      <FormRow label="Password" error={errors.password?.message}>
         <input
           type="password"
           id="password"
           autoComplete="current-password"
           {...register('password', { required: 'Password is required' })}
         />
+      </FormRow>
+      <FormRow label="Updates Interval">
+        <input type="number" id="interval" {...register('interval')} />
       </FormRow>
       <FormRow>
         <button className="standard-btn">Save</button>

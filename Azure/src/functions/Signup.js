@@ -30,7 +30,7 @@ app.http('signup', {
 
             const newUser = {
                 email,
-                user_id: v4(),
+                id: v4(),
                 store_id,
                 password: hashedPassword,
                 created_at: "today"
@@ -52,7 +52,7 @@ app.http('signup', {
 
             await container.items.upsert(newUser)
 
-            const token = jwt.sign({ userId: newUser.user_id }, jwtPrivate, { algorithm: "RS256", expiresIn: "1h" })
+            const token = jwt.sign({ userId: newUser.id }, jwtPrivate, { algorithm: "RS256", expiresIn: "1h" })
 
             return {
                 status: 200,
