@@ -31,17 +31,25 @@ app.http('createLabel', {
             const database = cosmosClient.database(databaseId)
             const container = database.container(containerId)
 
-            // Insert the new label into CosmosDB
-            const { resource: createdLabel } = await container.items.create(newLabel)
+            const { resource: existingLabel } = await container.item(id, gateway_id).read()
 
-            context.log('Label created successfully:', createdLabel)
+            if (existingLabel) {
+                existingLabel.gateway_id = gateway_id
+                existingLabel.product_id = product_id
+
+                await container
+                    .item(id, gateway_id)
+                    .replace(existingLabel)
+            } else {
+                await container.items.create(newLabel)
+            }
 
             return {
                 status: 201,
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(createdLabel)
+                body: JSON.stringify(newLabel)
             }
         } catch (error) {
             return {

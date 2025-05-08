@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { DatabaseId } from '../models/database-id'
 
 const deleteProductApi = async ({ id, partition }: DatabaseId) => {
+  console.log(id, partition)
   try {
     const res = await fetch(
       `http://localhost:7071/api/products/${id}/${partition}`,

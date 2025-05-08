@@ -69,8 +69,6 @@ app.http('getProducts', {
                 })
             })
 
-            context.log(filteredProducts)
-
             return {
                 status: 200,
                 headers: { 'Content-Type': 'application/json' },

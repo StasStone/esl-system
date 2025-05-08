@@ -25,7 +25,6 @@ app.http('getUser', {
 
             const user = users.find((user) => user.user_id === user_id)
 
-            context.log(user)
             // If no user is found, return an error
             if (!user) {
                 return {
@@ -41,7 +40,6 @@ app.http('getUser', {
                 body: JSON.stringify(user)
             }
         } catch (error) {
-            context.log(error.message)
             return {
                 status: 500,
                 headers: { 'Content-Type': 'application/json' },

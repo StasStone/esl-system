@@ -16,7 +16,6 @@ app.eventHub('processUpdateConfirmation', {
 
         for (const message of messages) {
             try {
-                context.log(`Received confirmation: ${JSON.stringify(message)}`)
 
                 const { update_id, status } = message
 
@@ -69,13 +68,14 @@ app.eventHub('processUpdateConfirmation', {
                         product.name = newName
                         product.producer = newProducer
                         product.price = newPrice
-                        product.updating = count > 0
-                        context.log(product)
-                        await containerProducts
-                            .item(product_id, product.producer)
-                            .replace(product)
                     }
                 }
+
+                product.updating = count > 0
+                context.log(product)
+                await containerProducts
+                    .item(product_id, product.producer)
+                    .replace(product)
 
             } catch (error) {
                 context.log(

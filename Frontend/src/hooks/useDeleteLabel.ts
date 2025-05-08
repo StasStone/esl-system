@@ -6,6 +6,7 @@ export default function useDeleteLabel() {
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
 
   const deleteLabel = async (labelId: string, partitionKey: string) => {
+    console.log(labelId, partitionKey)
     setIsLoading(true)
     setError(null)
     setSuccessMessage(null)
@@ -17,7 +18,7 @@ export default function useDeleteLabel() {
           method: 'DELETE'
         }
       )
-
+      console.log(res)
       if (!res.ok) {
         throw new Error('Error deleting label')
       }

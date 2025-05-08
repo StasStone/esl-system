@@ -16,6 +16,7 @@ app.http('deleteProducts', {
     authLevel: 'anonymous',
     route: 'products/{id}/{partitionKey}',
     handler: async (request, context) => {
+        context.log(request.params)
         const { id: product_id, partitionKey } = request.params
 
         try {
@@ -31,7 +32,10 @@ app.http('deleteProducts', {
             if (!item) {
                 return {
                     status: 404,
-                    body: JSON.stringify({ error: 'Item not found' })
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ error: 'Product not found' })
                 }
             }
             const labelsContainer = database.container(labelsContainerId)

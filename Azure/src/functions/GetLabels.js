@@ -44,7 +44,6 @@ app.http('getLabels', {
                 })
             }
         } catch (error) {
-            context.log.error('Error retrieving labels:', error)
             return {
                 status: 500,
                 headers: { 'Content-Type': 'application/json' },
