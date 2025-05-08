@@ -19,7 +19,7 @@ const AppLayout = () => {
         link: template.id
       }))
 
-      const firstSublink = templateLinks[0].link
+      const firstSublink = templateLinks.length ? templateLinks[0].link : 'new'
 
       const builtRouts = [
         { name: 'labels', link: 'labels' },

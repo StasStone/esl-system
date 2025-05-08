@@ -26,7 +26,7 @@ export default function LoginForm({ isSignUp }: { isSignUp: boolean }) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit, onError)}>
-      <FormRow label="email" error={errors.email?.message}>
+      <FormRow label="Email" error={errors.email?.message}>
         <input
           type="email"
           id="email"
@@ -35,7 +35,7 @@ export default function LoginForm({ isSignUp }: { isSignUp: boolean }) {
           {...register('email', { required: 'Email is required' })}
         />
       </FormRow>
-      <FormRow label="password" error={errors.password?.message}>
+      <FormRow label="Password" error={errors.password?.message}>
         <input
           type="password"
           id="password"
