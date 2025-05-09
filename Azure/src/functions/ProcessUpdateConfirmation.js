@@ -61,7 +61,7 @@ app.eventHub('processUpdateConfirmation', {
                 const { resources: [product] } = await containerProducts.items
                     .query(productQuerySpec)
                     .fetchAll()
-
+                const oldProducer = product.producer
                 if (status === 'Success') {
                     if (product) {
                         product.discount = newDiscount
@@ -74,7 +74,7 @@ app.eventHub('processUpdateConfirmation', {
                 product.updating = count > 0
                 context.log(product)
                 await containerProducts
-                    .item(product_id, product.producer)
+                    .item(product_id, oldProducer)
                     .replace(product)
 
             } catch (error) {

@@ -118,7 +118,6 @@ app.http('createProduct', {
 
                     await containerUpdates.items.upsert(updateMessage)
                     const newL = await containerLabels.item(label_id, gateway_id).replace({ ...label, product_id })
-                    context.log(newL)
 
                     const message = new Message(JSON.stringify(updateMessage))
                     message.contentType = "application/json"
@@ -128,7 +127,6 @@ app.http('createProduct', {
                     await client.send(gateway_id, message)
                     context.log(`Event sent for label ${label_id}`)
                 } catch (err) {
-                    context.log(err);
                     throw new Error(err.message)
                 }
             })
