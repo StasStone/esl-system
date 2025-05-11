@@ -3,8 +3,8 @@ import { Filter } from './filter-param'
 export type Product = {
   id: string
   name: string
-  price: string
-  discount?: string
+  price: number
+  discount?: number
   producer: string
   labels: string[]
   updating: boolean

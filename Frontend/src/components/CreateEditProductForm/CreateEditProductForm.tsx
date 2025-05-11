@@ -58,7 +58,7 @@ export default function CreateEditProductForm({
           <FormRow label="price" error={errors.price?.message}>
             <input
               className="form-input"
-              type="text"
+              type="float"
               id="price"
               {...register('price', {
                 required: 'Price is required',

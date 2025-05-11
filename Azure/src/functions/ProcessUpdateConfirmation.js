@@ -17,7 +17,7 @@ app.eventHub('processUpdateConfirmation', {
         for (const message of messages) {
             try {
 
-                const { update_id, status } = message
+                const { id: update_id, status } = message
 
                 if (!update_id || !status) {
                     context.log('Invalid message format, ignoring...')
@@ -72,7 +72,6 @@ app.eventHub('processUpdateConfirmation', {
                 }
 
                 product.updating = count > 0
-                context.log(product)
                 await containerProducts
                     .item(product_id, oldProducer)
                     .replace(product)
