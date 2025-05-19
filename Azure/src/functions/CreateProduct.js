@@ -75,15 +75,14 @@ app.http('createProduct', {
             const { resources: existingUpdates } = await containerUpdates.items
                 .query({
                     query:
-                        "SELECT * FROM c WHERE c.product_id = @productId AND c.updateHash = @updateHash AND c.status = 'Pending'",
+                        "SELECT c.updateHash FROM c WHERE c.product_id = @productId AND c.status = 'Pending' ORDER BY c._ts DESC",
                     parameters: [
-                        { name: '@productId', value: product_id },
-                        { name: '@updateHash', value: updateHash }
+                        { name: '@productId', value: product_id }
                     ]
                 })
                 .fetchAll()
 
-            if (existingUpdates.length > 0) {
+            if (existingUpdates.length > 0 && existingUpdates.updateHash === updateHash) {
                 return { status: 200, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: 'Duplicate update ignored.', product: oldProduct }) }
             }
 
@@ -117,7 +116,7 @@ app.http('createProduct', {
                     }
 
                     await containerUpdates.items.upsert(updateMessage)
-                    const newL = await containerLabels.item(label_id, gateway_id).replace({ ...label, product_id })
+                    await containerLabels.item(label_id, gateway_id).replace({ ...label, product_id })
 
                     const message = new Message(JSON.stringify(updateMessage))
                     message.contentType = "application/json"
