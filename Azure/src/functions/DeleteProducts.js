@@ -54,34 +54,35 @@ app.http('deleteProducts', {
                         ]
                     })
                     .fetchAll()
+                if (label) {
+                    const { gateway_id } = label
 
-                const { gateway_id } = label
+                    try {
+                        const updateMessage = {
+                            id: update_id,
+                            label_id,
+                            product_id,
+                            producer: '',
+                            price: '',
+                            discount: '',
+                            name: '',
+                            status: 'Pending'
+                        }
 
-                try {
-                    const updateMessage = {
-                        id: update_id,
-                        label_id,
-                        product_id,
-                        producer: '',
-                        price: '',
-                        discount: '',
-                        name: '',
-                        status: 'Pending'
+                        await updatesContainer.items.upsert(updateMessage)
+
+                        const message = new Message(JSON.stringify(updateMessage))
+                        message.contentType = "application/json"
+                        message.contentEncoding = "utf-8"
+                        message.messageId = v4()
+                        message.to = gateway_id
+                        await client.send(gateway_id, message)
+
+                        await labelsContainer.item(label_id, gateway_id)
+                            .replace({ ...label, product_id: '' })
+                    } catch (err) {
+                        throw new Error(err.message)
                     }
-
-                    await updatesContainer.items.upsert(updateMessage)
-
-                    const message = new Message(JSON.stringify(updateMessage))
-                    message.contentType = "application/json"
-                    message.contentEncoding = "utf-8"
-                    message.messageId = v4()
-                    message.to = gateway_id
-                    await client.send(gateway_id, message)
-
-                    await labelsContainer.item(label_id, gateway_id)
-                        .replace({ ...label, product_id: '' })
-                } catch (err) {
-                    throw new Error(err.message)
                 }
             })
 

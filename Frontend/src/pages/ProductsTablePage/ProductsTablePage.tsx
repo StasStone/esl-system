@@ -16,6 +16,7 @@ import Loader from '../../components/Loader/Loader'
 import './ProductsTablePage.scss'
 import { PRODUCT_MODAL, PRODUCT_TABLE_HEADERS } from '../../utils/constants'
 import { useSearchParams } from 'react-router-dom'
+import ProductUploader from '../../components/ProductUploader/ProductUploader'
 
 function ProductsTablePage() {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -77,6 +78,7 @@ function ProductsTablePage() {
         defaultFilterParams={defaultProductFilterParams}
       />
       <div className="create-product-container">
+        <ProductUploader />
         <Modal>
           <Modal>
             <Modal.Open opens={PRODUCT_MODAL}>

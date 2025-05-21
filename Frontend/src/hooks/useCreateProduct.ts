@@ -34,6 +34,9 @@ export default function useCreateProduct() {
           Array.isArray(query.queryKey) && query.queryKey[0] === 'products'
       })
       toast.success('Product created')
+    },
+    onError: () => {
+      toast.error('Product not created')
     }
   })
 
