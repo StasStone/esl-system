@@ -40,7 +40,7 @@ const LabelEditor = () => {
 
   const handleCreateTemplate = (title: string) => {
     const { store_id } = user!
-    createTemplate(items, store_id, title)
+    createTemplate(items, store_id, title, templateId!)
   }
 
   if (isLoading) return <Loader width="1rem" height="1rem" />

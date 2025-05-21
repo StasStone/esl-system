@@ -9,19 +9,21 @@ export default function useSaveTemplate() {
   const createTemplate = async (
     templateItems: TemplateItems,
     store_id: string,
-    title: string
+    title: string,
+    templateId: string
   ) => {
     setIsCreating(true)
     setError(null)
     setSuccessMessage(null)
 
     try {
-      const newTemplate: Template = {
+      const newTemplate = {
         id: uuidv4(),
         title,
         items: templateItems,
         store_id,
-        current: true
+        current: true,
+        template_id: templateId
       }
 
       const res = await fetch(`http://localhost:7071/api/templates/new`, {
