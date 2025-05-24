@@ -12,7 +12,7 @@ export default function CreateEditProductForm({
 }: {
   product: Product | null
 }) {
-  const { register, handleSubmit, getValues, formState } = useForm({
+  const { register, handleSubmit, formState } = useForm({
     defaultValues: product ? product : {}
   })
 
@@ -77,8 +77,7 @@ export default function CreateEditProductForm({
               type="float"
               {...register('discount', {
                 validate: value =>
-                  +value! <= +getValues().price ||
-                  'Discount should be less than regular price'
+                  +value! <= 100 || 'Discount should be less than regular price'
               })}
             />
           </FormRow>
