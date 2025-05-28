@@ -59,7 +59,6 @@ app.eventHub('processUpdateConfirmation', {
                     .query(remainingUpdatesQuery)
                     .fetchAll()
 
-
                 const { resources: [product] } = await containerProducts.items
                     .query(productQuerySpec)
                     .fetchAll()

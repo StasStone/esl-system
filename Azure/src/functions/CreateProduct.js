@@ -70,26 +70,24 @@ app.http('createProduct', {
         try {
             const updatePayload = { producer, price, discount, name }
             const updateHash = generateHash(updatePayload)
-            const update_id = v4()
 
             const { resources: existingUpdates } = await containerUpdates.items
                 .query({
                     query:
-                        "SELECT c.updateHash FROM c WHERE c.product_id = @productId AND c.status = 'Pending' ORDER BY c._ts DESC",
+                        "SELECT c.updateHash, c.labels FROM c WHERE c.product_id = @productId AND c.status = 'Pending' ORDER BY c._ts DESC",
                     parameters: [
                         { name: '@productId', value: product_id }
                     ]
                 })
                 .fetchAll()
 
-            if (existingUpdates.length > 0 && existingUpdates.updateHash === updateHash) {
+            if (existingUpdates.length > 0 && existingUpdates[0].updateHash === updateHash) {
                 return { status: 200, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: 'Duplicate update ignored.', product: oldProduct }) }
             }
 
             await client.open() // Open IoT Hub connection
 
             const messagePromises = labels.map(async label_id => {
-                context.log(label_id)
                 const { resources: [label] } = await containerLabels.items
                     .query({
                         query:
@@ -103,6 +101,7 @@ app.http('createProduct', {
                 const { gateway_id } = label
 
                 try {
+                    const update_id = v4()
                     const updateMessage = {
                         id: update_id,
                         label_id,
