@@ -3,6 +3,7 @@ const cosmosClient = require('../CosmosClient')
 
 const databaseId = process.env.COSMOS_DB_DATABASE_ID
 const updatesContainerId = process.env.COSMOS_DB_CONTAINER_UPDATES
+const labelsContainerId = process.env.COSMOS_DB_CONTAINER_LABELS
 const productsContainerId = process.env.COSMOS_DB_CONTAINER_PRODUCTS
 
 app.eventHub('processUpdateConfirmation', {
@@ -13,6 +14,7 @@ app.eventHub('processUpdateConfirmation', {
         const database = cosmosClient.database(databaseId)
         const containerUpdates = database.container(updatesContainerId)
         const containerProducts = database.container(productsContainerId)
+        const containerLabels = database.container(labelsContainerId)
 
         for (const message of messages) {
             try {
@@ -69,6 +71,23 @@ app.eventHub('processUpdateConfirmation', {
                         product.producer = newProducer
                         product.price = newPrice
                     }
+                }
+
+                for (const label of product.labels) {
+                    const labelQuerySpec = {
+                        query:
+                            'SELECT * FROM c WHERE c.id = @labelId',
+                        parameters: [{ name: '@labelId', value: label }]
+                    }
+
+                    const { resources: [labelData] } = await containerLabels.items
+                        .query(labelQuerySpec)
+                        .fetchAll()
+                    const newUpdatedDate = new Date().toISOString()
+                    labelData.last_updated = newUpdatedDate
+                    await containerLabels
+                        .item(labelData.id, labelData.gateway_id)
+                        .replace(labelData)
                 }
 
                 product.updating = count > 0

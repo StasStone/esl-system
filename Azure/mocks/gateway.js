@@ -28,7 +28,7 @@ async function connectDevice() {
             // Simulate update result
             const status = Math.random() > 0.2 ? 'Success' : 'Failed'
             const resultPayload = {
-                update_id,
+                id: update_id,
                 status,
                 timestamp: new Date().toISOString()
             }

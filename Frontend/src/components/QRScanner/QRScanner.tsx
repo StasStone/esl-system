@@ -22,12 +22,11 @@ const QRScanner = () => {
     if (result) {
       try {
         const parsedData = JSON.parse(result.chunks[1].text)
-        const { label_id } = parsedData
-        console.log(label_id)
+        const { id } = parsedData
         const createdLabel: Label = {
-          id: label_id,
+          id,
           product_id: '',
-          last_updated: 'Just updated',
+          last_updated: new Date().toISOString(),
           gateway_id: 'gateway-test'
         }
         setResult(createdLabel)

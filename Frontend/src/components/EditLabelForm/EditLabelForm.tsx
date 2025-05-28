@@ -26,7 +26,7 @@ export default function EditLabelForm({
 
   function onSubmit(data: Label) {
     const newID = label ? label.id : uuidv4()
-    const newLabelCreatedDate = 'today'
+    const newLabelCreatedDate = new Date().toISOString()
     createLabel({ ...data, id: newID, last_updated: newLabelCreatedDate })
     close()
   }

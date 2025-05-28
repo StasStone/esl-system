@@ -93,7 +93,7 @@ app.http('createProduct', {
                 const { resources: [label] } = await containerLabels.items
                     .query({
                         query:
-                            "SELECT c.gateway_id, c.id, c.product_id FROM c WHERE c.id = @labelId",
+                            "SELECT * FROM c WHERE c.id = @labelId",
                         parameters: [
                             { name: '@labelId', value: label_id },
                         ]
